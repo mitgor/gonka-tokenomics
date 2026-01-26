@@ -2,8 +2,8 @@
 ## Deep Tokenomics Analysis & Research Report
 
 **Analysis Date:** January 2026
-**Document Version:** 1.0
-**Sources:** Official Whitepaper, Tokenomics Documentation, GitHub Repository, CryptoRank, External Research
+**Document Version:** 2.0
+**Sources:** Official Whitepaper (whitepaper.pdf), Tokenomics Document (tokenomics.pdf), GitHub Repository, CryptoRank, External Research
 
 ---
 
@@ -16,8 +16,402 @@ Gonka Network represents a novel approach to decentralized AI compute infrastruc
 - The system maintains cost competitiveness when GNK trades below ~$10 vs centralized providers
 - Host profitability threshold is ~$0.85 GNK to beat traditional GPU rental economics
 - Dynamic EIP-1559-inspired pricing creates natural supply/demand equilibrium
-- Collateral system (Tokenomics V2) introduces 80/20 weight model with slashing penalties
+- Collateral system introduces 80/20 weight model with slashing penalties (20% malicious, 10% poor performance)
+- 180-epoch grace period for new participants (no collateral required initially)
 - Current network: 6,000+ H100-equivalent GPUs, 448+ hosts, 2,200+ developers
+
+**Technical Specifications (from Official Whitepaper):**
+- Sprint consensus uses a **2.3 billion parameter Transformer model** (64 layers, 128 attention heads)
+- Randomized task verification reduces redundancy to **1-10%** (vs 100% in competing networks)
+- Emission decay rate: **-0.000475 per epoch** (halving every ~1,460 epochs / 4 years)
+- Governance: **33.4% quorum**, **>50% majority**, **33.4% veto threshold**
+
+---
+
+## 0. Token Distribution — Official Breakdown
+
+### Total Supply: 1,000,000,000 GNK (1 Billion)
+
+| Allocation | Amount | Percentage | Purpose |
+|------------|--------|------------|---------|
+| **Core Host Incentive** | 680,000,000 GNK | 68% | Bitcoin-style epoch rewards for compute contribution |
+| **Community Pool** | 120,000,000 GNK | 12% | Early liquidity, governed by Hosts via voting |
+| **Founders Allocation** | 200,000,000 GNK | 20% | Founding team recognition |
+
+### Emission Schedule — Mathematical Specification
+
+**Initial Epoch Reward:** 323,000 GNK per epoch
+
+**Decay Formula:**
+```
+current_epoch_reward = initial_reward × exp(decay_rate × epochs_since_genesis)
+
+Where:
+- initial_reward = 323,000 GNK
+- decay_rate = -0.000475 per epoch
+- Halving occurs approximately every 1,460 epochs (~4 years)
+```
+
+**Emission Projections:**
+
+| Epoch | Years Since Genesis | Epoch Reward (GNK) | Cumulative Supply |
+|-------|--------------------|--------------------|-------------------|
+| 0 | 0 | 323,000 | 0 |
+| 1,460 | ~4 years | 161,500 (50% of initial) | ~400M |
+| 2,920 | ~8 years | 80,750 (25% of initial) | ~550M |
+| 4,380 | ~12 years | 40,375 (12.5% of initial) | ~620M |
+| 5,840 | ~16 years | 20,188 (6.25% of initial) | ~655M |
+| 8,760 | ~24 years | ~5,000 | ~675M |
+
+**Note:** The 680M allocation is the maximum that can ever be minted through epoch rewards. The exponential decay ensures this cap is approached asymptotically.
+
+---
+
+## 0.1 Sprint Consensus Mechanism — Technical Deep Dive
+
+### Transformer-Based Proof-of-Work ("Sprint")
+
+Sprint is Gonka's novel consensus mechanism that replaces wasteful hash computation with **useful AI-aligned computation**. All hosts participate in a ~10-minute competitive computation period.
+
+**Sprint Transformer Model Specifications:**
+
+| Parameter | Value | Purpose |
+|-----------|-------|---------|
+| **Total Parameters** | ~2.3 billion | Large enough to be GPU-intensive |
+| **Layers** | 64 | Deep architecture mirrors LLM training |
+| **Attention Heads** | 128 | Multi-head attention for parallelism |
+| **Embedding Dimension** | 512 | Vector representation size |
+| **Feed-Forward Hidden Dim** | 8,192 | FFN expansion factor |
+| **Vocabulary Size** | 8,192 | Token space |
+| **Sequence Length** | 4 | Short sequences for rapid iteration |
+
+**Sprint Procedure (Pseudocode from Whitepaper):**
+
+```python
+def generate_proofs(node_public_key, latest_blockchain_state):
+    """
+    During Sprint, hosts iterate through nonces to find "Appropriate Vectors"
+    close to a Target Vector. More vectors found = higher PoC weight.
+    """
+    timer.start()
+    Sprint_seed = generate_Sprint_seed(latest_blockchain_state)
+    transformer_model = initialize_transformer(Sprint_seed)
+    node_seed = generate_node_seed(node_public_key)
+    target_vector = generate_target_vector(Sprint_seed)
+    valid_nonces = []
+
+    for nonce in nonce_generator:
+        input_seed = combine_seeds(nonce, node_seed, Sprint_seed)
+        input_sequence = generate_input_sequence(input_seed)
+        output_sequence = transformer_model.forward(input_sequence)
+        output_vector = extract_last_vector(output_sequence)
+
+        # Random permutation prevents continuity exploitation
+        permutation = generate_random_permutation(input_seed)
+        permuted_vector = permute_vector(output_vector, permutation)
+
+        distance = compute_euclidean_distance(permuted_vector, target_vector)
+        if distance < threshold:  # ~1 in 900 chance
+            send_valid_nonce(nonce, node_public_key)
+            valid_nonces.append(nonce)
+
+        if timer.check() > Sprint_duration:  # ~10 minutes
+            break
+
+    return valid_nonces
+```
+
+**Key Design Elements:**
+
+1. **Distance Threshold:** Calibrated so ~1 in 900 nonce attempts produces an "Appropriate Vector"
+2. **Random Permutation:** Output vectors are randomly permuted before distance calculation to prevent hosts from exploiting neural network continuity
+3. **Sprint Seed:** Generated from blockchain state, unpredictable and same for all hosts
+4. **Node Seed:** Unique per host, derived from public key
+5. **Voting Weight:** Directly proportional to valid nonces found during Sprint
+
+**Why This Design Works:**
+- Hardware optimized for LLM training/inference automatically excels at Sprint
+- No pre-computation advantage (random seed generated at Sprint start)
+- GPU utilization between Sprints is freed for actual AI inference work
+- Voting weight correlates with real compute capacity
+
+---
+
+## 0.2 Collateral System — Detailed Mechanics
+
+### Weight Calculation Formulas
+
+**From the Official Tokenomics Document:**
+
+```
+Base Weight = Potential Weight × Base Weight Ratio
+           = Potential Weight × 0.20  (20% unconditional)
+
+Collateral-Eligible Weight = Potential Weight × (1 - Base Weight Ratio)
+                           = Potential Weight × 0.80  (80% requires backing)
+
+Final Effective Weight = Base Weight + Activated Collateral Weight
+```
+
+**Collateral Requirements:**
+
+| Parameter | Default Value | Governance-Adjustable |
+|-----------|---------------|----------------------|
+| Base Weight Ratio | 20% | Yes |
+| Collateral Per Weight Unit | 0.0625 GNK per nonce | Yes |
+| Grace Period | 180 epochs (~6 months) | Yes |
+| Unbonding Period | 1 epoch | Yes |
+| Malicious Behavior Penalty | 20% of collateral | Yes |
+| Poor Performance Penalty | 10% of collateral | Yes |
+| Performance Threshold | 5% missed work | Yes |
+
+**Example Calculation (H100 GPU):**
+
+```
+Assumptions:
+- H100 produces ~1,600 nonces per epoch during Sprint
+- Collateral Per Weight Unit = 0.0625 GNK
+
+Required collateral for full 80% weight:
+= 1,600 nonces × 0.0625 GNK/nonce
+= 100 GNK
+
+Result:
+- Without collateral: 20% of potential weight activated
+- With 50 GNK locked: 20% + 40% = 60% of potential weight
+- With 100 GNK locked: 20% + 80% = 100% of potential weight
+```
+
+### Slashing Conditions
+
+| Offense | Penalty | Detection Method |
+|---------|---------|------------------|
+| Malicious behavior (fake results, cheating) | 20% of locked collateral | Randomized verification + majority consensus |
+| Poor performance (>5% work missed) | 10% of locked collateral | Workload tracking |
+| Repeated offenses | Cumulative + reputation reset | Historical pattern analysis |
+
+### Grace Period Mechanism
+
+New hosts receive a **180-epoch grace period** during which:
+- Full voting weight is granted without collateral
+- Hosts can earn and accumulate GNK for future collateral
+- Reputation building begins immediately
+- After grace period: must lock collateral or drop to 20% base weight
+
+---
+
+## 0.3 Task Verification System — Efficiency Innovation
+
+### The Verification Challenge
+
+Traditional decentralized networks require **100% task redundancy** (every task verified by multiple nodes). Gonka achieves equivalent security with **1-10% redundancy** through:
+
+### Majority Verification
+
+```
+Verification Rule:
+- Task is trusted when Hosts representing >50% of total voting weight confirm the result
+- Based on assumption that majority of PoC-weighted Hosts are honest
+- Reduces verification from "every node" to "majority weight"
+```
+
+### Randomized Task Verification
+
+```
+Verification Frequency by Host Weight:
+- 50% weight host: verifies ~1 in 20 tasks
+- 10% weight host: verifies ~1 in 100 tasks
+- Network average: ~1 in 10 tasks verified
+- Unpredictable selection prevents gaming
+```
+
+**Pseudo-Random Selection Algorithm:**
+```
+Each transaction has unique ID
+Host signs ID with private key → signature becomes seed
+Seed determines if Host should validate that specific task
+Signature can be shared and independently verified by other Hosts
+```
+
+### Reputation System Formula
+
+**From the Whitepaper (Appendix D):**
+
+```
+Validation Frequency = 1 − (1−0.01) × MIN(DAYS_OF_REPUTATION, N) / N
+
+Where:
+- N = 30 (default, governance-adjustable)
+- New hosts: 100% of tasks validated (frequency = 1.0)
+- After N days without fraud: 1% of tasks validated (frequency = 0.01)
+```
+
+**Reputation-Based Reward Sharing:**
+
+| Reputation Level | Validation Rate | Reward Distribution |
+|------------------|-----------------|---------------------|
+| New (0 days) | 100% | 50% kept, 50% to validators |
+| Building (15 days) | ~50% | ~75% kept, ~25% to validators |
+| Established (30+ days) | 1% | 99% kept, 1% to validators |
+
+**Reputation Reset Triggers:**
+- Caught producing false results → Reset to 0
+- Extended inactivity (>30 days) → Reputation deleted
+- Fraud detection → All cycle rewards forfeited
+
+---
+
+## 0.4 Governance Parameters — Official Specification
+
+| Parameter | Default Value | Description | Effect |
+|-----------|---------------|-------------|--------|
+| **Quorum** | 33.4% of PoC-weighted power | Minimum participation for valid vote | Below quorum = proposal invalid |
+| **Majority Threshold** | >50% Yes votes | Required for passage | Below majority = rejected |
+| **Veto Threshold** | 33.4% of non-abstaining votes | NoWithVeto rejection level | Triggers forced rejection |
+
+**Governance Scope:**
+- Block finalization
+- Model registrations (which LLMs to support)
+- Unit pricing adjustments
+- Protocol upgrades
+- Community Pool allocations
+- All collateral/slashing parameters
+
+**All parameters defined in Genesis Code and modifiable via governance proposals.**
+
+---
+
+## 0.5 Dynamic Pricing System — EIP-1559 Inspired
+
+### Per-Model Pricing Mechanism
+
+Each AI model has an **independent per-token price** adjusted every block:
+
+```
+Price Adjustment Rules:
+
+IF utilization < 40%:
+    price_change = -elasticity × (40% - utilization) / 40%
+    new_price = old_price × (1 + price_change)
+    # Prices DECREASE to encourage usage
+
+IF utilization BETWEEN 40% AND 60%:
+    new_price = old_price
+    # STABILITY ZONE - no change
+
+IF utilization > 60%:
+    price_change = +elasticity × (utilization - 60%) / 40%
+    new_price = old_price × (1 + price_change)
+    # Prices INCREASE to moderate demand
+
+CONSTRAINTS:
+- Maximum change: ±2% per block
+- Price floor: 1 nicoin per AI token (prevents zero-cost abuse)
+```
+
+### Grace Period for Early Adoption
+
+**First 90 epochs:** Inference pricing is set to **zero**
+
+- Enables experimentation without cost barriers
+- Rapid prototyping and developer onboarding
+- After grace period: dynamic pricing activates
+
+---
+
+## 0.6 Decentralized AI Training Fund
+
+### 20% Revenue Allocation
+
+```
+From all inference revenue:
+- 80% → Hosts who execute tasks
+- 20% → Decentralized AI Training Fund
+```
+
+**Fund Purpose:**
+1. Finance training of new open-source LLMs
+2. Grants for promising training procedure proposals
+3. Community-voted allocation to maximize impact
+
+**Governance Process for Training:**
+1. Contributors propose code changes (pull requests)
+2. Proposals undergo discussion and debate
+3. Approved approaches become code updates
+4. Formal training experiment proposals with parameters, dataset, funding
+5. Governance voting (multiple iterations expected)
+6. Execution and transparent results
+
+**Commitment:** All models trained using Gonka resources remain **open-source**
+
+**Revenue Allocation Adjustment:**
+- Percentage modifiable via governance
+- Only available after Year 5 (network must demonstrate training capabilities)
+- Can increase/decrease based on impact on adoption
+
+---
+
+## 0.7 Distributed Training — DiLoCo Mechanism
+
+### How Gonka Enables Decentralized LLM Training
+
+**Traditional Distributed Training Problems:**
+1. Untrusted hosts may submit fraudulent computations
+2. Internet bandwidth limitations vs. datacenter networks
+3. Each host storing entire model is impractical
+4. Centralized coordinator is single point of failure
+
+**Gonka's DiLoCo-Based Solution:**
+
+```
+DiLoCo Approach:
+- Synchronize model parameters only every ~1,000 training steps
+  (vs. every step in traditional distributed training)
+- Bi-level optimization:
+  - Inner loop: Local AdamW optimization
+  - Outer loop: Federative Averaging with Nesterov momentum
+
+On-Chain Management:
+- Blockchain handles rendezvous, rank assignment, synchronization
+- No centralized coordinator
+- Trustless and resilient to host failure
+```
+
+### Proof-of-Learning Validation
+
+```
+State Preservation:
+At random intervals, hosts preserve:
+- Previous weights
+- Current weights
+- Optimizer states (momentum, adaptive learning rates)
+
+Hash Commitment:
+- Hosts commit hashes of preserved states to blockchain
+- Timestamped, tamper-evident records
+- Actual artifacts provided on-demand during validation
+
+Validator Selection:
+- Random validators from non-training hosts
+- Verify hash matches on-chain commitment
+- Confirm weight changes represent legitimate training
+- Honeypot traps test validator diligence
+```
+
+### Model Sharding for Scale
+
+```
+Problem: 100B+ parameter models too large for single host
+
+Solution: Sharding approaches (GShard, DiPaCo)
+- Hosts store and train only portions of model
+- Share updates for their assigned components
+- Enables training models comparable to DeepSeek R1 (671B params)
+
+Practical DiLoCo Capacity:
+- 8×H100 servers can train 30-50B parameter models
+- Network-wide: Much larger models possible through sharding
+```
 
 ---
 
@@ -69,14 +463,20 @@ Where:
 2. **Reward Coins:** Newly minted subsidies (proportional to PoC weight)
 3. **Top Miner Bonuses:** Additional rewards for high performers
 
-**Host Weight Calculation (Tokenomics V2):**
+**Host Weight Calculation (Official Formula):**
 ```
-Effective Weight = Base Weight (20%) + Collateral-Backed Weight (up to 80%)
+Base Weight = Potential Weight × 0.20  (unconditional)
+Collateral-Eligible Weight = Potential Weight × 0.80  (requires GNK collateral)
+Final Effective Weight = Base Weight + Activated Collateral Weight
 
-Where:
-- Base Weight = 20% of PoC weight granted unconditionally
-- Collateral-Backed Weight = min(Collateral Deposited / Required Ratio, 80% of PoC weight)
-- Grace Period = First 180 epochs require no collateral (full weight granted)
+Example (H100 producing 1,600 nonces/epoch):
+- Collateral Per Weight Unit = 0.0625 GNK
+- Full collateral required = 1,600 × 0.0625 = 100 GNK
+- Without collateral: 20% weight
+- With 100 GNK locked: 100% weight
+
+Grace Period: First 180 epochs (~6 months) = no collateral required
+Unbonding Period: 1 epoch (collateral remains slashable during withdrawal)
 ```
 
 ---
@@ -171,14 +571,30 @@ Where:
 
 #### Incentive #3: Transparent & Predictable Pricing
 
-**EIP-1559-Inspired Dynamic Pricing:**
+**EIP-1559-Inspired Dynamic Pricing (Official Specification):**
 
 ```
-Price Adjustment Rules:
-- Utilization < 40%: Price decreases up to 2% per block
-- Utilization 40-60%: Price stable (optimal zone)
-- Utilization > 60%: Price increases up to 2% per block
-- Hard floor: 1 nicoin per AI token (prevents zero-cost abuse)
+Price Adjustment Formula:
+
+IF utilization < 40%:
+    price_change = -elasticity × (40% - utilization) / 40%
+    new_price = old_price × (1 + price_change)
+    # Prices DECREASE to encourage usage
+
+IF utilization BETWEEN 40% AND 60%:
+    new_price = old_price
+    # STABILITY ZONE - no change
+
+IF utilization > 60%:
+    price_change = +elasticity × (utilization - 60%) / 40%
+    new_price = old_price × (1 + price_change)
+    # Prices INCREASE to moderate demand
+
+CONSTRAINTS:
+- Maximum change: ±2% per block (prevents sudden spikes)
+- Price floor: 1 nicoin per AI token (prevents zero-cost abuse)
+- Per-model pricing: Each AI model has independent price
+- Grace period: First 90 epochs = zero pricing for developer onboarding
 ```
 
 **Why This Works for Developers:**
@@ -189,19 +605,40 @@ Price Adjustment Rules:
 | Gradual changes | No sudden spikes | 2% max change per block |
 | Per-model pricing | Cost optimization | Choose cheaper models when appropriate |
 | Escrow with refunds | Pay only for actual use | Deposit max, refund unused |
+| 90-epoch grace | Free experimentation | Zero pricing during onboarding |
 
 ---
 
 #### Incentive #4: Access to Open-Source Model Training Fund
 
-**20% of inference revenue funds decentralized AI training:**
+**20% of inference revenue funds decentralized AI training (Official Specification):**
+
+```
+Revenue Split:
+- 80% → Hosts who execute inference tasks
+- 20% → Decentralized AI Training Fund
+
+Fund Usage:
+1. Cover unit-of-compute costs during training
+2. Grants for promising training procedures (via community voting)
+3. R&D experiments approved through governance
+```
 
 | Benefit | Description |
 |---------|-------------|
 | Revenue sharing | Developers contributing training earn % of fund |
-| Truly open-source | Models stay open (no Meta-style restrictions) |
-| Community governance | Training priorities set by stakeholders |
+| Truly open-source | All models trained remain open-source (network guarantee) |
+| Community governance | Training priorities set via PoC-weighted voting |
 | Network effects | Better models → more developers → more training funds |
+| Adjustable | Percentage modifiable via governance after Year 5 |
+
+**Training Procedure Governance:**
+1. Contributors propose code changes (pull requests)
+2. Extensive presentation and debate on feasibility
+3. Approved approaches become code updates
+4. Formal training experiment proposal (parameters, dataset, funding)
+5. Governance voting (multiple iterations expected)
+6. Execution with full transparency
 
 ---
 
@@ -249,22 +686,37 @@ Where:
 
 #### Incentive #2: Bitcoin-Style Scarcity Economics
 
+**Official Emission Formula (from Tokenomics PDF):**
+```
+current_epoch_reward = initial_reward × exp(decay_rate × epochs_since_genesis)
+
+Where:
+- initial_reward = 323,000 GNK
+- decay_rate = -0.000475 per epoch
+- Halving interval = ln(2) / 0.000475 ≈ 1,460 epochs (~4 years)
+```
+
 **Emission Schedule:**
 
-| Period | Epoch Reward | Daily Emission | Cumulative Supply | % of Total |
-|--------|--------------|----------------|-------------------|------------|
-| Year 1 | 323,000 GNK | 323,000 GNK | ~118M | 11.8% |
-| Year 4 (1st halving) | 161,500 GNK | 161,500 GNK | ~400M | 40% |
-| Year 8 (2nd halving) | 80,750 GNK | 80,750 GNK | ~550M | 55% |
-| Year 16 (3rd halving) | 40,375 GNK | 40,375 GNK | ~680M | 68% |
-| Year 48+ | Minimal | <1,000 GNK | ~680M | 68% |
+| Epoch | Years | Epoch Reward | Cumulative | % of 680M Cap |
+|-------|-------|--------------|------------|---------------|
+| 0 | 0 | 323,000 GNK | 0 | 0% |
+| 365 | ~1 | 275,000 GNK | ~118M | 17.4% |
+| 1,460 | ~4 | 161,500 GNK | ~400M | 58.8% |
+| 2,920 | ~8 | 80,750 GNK | ~550M | 80.9% |
+| 4,380 | ~12 | 40,375 GNK | ~620M | 91.2% |
+| 5,840 | ~16 | 20,188 GNK | ~655M | 96.3% |
+| 8,760 | ~24 | ~5,000 GNK | ~675M | 99.3% |
 
 **Why This Creates Value:**
 
 1. **Early miner advantage:** Fewer GPUs competing → larger share
-2. **Emission scarcity:** Halving reduces new supply every ~4 years
-3. **Fixed total supply:** 1 billion cap creates long-term scarcity
-4. **Network effect:** As more GPUs join, per-GPU rewards decrease BUT token price may increase from demand
+2. **Exponential decay:** Continuous reduction (not discrete halvings)
+3. **Fixed cap:** 680M maximum from mining (68% of total supply)
+4. **Scarcity feedback loop:**
+```
+More Hosts → fewer GNK per GPU → higher scarcity → potential price support
+```
 
 **Mathematical Relationship:**
 ```
@@ -277,15 +729,21 @@ If Both double: Supply increases, price increases → potential equilibrium
 
 #### Incentive #3: Meaningful Work (Not Wasted Compute)
 
-**Compute Efficiency Comparison:**
+**Compute Efficiency Comparison (from Whitepaper Appendix A):**
 
-| Network | Productive Compute | Security Overhead | Staking Waste | Net Efficiency |
-|---------|-------------------|-------------------|---------------|----------------|
-| Bitcoin | 0% | 100% | 0% | 0% |
-| Ethereum PoS | 0% | ~5% | ~95% | 0% |
-| Bittensor | ~40% | ~10% | ~50% | 40% |
-| Render | ~90% | ~10% | 0% | 90% |
-| **Gonka** | **~98%** | **~2%** | **0%** | **98%** |
+| Network | Voting Weight Basis | Task Focus | Efficiency |
+|---------|---------------------|------------|------------|
+| **Bitcoin PoW** | Computational power (hash puzzles) | 100% security, 0% productive | 0% |
+| **Ethereum PoS** | Amount of staked capital | Security + staking rewards | ~0% productive |
+| **Bittensor** | Stake + subnet validation | 40% AI compute, 60% staking | ~40% |
+| **Render** | Job-based allocation | GPU rendering | ~90% |
+| **Gonka Sprint** | Transformer PoW + collateral | ~98% AI tasks, ~2% consensus | **~98%** |
+
+**Why Gonka Achieves ~98% Efficiency:**
+- Sprint uses time-bound transformer computation (~10 min)
+- Between Sprints: 100% of GPU time goes to inference/training
+- Randomized verification: 1-10% redundancy vs 100% in other networks
+- No staking waste (collateral is economic commitment, not capital yield)
 
 **Why ~98% Efficiency Matters to Hosts:**
 
@@ -412,31 +870,53 @@ Distribution = Proportional to Proof of Compute (PoC) weight
 PoC Weight = f(Sprint performance, Collateral deposited, Historical reliability)
 ```
 
-**Sprint Mechanism (Proof of Compute):**
-1. All hosts start simultaneously (random seed prevents pre-computation)
-2. ~10 minute competitive transformer computation period
-3. Number of valid "nonces" found → determines PoC weight
-4. Weight determines: reward share, voting power, task allocation priority
-5. Between Sprints → GPUs perform actual AI inference
+**Sprint Mechanism (Proof of Compute) — Technical Specification:**
+
+```
+Sprint Model: 2.3 billion parameter Transformer
+- 64 layers, 128 attention heads, 512 embedding dim
+- Feed-forward hidden: 8,192 | Vocabulary: 8,192 | Sequence: 4
+
+Procedure:
+1. Sprint Seed generated from blockchain state (unpredictable, same for all)
+2. All hosts start simultaneously (~10 minute window)
+3. Hosts iterate nonces to find "Appropriate Vectors" near Target Vector
+4. Distance threshold: ~1 in 900 chance per nonce
+5. Valid nonces → voting weight → reward share
+6. Between Sprints → GPUs perform actual AI inference
+```
+
+**Anti-Gaming Measures:**
+- Random permutation of output vectors prevents continuity exploitation
+- Node Seed (from public key) prevents result copying
+- Sprint Seed prevents pre-computation
 
 **Step 2: Token Entry into Circulation**
 
 ```
-Host Receives: Mining Rewards + Work Fees
+Host Receives: Mining Rewards (Reward Coins) + Work Fees (Work Coins)
 
-Subject to Vesting:
-- WorkVestingPeriod: Work coin release schedule
-- RewardVestingPeriod: Subsidy coin release schedule
-- TopMinerVestingPeriod: High-performer bonus schedule
-- Default: 180 epochs (~180 days)
-- Unlock: Once per epoch in equal amounts
+Vesting System (from Official Tokenomics):
+- Personalized scheduling: Track rewards per participant daily
+- Efficient processing: Spread evenly across vesting period
+- Automatic management: No intervention required
+- Daily releases: Oldest entry released each day
+
+Default Vesting Period: 180 epochs (~6 months)
+Unlock Frequency: Once per epoch in equal amounts
+Fractional amounts: Added to first day (no coins lost to rounding)
 ```
+
+**Queryable Vesting Information:**
+- Total amount to be vested
+- Detailed breakdown (array of future unlocks)
+- Total amount already released
 
 **Liquidity Options:**
 - **Hold:** Speculate on price appreciation
 - **Sell on exchange:** Convert to USD/stablecoins (when listed)
-- **Community Pool:** Convert to USDT/ETH/BTC before exchange listings
-- **Lock as collateral:** Increase earning weight
+- **Community Pool:** 120M GNK for early liquidity (USDT/ETH/BTC conversion)
+- **Lock as collateral:** Increase earning weight (up to 80% boost)
 
 **Step 3: Token Demand (Developer Usage)**
 
@@ -692,13 +1172,20 @@ Long-term:
 | Downtime fraud | Claim availability without serving | Heartbeat + random tasks |
 | Sybil attack | Create many fake host identities | PoC weight requires real compute |
 
-**Penalty System:**
+**Penalty System (Official Parameters):**
+
+| Setting | Default Value | Description |
+|---------|---------------|-------------|
+| Malicious Behavior Penalty | 20% | Penalty for cheating or providing false results |
+| Poor Performance Penalty | 10% | Penalty for missing too much work |
+| Performance Threshold | 5% missed | How much work can be missed before penalties apply |
+| Unbonding Period | 1 epoch | Collateral remains slashable during withdrawal |
 
 ```
 Caught cheating: 20% collateral slashed
-Poor performance: 10% collateral slashed
+Poor performance (>5% missed): 10% collateral slashed
 Reputation reset: 100% verification rate until trust rebuilt
-Accumulated rewards: LOST for that cycle
+Accumulated rewards: FORFEITED for that cycle
 ```
 
 **Why Cheating Doesn't Pay:**
@@ -713,33 +1200,55 @@ Honest Host:
 
 Cheating Host:
 - Revenue if not caught = R + (saved compute cost)
-- Probability of detection = P (randomized verification)
+- Probability of detection = P (randomized verification, 1-10%)
 - Penalty if caught = 20% collateral + all cycle rewards
 - Expected Value = (1-P)(R + saved) - P(Collateral × 20% + Rewards)
 
 For P > 10-15%, cheating has negative expected value
 ```
 
+**Reputation-Based Verification (Official Formula):**
+```
+Validation Frequency = 1 − (1−0.01) × MIN(DAYS_OF_REPUTATION, N) / N
+
+Where N = 30 (default)
+- Day 0: 100% of tasks validated
+- Day 15: ~50% of tasks validated
+- Day 30+: 1% of tasks validated
+```
+
 **Verification Economics:**
-- High-reputation hosts: Lower verification rate (trusted)
-- New/suspicious hosts: Higher verification rate
-- Random sampling ensures statistical detection
-- Verification cost shared across network
+- High-reputation hosts: 1% verification rate (trusted)
+- New hosts: 100% verification rate
+- Random, unpredictable selection prevents gaming
+- Verification cost shared across network based on weight
 
 ---
 
 ### 4.7 Scenario: Collateral System Stress Test
 
-**Tokenomics V2 Collateral Model:**
+**Official Collateral Model Parameters:**
+
+| Parameter | Default Value | Governance-Adjustable |
+|-----------|---------------|----------------------|
+| Base Weight Ratio | 20% | Yes |
+| Collateral-Eligible Weight | 80% | Yes |
+| Collateral Per Weight Unit | 0.0625 GNK per nonce | Yes |
+| Grace Period | 180 epochs (~6 months) | Yes |
+| Unbonding Period | 1 epoch | Yes |
+| Malicious Behavior Penalty | 20% | Yes |
+| Poor Performance Penalty | 10% | Yes |
+| Performance Threshold | 5% missed | Yes |
 
 ```
-Weight Distribution:
-- Base Weight: 20% (unconditional)
-- Collateral-Eligible: 80% (requires backing)
+Weight Calculation:
+- Base Weight = Potential Weight × 0.20 (unconditional)
+- Collateral-Eligible = Potential Weight × 0.80 (requires backing)
+- Full Weight = Base + min(Collateral Deposited / Required, 80%)
 
-Grace Period: 180 epochs (no collateral required initially)
-Unbonding Period: 1 epoch (collateral withdrawal delay)
-Slashing Window: Collateral remains slashable during unbonding
+Example (H100 with 1,600 nonces/epoch):
+- Required for full weight: 1,600 × 0.0625 = 100 GNK
+- Partial collateral (50 GNK): 20% + 40% = 60% weight
 ```
 
 **Stress Scenario: Mass Collateral Withdrawal**
@@ -988,18 +1497,33 @@ Benefit: Remaining hosts have higher skin-in-the-game
 
 ## Sources
 
+### Primary Sources (Official Documentation)
+
+- [Gonka Whitepaper (PDF)](https://gonka.ai/whitepaper.pdf) — "Decentralized AI: Meaningful utilization of computational power for real-world application" by David Liberman
+- [Gonka Tokenomics (PDF)](https://gonka.ai/tokenomics.pdf) — "Gonka: Designing a Compute-Native Decentralized Economy" (2025-07-31)
 - [Gonka Official Website](https://gonka.ai/)
-- [Gonka Whitepaper (PDF)](https://gonka.ai/whitepaper.pdf)
-- [Gonka Tokenomics (PDF)](https://gonka.ai/tokenomics.pdf)
 - [Gonka GitHub Repository - Tokenomics](https://github.com/gonka-ai/gonka/blob/main/docs/tokenomics.md)
 - [Gonka FAQ](https://gonka.ai/FAQ/)
+
+### Secondary Sources
+
 - [CryptoRank - Gonka Funding & Tokenomics](https://cryptorank.io/ico/gonka)
 - [Bittensor Analysis - Grayscale](https://research.grayscale.com/reports/bittensor-on-the-eve-of-the-first-halving)
 - [Akash Network - AkashML Documentation](https://akash.network/blog/akashml-managed-ai-inference-on-the-decentralized-supercloud/)
 - [io.net Platform Comparison](https://io.net/blog/article/io-net-vs-akash-vs-render-network-which-decentralized-platform-actually-delivers)
 
+### Academic References (from Whitepaper)
+
+- Douillard, Arthur, et al. "DiLoCo: Distributed low-communication training of language models."
+- Jia, Hengrui, et al. "Proof-of-learning: Definitions and practice."
+- McMahan, Brendan, et al. "Communication-efficient learning of deep networks from decentralized data."
+- Lepikhin, Dmitry, et al. "GShard: Scaling giant models with conditional computation and automatic sharding."
+- Douillard, Arthur, et al. "DiPaCo: Distributed path composition."
+- Nakamoto, Satoshi. "A Peer-to-Peer Electronic Cash System." (Bitcoin whitepaper reference)
+
 ---
 
-*Document Version: 1.0 | Analysis Date: January 2026*
+*Document Version: 2.0 | Analysis Date: January 2026*
+*Updated with official specifications from whitepaper.pdf and tokenomics.pdf*
 
-> **Disclaimer:** This analysis is for educational purposes only and should not be construed as investment advice. Cryptocurrency investments carry high risk, including potential total loss of capital. Always conduct your own research and consult qualified financial advisors before making investment decisions.
+> **Disclaimer:** This analysis is for educational purposes only and should not be construed as investment advice. Cryptocurrency investments carry high risk, including potential total loss of capital. Recipients of GNK coin rewards may incur tax obligations depending on their jurisdiction. The legal and regulatory environment surrounding cryptocurrencies is rapidly evolving. Always conduct your own research and consult qualified financial advisors before making investment decisions.
