@@ -13,14 +13,14 @@
 **Plans:** 8 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Deep research: Protocol-Owned Liquidity mechanisms and deployment strategy
-- [ ] 01-02-PLAN.md — Deep research: Real yield distribution and revenue-based buyback mechanisms
-- [ ] 01-03-PLAN.md — Deep research: ve-tokenomics (veGNK) and governance enhancement
-- [ ] 01-04-PLAN.md — Critical stress test: Fee-to-emission transition modeling
-- [ ] 01-05-PLAN.md — Deep research: GPU economics, developer growth, and floor price defense
-- [ ] 01-06-PLAN.md — Synthesis: Update Macro Research and Deep Analysis documents
-- [ ] 01-07-PLAN.md — Synthesis: Update Tokenomics Explained document for stakeholders
-- [ ] 01-08-PLAN.md — Capstone: Definitive fine-tuning recommendations document
+- [x] 01-01-PLAN.md — Deep research: Protocol-Owned Liquidity mechanisms and deployment strategy
+- [x] 01-02-PLAN.md — Deep research: Real yield distribution and revenue-based buyback mechanisms
+- [x] 01-03-PLAN.md — Deep research: ve-tokenomics (veGNK) and governance enhancement
+- [x] 01-04-PLAN.md — Critical stress test: Fee-to-emission transition modeling
+- [x] 01-05-PLAN.md — Deep research: GPU economics, developer growth, and floor price defense
+- [x] 01-06-PLAN.md — Synthesis: Update Macro Research and Deep Analysis documents
+- [x] 01-07-PLAN.md — Synthesis: Update Tokenomics Explained document for stakeholders
+- [x] 01-08-PLAN.md — Capstone: Definitive fine-tuning recommendations document
 
 **Details:**
 Wave 1 (parallel): Plans 01-05 — Five parallel deep research investigations covering all 10 recommendation areas
