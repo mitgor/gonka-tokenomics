@@ -54,7 +54,10 @@ Plans:
   3. Annualized inflation rate is displayed per period with labels showing comparison context (e.g., ETH ~0.5%)
   4. Changing the decay rate or initial emission on the Assumptions tab causes all emission and supply formulas to recalculate automatically in Excel
   5. A validation row confirms the geometric series sum matches the cell-by-cell cumulative total (difference < 1 GNK)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 02-01-PLAN.md -- Chart utilities and emission data table with closed-form formulas, validation rows
+- [ ] 02-02-PLAN.md -- Charts (emission decay, supply composition, inflation rate) and CLI integration
 
 ### Phase 3: Token Price Scenarios Model
 **Goal**: Leadership can compare 3-5 GNK price trajectories with market cap implications and see how buyback-burn affects net token supply across scenarios
@@ -158,7 +161,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Foundation & Shared Infrastructure | v1.1 | 2/2 | Complete | 2026-02-05 |
-| 2. Emission Schedule Model | v1.1 | 0/TBD | Not started | - |
+| 2. Emission Schedule Model | v1.1 | 0/2 | Not started | - |
 | 3. Token Price Scenarios Model | v1.1 | 0/TBD | Not started | - |
 | 4. Fee Transition Crossover Model | v1.1 | 0/TBD | Not started | - |
 | 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
