@@ -4,10 +4,10 @@
 
 **Current Milestone:** v1.0 Tokenomics Research & Optimization
 **Current Phase:** Phase 1 - Deep Macro-Tokenomics Research & Gonka Recommendations
-**Status:** In progress - Wave 1 execution (Plans 01, 03, 04 complete, 3 of 5 Wave 1 plans done)
-**Last activity:** 2026-02-05 - Completed 01-01-PLAN.md (POL & Liquidity)
+**Status:** In progress - Wave 1 execution (Plans 01, 02, 03, 04 complete, 4 of 5 Wave 1 plans done)
+**Last activity:** 2026-02-05 - Completed 01-02-PLAN.md (Real Yield & Buybacks)
 
-**Progress:** ███░░░░░ 37.5% (3 of 8 plans complete)
+**Progress:** ████░░░░ 50% (4 of 8 plans complete)
 
 ## Accumulated Context
 
@@ -34,6 +34,12 @@
 - **Quadratic voting:** Only viable for host-gated Community Pool decisions (GPU-based Sybil resistance)
 - **veGNK separation:** Locked GNK does NOT count as host collateral (clean separation, easier slashing)
 - **3-phase veGNK rollout:** Q2 2026 basic lock+voting, Q4 2026 boost+delegation, 2027 advanced features
+- **Enhanced revenue split:** 20% AI Fund / 70% hosts / 5% buyback-burn / 5% veGNK yield (from 20/70/10 unallocated)
+- **AI Training Fund surplus:** Runway-based threshold (6-month expenses) before surplus distribution (MakerDAO Surplus Buffer pattern)
+- **Buyback mechanism:** Continuous TWAP (15-min intervals, 0.5% max slippage), burn all bought-back tokens
+- **Opportunistic dip-buying:** 3x accelerated buyback when GNK >20% below 30-day TWAP
+- **veGNK-exclusive yield:** Real yield from 5% pool + fund surplus only to veGNK holders (not all stakers)
+- **Competitive moat:** No competing AI compute network (Akash, Render, Bittensor) has genuine real yield distribution
 
 ### Technical Notes
 - Existing research files: Gonka_Tokenomics_Explained.md, Gonka_Tokenomics_Deep_Analysis.md, Gonka_Macro_Tokenomics_Research.md
@@ -43,6 +49,7 @@
 - **Wave 1 Research Outputs:**
   - 01-01: POL & Liquidity Management (10,487 words, 42+ sources) - Community Pool deployment strategy with $44M target liquidity
   - 01-03: veToken & governance (10,882 words) - 6 protocols analyzed, veGNK design specified
+  - 01-02: Real yield & buybacks (7,716 words, 12 protocols) - Enhanced 20/70/5/5 allocation model, TWAP buyback design
   - 01-04: Fee transition stress test (8,839 words) - Critical economic modeling complete
 
 ### Blockers & Concerns
