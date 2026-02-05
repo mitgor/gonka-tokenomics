@@ -173,17 +173,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REQ-F01 | Phase 1: Foundation & Shared Infrastructure | Pending |
-| REQ-F02 | Phase 1: Foundation & Shared Infrastructure | Pending |
-| REQ-F03 | Phase 1: Foundation & Shared Infrastructure | Pending |
-| REQ-F04 | Phase 1: Foundation & Shared Infrastructure | Pending |
-| REQ-F05 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-F01 | Phase 1: Foundation & Shared Infrastructure | Done |
+| REQ-F02 | Phase 1: Foundation & Shared Infrastructure | Done |
+| REQ-F03 | Phase 1: Foundation & Shared Infrastructure | Done |
+| REQ-F04 | Phase 1: Foundation & Shared Infrastructure | Done |
+| REQ-F05 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-U02 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-U02 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U03 | Phase 3: Token Price Scenarios Model | Pending |
 | REQ-U04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-U05 | Phase 1: Foundation & Shared Infrastructure | Pending |
-| REQ-U06 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-U05 | Phase 1: Foundation & Shared Infrastructure | Done |
+| REQ-U06 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U07 | Phase 2: Emission Schedule Model | Pending |
 | REQ-U08 | Phase 2: Emission Schedule Model | Pending |
 | REQ-U09 | Phase 9: Polish, Documentation & Validation | Pending |
