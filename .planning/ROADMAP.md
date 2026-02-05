@@ -39,7 +39,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Blue-shaded input cells, black formula cells, and green cross-tab link cells are visually distinguishable when opening the .xlsx in Excel
   4. Number formatting is consistent: USD uses `$#,##0`, percentages use `0.0%`, token amounts use `#,##0` with commas
   5. The project has exactly one external dependency (openpyxl) and zero constants defined outside of `parameters.py`
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md -- Parameters and styles foundation (all ~50 research parameters + NamedStyle definitions)
+- [ ] 01-02-PLAN.md -- Workbook base, CLI entry point, and project scaffolding (Assumptions tab builder + generate.py)
 
 ### Phase 2: Emission Schedule Model
 **Goal**: The emission decay curve is visualized over 10 years and the circulating supply schedule is computed, validating the core formula-writing pattern that all subsequent models will follow
@@ -154,7 +157,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 1. Foundation & Shared Infrastructure | v1.1 | 0/TBD | Not started | - |
+| 1. Foundation & Shared Infrastructure | v1.1 | 0/2 | Planned | - |
 | 2. Emission Schedule Model | v1.1 | 0/TBD | Not started | - |
 | 3. Token Price Scenarios Model | v1.1 | 0/TBD | Not started | - |
 | 4. Fee Transition Crossover Model | v1.1 | 0/TBD | Not started | - |
