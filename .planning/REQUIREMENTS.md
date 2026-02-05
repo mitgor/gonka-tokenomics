@@ -90,7 +90,7 @@
 | REQ-M5-02 | Dashboard tab with cross-model KPIs | 6-8 key metrics pulled from each model with charts |
 | REQ-M5-03 | Scenario comparison matrix | Rows = metrics, columns = scenarios, color-coded |
 | REQ-M5-04 | Navigation (hyperlinked TOC) | TOC tab with hyperlinks; consistent "Back to TOC" links per tab |
-| REQ-M5-05 | 8-tab structure | Documentation → Assumptions → Emission → Token Price → Fee Transition → Host Profitability → Treasury & POL → Dashboard |
+| REQ-M5-05 | 8-tab structure | Documentation -> Assumptions -> Emission -> Token Price -> Fee Transition -> Host Profitability -> Treasury & POL -> Dashboard |
 
 ---
 
@@ -166,6 +166,70 @@
 - **Should Have:** 8 differentiators
 - **Deferred:** 4 items
 - **Out of Scope:** 8 anti-features
+
+---
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| REQ-F01 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-F02 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-F03 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-F04 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-F05 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-U01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-U02 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-U03 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-U04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-U05 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-U06 | Phase 1: Foundation & Shared Infrastructure | Pending |
+| REQ-U07 | Phase 2: Emission Schedule Model | Pending |
+| REQ-U08 | Phase 2: Emission Schedule Model | Pending |
+| REQ-U09 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-U10 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-U11 | Phase 8: Standalone Workbook Generation | Pending |
+| REQ-U12 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-M1-01 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-M1-02 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-M1-03 | Phase 2: Emission Schedule Model | Pending |
+| REQ-M1-04 | Phase 2: Emission Schedule Model | Pending |
+| REQ-M1-05 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-M1-06 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-M2-01 | Phase 2: Emission Schedule Model | Pending |
+| REQ-M2-02 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M2-03 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M2-04 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M2-05 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M2-06 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M2-07 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M3-01 | Phase 5: Host Profitability Model | Pending |
+| REQ-M3-02 | Phase 5: Host Profitability Model | Pending |
+| REQ-M3-03 | Phase 5: Host Profitability Model | Pending |
+| REQ-M3-04 | Phase 5: Host Profitability Model | Pending |
+| REQ-M3-05 | Phase 5: Host Profitability Model | Pending |
+| REQ-M3-06 | Phase 5: Host Profitability Model | Pending |
+| REQ-M3-07 | Phase 5: Host Profitability Model | Pending |
+| REQ-M4-01 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-02 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-03 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-04 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-05 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-06 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-07 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M5-01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-M5-02 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-M5-03 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-M5-04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-M5-05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-D01 | Phase 5: Host Profitability Model | Pending |
+| REQ-D02 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-D03 | Phase 8: Standalone Workbook Generation | Pending |
+| REQ-D04 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-D05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-D06 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-D07 | Phase 8: Standalone Workbook Generation | Pending |
+| REQ-D08 | Phase 8: Standalone Workbook Generation | Pending |
 
 ---
 *Generated from v1.1 research synthesis on 2026-02-05*
