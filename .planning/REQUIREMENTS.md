@@ -210,13 +210,13 @@
 | REQ-M3-05 | Phase 5: Host Profitability Model | Done |
 | REQ-M3-06 | Phase 5: Host Profitability Model | Done |
 | REQ-M3-07 | Phase 5: Host Profitability Model | Done |
-| REQ-M4-01 | Phase 6: Treasury & POL Simulation | Pending |
-| REQ-M4-02 | Phase 6: Treasury & POL Simulation | Pending |
-| REQ-M4-03 | Phase 6: Treasury & POL Simulation | Pending |
-| REQ-M4-04 | Phase 6: Treasury & POL Simulation | Pending |
-| REQ-M4-05 | Phase 6: Treasury & POL Simulation | Pending |
-| REQ-M4-06 | Phase 6: Treasury & POL Simulation | Pending |
-| REQ-M4-07 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-M4-01 | Phase 6: Treasury & POL Simulation | Done |
+| REQ-M4-02 | Phase 6: Treasury & POL Simulation | Done |
+| REQ-M4-03 | Phase 6: Treasury & POL Simulation | Done |
+| REQ-M4-04 | Phase 6: Treasury & POL Simulation | Done |
+| REQ-M4-05 | Phase 6: Treasury & POL Simulation | Done |
+| REQ-M4-06 | Phase 6: Treasury & POL Simulation | Done |
+| REQ-M4-07 | Phase 6: Treasury & POL Simulation | Done |
 | REQ-M5-01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
 | REQ-M5-02 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
 | REQ-M5-03 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
@@ -227,7 +227,7 @@
 | REQ-D03 | Phase 8: Standalone Workbook Generation | Pending |
 | REQ-D04 | Phase 9: Polish, Documentation & Validation | Pending |
 | REQ-D05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-D06 | Phase 6: Treasury & POL Simulation | Pending |
+| REQ-D06 | Phase 6: Treasury & POL Simulation | Done |
 | REQ-D07 | Phase 8: Standalone Workbook Generation | Pending |
 | REQ-D08 | Phase 8: Standalone Workbook Generation | Pending |
 
