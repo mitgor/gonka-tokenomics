@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Emission Schedule Model** - First model validates formula-writing pattern with emission decay curve
 - [x] **Phase 3: Token Price Scenarios Model** - Multi-scenario price trajectories with scenario selector pattern
 - [x] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
-- [ ] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
+- [x] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
 - [ ] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
 - [ ] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
 - [ ] **Phase 8: Standalone Workbook Generation** - Four focused standalone workbooks with documentation
@@ -105,8 +105,8 @@ Plans:
   7. Host churn risk is flagged with red conditional formatting whenever Gonka income drops below traditional rental equivalent
 **Plans**: 2 plans
 Plans:
-- [ ] 05-01-PLAN.md -- Parameters, host profitability data model (13 cols x 32 rows), sensitivity matrix, electricity sensitivity, GPU amortization
-- [ ] 05-02-PLAN.md -- Charts (stacked area, Gonka vs traditional, breakeven price) and conditional formatting (churn risk, sensitivity heat map)
+- [x] 05-01-PLAN.md -- Parameters, host profitability data model (13 cols x 32 rows), sensitivity matrix, electricity sensitivity, GPU amortization
+- [x] 05-02-PLAN.md -- Charts (stacked area, Gonka vs traditional, breakeven price) and conditional formatting (churn risk, sensitivity heat map)
 
 ### Phase 6: Treasury & POL Simulation
 **Goal**: Leadership can project treasury health across all components (Community Pool, POL, buyback-burn, AI Fund, floor defense) and see when critical depletion thresholds are reached
@@ -173,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 5. Host Profitability Model | v1.1 | 0/2 | Planned | - |
+| 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
