@@ -373,6 +373,7 @@ def build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
     defense_annual_ref = param_refs["Annual GNK Allocation for Defense"]
     defense_target_low_ref = param_refs["Defense Treasury Target Low"]
     ai_fund_expenses_ref = param_refs["AI Fund Monthly Expenses"]
+    pol_toggle_ref = param_refs["Deploy POL Active"]
 
     # ------------------------------------------------------------------
     # Cross-sheet references
@@ -422,10 +423,11 @@ def build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
         ).style = "crossref_cell"
 
         # B: CP Balance (GNK) -- running waterfall balance
+        #    POL allocation conditionally deducted via Deploy POL toggle
         if i == 0:
-            # Period 0: Starting balance minus POL (one-time) and defense draw
+            # Period 0: Starting balance minus POL (one-time, if active) and defense draw
             b_formula = (
-                f"={cp_ref}-{pol_alloc_ref}"
+                f'={cp_ref}-IF({pol_toggle_ref}="Y",{pol_alloc_ref},0)'
                 f"-{defense_annual_ref}*{days}/365"
             )
         else:
@@ -434,16 +436,23 @@ def build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
         ws.cell(row=row, column=2, value=b_formula).style = "tokens"
 
         # C: CP Outflows (GNK) -- period outflows for waterfall visibility
+        #    POL allocation conditionally included via Deploy POL toggle
         if i == 0:
-            c_formula = f"={pol_alloc_ref}+{defense_annual_ref}*{days}/365"
+            c_formula = (
+                f'=IF({pol_toggle_ref}="Y",{pol_alloc_ref},0)'
+                f"+{defense_annual_ref}*{days}/365"
+            )
         else:
             c_formula = f"={defense_annual_ref}*{days}/365"
         ws.cell(row=row, column=3, value=c_formula).style = "tokens"
 
         # D: POL Revenue ($) -- midpoint LP fee revenue minus rebalancing cost
+        #    Wrapped in IF(toggle="Y",...,0) so POL revenue can be toggled off
         d_formula = (
-            f"=({pol_rev_low_ref}+{pol_rev_high_ref})/2*{days}/365"
-            f"-{pol_rebal_ref}*{days}/365"
+            f'=IF({pol_toggle_ref}="Y",'
+            f"({pol_rev_low_ref}+{pol_rev_high_ref})/2*{days}/365"
+            f"-{pol_rebal_ref}*{days}/365,"
+            f"0)"
         )
         ws.cell(row=row, column=4, value=d_formula).style = "currency"
 
@@ -493,14 +502,15 @@ def build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
             )
         ws.cell(row=row, column=12, value=l_formula).style = "currency"
 
-        # M: Net Treasury (GNK) -- CP Balance + POL GNK allocation
-        m_formula = f"=B{row}+{pol_alloc_ref}"
+        # M: Net Treasury (GNK) -- CP Balance + POL GNK allocation (if active)
+        m_formula = f'=B{row}+IF({pol_toggle_ref}="Y",{pol_alloc_ref},0)'
         ws.cell(row=row, column=13, value=m_formula).style = "tokens"
 
         # N: Net Treasury ($) -- all assets in USD
+        #    POL GNK value conditionally included via Deploy POL toggle
         n_formula = (
             f"=B{row}*{tp_sheet}!{tp_active_col}{tp_row}"
-            f"+{pol_alloc_ref}*{tp_sheet}!{tp_active_col}{tp_row}"
+            f'+IF({pol_toggle_ref}="Y",{pol_alloc_ref}*{tp_sheet}!{tp_active_col}{tp_row},0)'
             f"+E{row}+L{row}+J{row}"
         )
         ws.cell(row=row, column=14, value=n_formula).style = "currency"
