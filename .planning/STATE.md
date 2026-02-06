@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 4 planned - Fee Transition Crossover Model (ready for execution)
+**Current focus:** Phase 4 in progress - Fee Transition Crossover Model (plan 01 complete, plan 02 next)
 
 ## Current Position
 
 Phase: 4 of 9 (Fee Transition Crossover Model)
-Plan: 0 of 2 in current phase
-Status: Planning complete (ready for execution)
-Last activity: 2026-02-06 -- Planned Phase 4 (2 plans: data model + charts/formatting)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-06 -- Completed 04-01-PLAN.md (data model + parameters + toggle)
 
-Progress: [======....] ~33% (Phase 1-3 complete, Phase 4 planned)
+Progress: [=======...] ~39% (Phase 1-3 complete, Phase 4 plan 1/2 done)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 2.5 min
-- Total execution time: 15 min
+- Total plans completed: 7
+- Average duration: 2.6 min
+- Total execution time: 18 min
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [======....] ~33% (Phase 1-3 complete, Phase 4 planned)
 | 1. Foundation | 2/2 | 7 min | 3.5 min |
 | 2. Emission Schedule | 2/2 | 3 min | 1.5 min |
 | 3. Token Price Scenarios | 2/2 | 5 min | 2.5 min |
+| 4. Fee Transition | 1/2 | 3 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (2 min), 02-02 (1 min), 03-01 (3 min), 03-02 (2 min)
-- Trend: Consistent fast execution, averaging 2-3 min per plan
+- Last 5 plans: 02-02 (1 min), 03-01 (3 min), 03-02 (2 min), 04-01 (3 min)
+- Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
 
@@ -66,6 +67,11 @@ Recent decisions affecting current work:
 - [03-01]: All 4 price columns always visible; Active Price column (CHOOSE-driven) used for FDV/market cap/buyback
 - [03-01]: Buyback burn period-adjusted: /12 for monthly (i<24), /1 for annual (i>=24)
 - [03-01]: Scenario selector pattern: DataValidation + MATCH + CHOOSE on Assumptions tab (reusable for Phases 4-6)
+- [04-01]: Developer Count column B uses moderate growth rate as base projection
+- [04-01]: Crossover year matrix uses INDEX/MATCH on H/I/J columns (Active Price) not full 3x3
+- [04-01]: "text" format maps to None in FORMAT_TO_STYLE (no numeric style override)
+- [04-01]: Tail emission toggle adds DataValidation to existing PARAM_GROUPS cell
+- [04-01]: Revenue splits reference base fee revenue (column D) for consistency
 
 ### From v1.0
 
@@ -87,6 +93,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-06T19:30:00Z
-Stopped at: Planned Phase 4 -- 2 plans created, plan check reviewed, ready for execution
+Last session: 2026-02-06T18:50:00Z
+Stopped at: Completed 04-01-PLAN.md -- Fee Transition data model with crossover matrices
 Resume file: None
