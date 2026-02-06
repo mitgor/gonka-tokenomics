@@ -68,7 +68,7 @@ def generate_all():
     print(f"Generated: {output_path}")
     print(f"  Assumptions tab: {len(param_refs)} parameters")
     print(f"  Emission Schedule tab: {emission_meta['data_end_row'] - emission_meta['data_start_row'] + 1} periods, 3 charts")
-    print(f"  Token Price tab: {price_meta['data_end_row'] - price_meta['data_start_row'] + 1} periods, {len(price_meta['cols'])} columns")
+    print(f"  Token Price tab: {price_meta['data_end_row'] - price_meta['data_start_row'] + 1} periods, 2 charts")
 
 
 if __name__ == "__main__":
