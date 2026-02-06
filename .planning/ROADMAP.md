@@ -121,7 +121,10 @@ Plans:
   6. Net treasury value sums all assets (GNK + USDC + LP positions) in USD at the scenario's GNK price
   7. A clear label states "IL impact not modeled; see v2 for concentrated position risk analysis"
   8. Time-to-X callout cells display key milestones (e.g., "Community Pool depleted in: 8.3 years (Base scenario)")
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 06-01-PLAN.md -- Parameters (TREASURY OPERATIONS group) + Treasury data model (14 columns, 32 rows), Time-to-X callouts, defense scenarios, IL caveat
+- [ ] 06-02-PLAN.md -- Charts (treasury composition, CP depletion, cumulative burn) and conditional formatting (CP health, defense health, net treasury gradient)
 
 ### Phase 7: Dashboard & Master Workbook Assembly
 **Goal**: A single master workbook links all models via shared assumptions with a dashboard summarizing cross-model KPIs, scenario comparisons, and navigation between the 8-tab structure
@@ -174,7 +177,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |
+| 6. Treasury & POL Simulation | v1.1 | 0/2 | Not started | - |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
