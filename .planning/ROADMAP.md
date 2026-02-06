@@ -86,7 +86,10 @@ Plans:
   5. A tail emission toggle (ON/OFF boolean on Assumptions) adds 10,000 GNK/day floor emission and all downstream calculations update
   6. Developer count is a visible input row that feeds directly into fee revenue projections
   7. Heat map conditional formatting makes crossover timing visually scannable across the entire matrix
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 04-01-PLAN.md -- Parameters, tail emission toggle, and fee transition data model (14 columns, 32 rows, 2 crossover matrices)
+- [ ] 04-02-PLAN.md -- Charts (waterfall, crossover timeline, fee vs emission), conditional formatting, danger zone
 
 ### Phase 5: Host Profitability Model
 **Goal**: Leadership can evaluate whether hosting on Gonka is economically competitive with traditional GPU rental under varying prices, network sizes, and cost structures
@@ -166,7 +169,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 1. Foundation & Shared Infrastructure | v1.1 | 2/2 | Complete | 2026-02-05 |
 | 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 4. Fee Transition Crossover Model | v1.1 | 0/TBD | Not started | - |
+| 4. Fee Transition Crossover Model | v1.1 | 0/2 | Planned | - |
 | 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
 | 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |
