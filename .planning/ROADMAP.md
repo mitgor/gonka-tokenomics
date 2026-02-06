@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
 - [x] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
 - [x] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
-- [ ] **Phase 8: Standalone Workbook Generation** - Four focused standalone workbooks with documentation
+- [x] **Phase 8: Standalone Workbook Generation** - Four focused standalone workbooks with documentation
 - [ ] **Phase 9: Polish, Documentation & Validation** - Cell protection, audit trail, print layout, final testing
 
 ## Phase Details
@@ -156,10 +156,10 @@ Plans:
   6. Version number and changelog appear on each workbook's cover sheet
 **Plans**: 4 plans
 Plans:
-- [ ] 08-01-PLAN.md -- Foundation: toggle parameters, standalone_config.py, build_filtered_assumptions_tab()
-- [ ] 08-02-PLAN.md -- New tab builders: glossary.py and cover_sheet.py
-- [ ] 08-03-PLAN.md -- Toggle integration: IF() wrappers in token_price.py and treasury.py
-- [ ] 08-04-PLAN.md -- Standalone orchestrator and generate.py integration
+- [x] 08-01-PLAN.md -- Foundation: toggle parameters, standalone_config.py, build_filtered_assumptions_tab()
+- [x] 08-02-PLAN.md -- New tab builders: glossary.py and cover_sheet.py
+- [x] 08-03-PLAN.md -- Toggle integration: IF() wrappers in token_price.py and treasury.py
+- [x] 08-04-PLAN.md -- Standalone orchestrator and generate.py integration
 
 ### Phase 9: Polish, Documentation & Validation
 **Goal**: All workbooks meet professional financial modeling standards with cell protection, source audit trails, print-ready layouts, and verified correctness in both Excel and Google Sheets
@@ -187,5 +187,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 8. Standalone Workbook Generation | v1.1 | 0/4 | Planned | - |
+| 8. Standalone Workbook Generation | v1.1 | 4/4 | Complete | 2026-02-07 |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
