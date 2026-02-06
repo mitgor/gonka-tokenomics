@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 8: Standalone Workbook Generation -- Plan 02 complete, glossary and cover sheet builders ready.
+**Current focus:** Phase 8: Standalone Workbook Generation -- Plans 01 and 02 complete, foundation infrastructure and builders ready.
 
 ## Current Position
 
 Phase: 8 of 9 (Standalone Workbook Generation)
-Plan: 2 of 4 in current phase
+Plan: 2 of 4 in current phase (Plans 01 and 02 complete)
 Status: In progress
-Last activity: 2026-02-06 -- Completed 08-02-PLAN.md (Glossary & Cover Sheet Builders)
+Last activity: 2026-02-06 -- Completed 08-01-PLAN.md (Standalone Foundation Infrastructure)
 
-Progress: [================....] ~83% (15/18 plans complete)
+Progress: [================....] ~89% (16/18 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
+- Total plans completed: 16
 - Average duration: 2.4 min
-- Total execution time: 36.5 min
+- Total execution time: 39.5 min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: [================....] ~83% (15/18 plans complete)
 | 5. Host Profitability | 2/2 | 5 min | 2.5 min |
 | 6. Treasury & POL | 2/2 | 4 min | 2.0 min |
 | 7. Dashboard & Assembly | 2/2 | 5 min | 2.5 min |
-| 8. Standalone Generation | 1/4 | 1.5 min | 1.5 min |
+| 8. Standalone Generation | 2/4 | 4.5 min | 2.25 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (2 min), 07-01 (2 min), 07-02 (3 min), 08-02 (1.5 min)
+- Last 5 plans: 07-01 (2 min), 07-02 (3 min), 08-02 (1.5 min), 08-01 (3 min)
 - Trend: Consistent 1.5-3 min per plan
 
 *Updated after each plan completion*
@@ -105,6 +105,11 @@ Recent decisions affecting current work:
 - [07-02]: All Dashboard values are formulas referencing model tabs (REQ-M5-01 verified)
 - [07-02]: Cross-sheet chart References point to source worksheets (Host Profitability, Treasury & POL)
 - [07-02]: Breakeven chart Y-axis capped at $15 matching host_profit.py pattern
+- [08-01]: WHAT-IF TOGGLES group placed before veGNK PARAMETERS (near other model controls)
+- [08-01]: frozenset for param name sets (immutable, prevents accidental modification)
+- [08-01]: Y/N for what-if toggles (distinct from Tail Emission Toggle's ON/OFF convention)
+- [08-01]: Scenario selector auto-skipped with warning if price scenario params missing (graceful degradation)
+- [08-01]: 20 universal glossary terms (not filtered per standalone)
 - [08-02]: Terms dict passed as parameter to glossary builder (decoupled from config)
 - [08-02]: Cover sheet scenario narratives iterate in fixed order [Conservative, Base, Aggressive]
 - [08-02]: LINK_FONT redefined locally in cover_sheet.py (same pattern as documentation.py)
@@ -130,5 +135,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 08-02-PLAN.md (Glossary & Cover Sheet Builders)
+Stopped at: Completed 08-01-PLAN.md (Standalone Foundation Infrastructure)
 Resume file: None
