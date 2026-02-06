@@ -18,7 +18,7 @@ v1.1 delivers five professional-grade Excel workbooks (.xlsx) that model Gonka N
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Shared Infrastructure** - Parameter system, styles, workbook base, CLI skeleton
-- [ ] **Phase 2: Emission Schedule Model** - First model validates formula-writing pattern with emission decay curve
+- [x] **Phase 2: Emission Schedule Model** - First model validates formula-writing pattern with emission decay curve
 - [ ] **Phase 3: Token Price Scenarios Model** - Multi-scenario price trajectories with scenario selector pattern
 - [ ] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
 - [ ] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
@@ -56,8 +56,8 @@ Plans:
   5. A validation row confirms the geometric series sum matches the cell-by-cell cumulative total (difference < 1 GNK)
 **Plans**: 2 plans
 Plans:
-- [ ] 02-01-PLAN.md -- Chart utilities and emission data table with closed-form formulas, validation rows
-- [ ] 02-02-PLAN.md -- Charts (emission decay, supply composition, inflation rate) and CLI integration
+- [x] 02-01-PLAN.md -- Chart utilities and emission data table with closed-form formulas, validation rows
+- [x] 02-02-PLAN.md -- Charts (emission decay, supply composition, inflation rate) and CLI integration
 
 ### Phase 3: Token Price Scenarios Model
 **Goal**: Leadership can compare 3-5 GNK price trajectories with market cap implications and see how buyback-burn affects net token supply across scenarios
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Foundation & Shared Infrastructure | v1.1 | 2/2 | Complete | 2026-02-05 |
-| 2. Emission Schedule Model | v1.1 | 0/2 | Not started | - |
+| 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 3. Token Price Scenarios Model | v1.1 | 0/TBD | Not started | - |
 | 4. Fee Transition Crossover Model | v1.1 | 0/TBD | Not started | - |
 | 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
