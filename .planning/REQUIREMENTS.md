@@ -178,10 +178,10 @@
 | REQ-F03 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-F04 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-F05 | Phase 1: Foundation & Shared Infrastructure | Done |
-| REQ-U01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-U01 | Phase 7: Dashboard & Master Workbook Assembly | Done |
 | REQ-U02 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U03 | Phase 3: Token Price Scenarios Model | Done |
-| REQ-U04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-U04 | Phase 7: Dashboard & Master Workbook Assembly | Done |
 | REQ-U05 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U06 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U07 | Phase 2: Emission Schedule Model | Done |
@@ -217,16 +217,16 @@
 | REQ-M4-05 | Phase 6: Treasury & POL Simulation | Done |
 | REQ-M4-06 | Phase 6: Treasury & POL Simulation | Done |
 | REQ-M4-07 | Phase 6: Treasury & POL Simulation | Done |
-| REQ-M5-01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-M5-02 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-M5-03 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-M5-04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
-| REQ-M5-05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-M5-01 | Phase 7: Dashboard & Master Workbook Assembly | Done |
+| REQ-M5-02 | Phase 7: Dashboard & Master Workbook Assembly | Done |
+| REQ-M5-03 | Phase 7: Dashboard & Master Workbook Assembly | Done |
+| REQ-M5-04 | Phase 7: Dashboard & Master Workbook Assembly | Done |
+| REQ-M5-05 | Phase 7: Dashboard & Master Workbook Assembly | Done |
 | REQ-D01 | Phase 5: Host Profitability Model | Done |
 | REQ-D02 | Phase 4: Fee Transition Crossover Model | Done |
 | REQ-D03 | Phase 8: Standalone Workbook Generation | Pending |
 | REQ-D04 | Phase 9: Polish, Documentation & Validation | Pending |
-| REQ-D05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
+| REQ-D05 | Phase 7: Dashboard & Master Workbook Assembly | Done |
 | REQ-D06 | Phase 6: Treasury & POL Simulation | Done |
 | REQ-D07 | Phase 8: Standalone Workbook Generation | Pending |
 | REQ-D08 | Phase 8: Standalone Workbook Generation | Pending |

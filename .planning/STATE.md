@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 7 in progress - Dashboard & Master Workbook Assembly (1 of 2 plans done). Ready for Plan 02.
+**Current focus:** Phase 7 complete - Dashboard & Master Workbook Assembly (2 of 2 plans done). Ready for Phase 8.
 
 ## Current Position
 
 Phase: 7 of 9 (Dashboard & Master Workbook Assembly)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-06 -- Completed 07-01-PLAN.md (Documentation tab & 8-tab structure)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-06 -- Completed 07-02-PLAN.md (Dashboard tab with KPIs, charts, scenario matrix)
 
-Progress: [=============.......] ~72% (13/18 plans complete)
+Progress: [===============.....] ~78% (14/18 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 2.5 min
-- Total execution time: 32 min
+- Total execution time: 35 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: [=============.......] ~72% (13/18 plans complete)
 | 4. Fee Transition | 2/2 | 6 min | 3.0 min |
 | 5. Host Profitability | 2/2 | 5 min | 2.5 min |
 | 6. Treasury & POL | 2/2 | 4 min | 2.0 min |
-| 7. Dashboard & Assembly | 1/2 | 2 min | 2.0 min |
+| 7. Dashboard & Assembly | 2/2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (2 min), 06-01 (2 min), 06-02 (2 min), 07-01 (2 min)
-- Trend: Consistent 2 min per plan
+- Last 5 plans: 06-01 (2 min), 06-02 (2 min), 07-01 (2 min), 07-02 (3 min)
+- Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
 
@@ -101,6 +101,9 @@ Recent decisions affecting current work:
 - [07-01]: Dashboard excluded from back-to-doc links; Plan 02 adds its own at F1 after merged title
 - [07-01]: Emission Schedule back-link at K2 (not K1) because K1 is chart anchor
 - [07-01]: LINK_FONT constant and BACK_LINK_COL_ROW dict for consistent navigation styling
+- [07-02]: All Dashboard values are formulas referencing model tabs (REQ-M5-01 verified)
+- [07-02]: Cross-sheet chart References point to source worksheets (Host Profitability, Treasury & POL)
+- [07-02]: Breakeven chart Y-axis capped at $15 matching host_profit.py pattern
 
 ### From v1.0
 
@@ -123,5 +126,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 07-01-PLAN.md -- Documentation tab & 8-tab workbook structure
+Stopped at: Completed 07-02-PLAN.md -- Phase 7 complete (Dashboard & Master Workbook Assembly)
 Resume file: None

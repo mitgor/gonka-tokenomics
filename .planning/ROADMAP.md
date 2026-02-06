@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
 - [x] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
 - [x] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
-- [ ] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
+- [x] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
 - [ ] **Phase 8: Standalone Workbook Generation** - Four focused standalone workbooks with documentation
 - [ ] **Phase 9: Polish, Documentation & Validation** - Cell protection, audit trail, print layout, final testing
 
@@ -141,7 +141,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 07-01-PLAN.md -- Documentation tab (cover sheet, color legend, hyperlinked TOC) and 8-tab workbook structure with navigation links
-- [ ] 07-02-PLAN.md -- Dashboard tab with 8 KPIs, scenario comparison matrix, 3 summary charts (price bar, breakeven with reference lines, treasury timeline)
+- [x] 07-02-PLAN.md -- Dashboard tab with 8 KPIs, scenario comparison matrix, 3 summary charts (price bar, breakeven with reference lines, treasury timeline)
 
 ### Phase 8: Standalone Workbook Generation
 **Goal**: Four focused standalone workbooks can be shared independently, each containing only the relevant model with its own filtered assumptions, documentation, glossary, and scenario controls
@@ -181,6 +181,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 7. Dashboard & Master Workbook Assembly | v1.1 | 1/2 | In progress | - |
+| 7. Dashboard & Master Workbook Assembly | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
