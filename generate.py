@@ -46,6 +46,7 @@ def generate_all():
     """Generate the master workbook with all model tabs and charts."""
     from generators.workbook_base import create_workbook
     from generators.emission import build_emission_tab
+    from generators.token_price import build_token_price_tab
     from generators.chart_utils import fix_chart_rendering
 
     wb, param_refs = create_workbook()
@@ -53,8 +54,10 @@ def generate_all():
     # Phase 2: Emission Schedule Model
     emission_meta = build_emission_tab(wb, param_refs)
 
-    # Phase 3+: Future model tabs (emission_meta now available)
-    # Phase 3: token_price.build_token_price_tab(wb, param_refs)
+    # Phase 3: Token Price Scenarios Model
+    price_meta = build_token_price_tab(wb, param_refs, emission_meta)
+
+    # Phase 4+: Future model tabs (price_meta now available)
     # Phase 4: fee_transition.build_fee_transition_tab(wb, param_refs, emission_meta)
     # Phase 5: host_profit.build_host_profit_tab(wb, param_refs, emission_meta, price_meta)
     # Phase 6: treasury.build_treasury_tab(wb, param_refs)
@@ -65,6 +68,7 @@ def generate_all():
     print(f"Generated: {output_path}")
     print(f"  Assumptions tab: {len(param_refs)} parameters")
     print(f"  Emission Schedule tab: {emission_meta['data_end_row'] - emission_meta['data_start_row'] + 1} periods, 3 charts")
+    print(f"  Token Price tab: {price_meta['data_end_row'] - price_meta['data_start_row'] + 1} periods, {len(price_meta['cols'])} columns")
 
 
 if __name__ == "__main__":
