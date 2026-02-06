@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 2 complete - Emission Schedule Model (awaiting chart verification checkpoint)
+**Current focus:** Phase 3 in progress - Token Price Scenarios Model (Plan 01 complete, Plan 02 next)
 
 ## Current Position
 
-Phase: 2 of 9 (Emission Schedule Model)
-Plan: 2 of 2 in current phase
-Status: Phase complete (awaiting checkpoint approval)
-Last activity: 2026-02-06 -- Completed 02-02-PLAN.md (Charts + CLI Integration)
+Phase: 3 of 9 (Token Price Scenarios Model)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-06 -- Completed 03-01-PLAN.md (scenario selector + token price data model)
 
-Progress: [====......] ~22% (Phase 1 + Phase 2 complete, awaiting checkpoint)
+Progress: [=====.....] ~28% (Phase 1-2 complete, Phase 3 plan 1/2)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 2.5 min
-- Total execution time: 10 min
+- Total plans completed: 5
+- Average duration: 2.6 min
+- Total execution time: 13 min
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [====......] ~22% (Phase 1 + Phase 2 complete, awaiting checkpoint)
 |-------|-------|-------|----------|
 | 1. Foundation | 2/2 | 7 min | 3.5 min |
 | 2. Emission Schedule | 2/2 | 3 min | 1.5 min |
+| 3. Token Price Scenarios | 1/2 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (5 min), 02-01 (2 min), 02-02 (1 min)
-- Trend: Fast execution on focused single-module plans, Phase 2 very fast
+- Last 5 plans: 01-02 (5 min), 02-01 (2 min), 02-02 (1 min), 03-01 (3 min)
+- Trend: Consistent fast execution; Phase 3 Plan 01 slightly longer due to new pattern (scenario selector)
 
 *Updated after each plan completion*
 
@@ -61,6 +62,10 @@ Recent decisions affecting current work:
 - [02-02]: Simple bar series for ETH benchmark (not dual-axis overlay)
 - [02-02]: Charts at K1/K17/K33, style 13, width=20 height=12 consistent sizing
 - [02-02]: openpyxl 3.1.5 chart rendering confirmed working with app.xml fix
+- [03-01]: Fee revenue placeholder at $1M/yr in BUYBACK PARAMETERS; Phase 4 replaces with actual model
+- [03-01]: All 4 price columns always visible; Active Price column (CHOOSE-driven) used for FDV/market cap/buyback
+- [03-01]: Buyback burn period-adjusted: /12 for monthly (i<24), /1 for annual (i>=24)
+- [03-01]: Scenario selector pattern: DataValidation + MATCH + CHOOSE on Assumptions tab (reusable for Phases 4-6)
 
 ### From v1.0
 
@@ -77,11 +82,11 @@ None.
 
 ### Blockers/Concerns
 
-- openpyxl version decision (3.1.5 vs 3.1.3) needs resolution during Phase 2 chart testing
+- openpyxl version decision resolved: 3.1.5 confirmed working with app.xml chart fix
 - Target Excel version unknown (affects chart rendering compatibility)
 
 ## Session Continuity
 
-Last session: 2026-02-06T07:52:42Z
-Stopped at: Completed 02-02-PLAN.md -- Charts + CLI Integration (awaiting checkpoint)
+Last session: 2026-02-06T18:06:14Z
+Stopped at: Completed 03-01-PLAN.md -- Scenario Selector + Token Price Data Model
 Resume file: None
