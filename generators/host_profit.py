@@ -32,7 +32,8 @@ Public API:
 """
 
 from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
-from openpyxl.styles import Font
+from openpyxl.formatting.rule import CellIsRule, ColorScaleRule
+from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import quote_sheetname
 
 from generators.chart_utils import col_to_num
@@ -338,6 +339,72 @@ def _create_breakeven_chart(ws, meta):
 
 
 # ---------------------------------------------------------------------------
+# Conditional Formatting
+# ---------------------------------------------------------------------------
+
+def _add_churn_risk_formatting(ws, meta):
+    """Red/green conditional formatting on Gonka vs Traditional column."""
+    red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+    red_font = Font(name="Calibri", size=11, color="9C0006")
+    green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+    green_font = Font(name="Calibri", size=11, color="006100")
+
+    cell_range = f"I{meta['data_start_row']}:I{meta['data_end_row']}"
+
+    # Green when >= 0 (Gonka competitive)
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(
+            operator="greaterThanOrEqual",
+            formula=["0"],
+            fill=green_fill,
+            font=green_font,
+        ),
+    )
+
+    # Red when < 0 (churn risk)
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(
+            operator="lessThan",
+            formula=["0"],
+            fill=red_fill,
+            font=red_font,
+        ),
+    )
+
+
+def _add_churn_flag_formatting(ws, meta):
+    """Red fill on churn risk flag column when flag = 1."""
+    red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+    red_font = Font(name="Calibri", size=11, color="9C0006")
+
+    cell_range = f"M{meta['data_start_row']}:M{meta['data_end_row']}"
+
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(
+            operator="equal",
+            formula=["1"],
+            fill=red_fill,
+            font=red_font,
+        ),
+    )
+
+
+def _add_sensitivity_heatmap(ws, meta):
+    """ColorScaleRule heat map on sensitivity table: red (loss) -> yellow (breakeven) -> green (profit)."""
+    matrix_range = f"B{meta['sensitivity_start_row'] + 1}:F{meta['sensitivity_end_row']}"
+
+    rule = ColorScaleRule(
+        start_type="num", start_value=-5000, start_color="F8696B",   # Red (loss)
+        mid_type="num", mid_value=0, mid_color="FFEB84",             # Yellow (breakeven)
+        end_type="num", end_value=5000, end_color="63BE7B",          # Green (profit)
+    )
+    ws.conditional_formatting.add(matrix_range, rule)
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -538,6 +605,13 @@ def build_host_profit_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
         "electricity_section_start_row": 47,
         "gpu_amortization_start_row": 53,
     }
+
+    # ------------------------------------------------------------------
+    # Conditional formatting
+    # ------------------------------------------------------------------
+    _add_churn_risk_formatting(ws, host_meta)
+    _add_churn_flag_formatting(ws, host_meta)
+    _add_sensitivity_heatmap(ws, host_meta)
 
     # ------------------------------------------------------------------
     # Charts
