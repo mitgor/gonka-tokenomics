@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 8: Standalone Workbook Generation -- Plans 01 and 02 complete, foundation infrastructure and builders ready.
+**Current focus:** Phase 8: Standalone Workbook Generation -- Plans 01, 02, and 03 complete. Toggle wiring done, standalone orchestrator next.
 
 ## Current Position
 
 Phase: 8 of 9 (Standalone Workbook Generation)
-Plan: 2 of 4 in current phase (Plans 01 and 02 complete)
+Plan: 3 of 4 in current phase (Plans 01, 02, and 03 complete)
 Status: In progress
-Last activity: 2026-02-06 -- Completed 08-01-PLAN.md (Standalone Foundation Infrastructure)
+Last activity: 2026-02-06 -- Completed 08-03-PLAN.md (What-If Toggle Wiring)
 
-Progress: [================....] ~89% (16/18 plans complete)
+Progress: [=================...] ~94% (17/18 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 2.4 min
-- Total execution time: 39.5 min
+- Total plans completed: 17
+- Average duration: 2.5 min
+- Total execution time: 42.8 min
 
 **By Phase:**
 
@@ -34,11 +34,11 @@ Progress: [================....] ~89% (16/18 plans complete)
 | 5. Host Profitability | 2/2 | 5 min | 2.5 min |
 | 6. Treasury & POL | 2/2 | 4 min | 2.0 min |
 | 7. Dashboard & Assembly | 2/2 | 5 min | 2.5 min |
-| 8. Standalone Generation | 2/4 | 4.5 min | 2.25 min |
+| 8. Standalone Generation | 3/4 | 7.8 min | 2.6 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-01 (2 min), 07-02 (3 min), 08-02 (1.5 min), 08-01 (3 min)
-- Trend: Consistent 1.5-3 min per plan
+- Last 5 plans: 07-02 (3 min), 08-02 (1.5 min), 08-01 (3 min), 08-03 (3.3 min)
+- Trend: Consistent 1.5-3.3 min per plan
 
 *Updated after each plan completion*
 
@@ -113,6 +113,9 @@ Recent decisions affecting current work:
 - [08-02]: Terms dict passed as parameter to glossary builder (decoupled from config)
 - [08-02]: Cover sheet scenario narratives iterate in fixed order [Conservative, Base, Aggressive]
 - [08-02]: LINK_FONT redefined locally in cover_sheet.py (same pattern as documentation.py)
+- [08-03]: Only column K buyback formula wrapped in token_price.py (downstream L cascades automatically)
+- [08-03]: 5 POL-related formula locations wrapped in treasury.py (B, C, D, M, N columns)
+- [08-03]: Y/N DataValidation added to master build_assumptions_tab() for what-if toggle consistency
 
 ### From v1.0
 
@@ -135,5 +138,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 08-01-PLAN.md (Standalone Foundation Infrastructure)
+Stopped at: Completed 08-03-PLAN.md (What-If Toggle Wiring)
 Resume file: None
