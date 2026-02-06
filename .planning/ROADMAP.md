@@ -140,7 +140,7 @@ Plans:
   7. Charts include horizontal breakeven reference lines at threshold values ($0.85, $3.30, etc.) where applicable
 **Plans**: 2 plans
 Plans:
-- [ ] 07-01-PLAN.md -- Documentation tab (cover sheet, color legend, hyperlinked TOC) and 8-tab workbook structure with navigation links
+- [x] 07-01-PLAN.md -- Documentation tab (cover sheet, color legend, hyperlinked TOC) and 8-tab workbook structure with navigation links
 - [ ] 07-02-PLAN.md -- Dashboard tab with 8 KPIs, scenario comparison matrix, 3 summary charts (price bar, breakeven with reference lines, treasury timeline)
 
 ### Phase 8: Standalone Workbook Generation
@@ -181,6 +181,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 7. Dashboard & Master Workbook Assembly | v1.1 | 0/2 | Planned | - |
+| 7. Dashboard & Master Workbook Assembly | v1.1 | 1/2 | In progress | - |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |

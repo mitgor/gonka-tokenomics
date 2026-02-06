@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 6 complete - Treasury & POL Simulation (2 of 2 plans done). Ready for Phase 7.
+**Current focus:** Phase 7 in progress - Dashboard & Master Workbook Assembly (1 of 2 plans done). Ready for Plan 02.
 
 ## Current Position
 
-Phase: 6 of 9 (Treasury & POL Simulation)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-06 -- Completed 06-02-PLAN.md (Treasury charts & conditional formatting)
+Phase: 7 of 9 (Dashboard & Master Workbook Assembly)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-06 -- Completed 07-01-PLAN.md (Documentation tab & 8-tab structure)
 
-Progress: [============........] ~67% (Phase 1-6 complete, 12/18 plans)
+Progress: [=============.......] ~72% (13/18 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 2.5 min
-- Total execution time: 30 min
+- Total execution time: 32 min
 
 **By Phase:**
 
@@ -33,9 +33,10 @@ Progress: [============........] ~67% (Phase 1-6 complete, 12/18 plans)
 | 4. Fee Transition | 2/2 | 6 min | 3.0 min |
 | 5. Host Profitability | 2/2 | 5 min | 2.5 min |
 | 6. Treasury & POL | 2/2 | 4 min | 2.0 min |
+| 7. Dashboard & Assembly | 1/2 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (3 min), 05-02 (2 min), 06-01 (2 min), 06-02 (2 min)
+- Last 5 plans: 05-02 (2 min), 06-01 (2 min), 06-02 (2 min), 07-01 (2 min)
 - Trend: Consistent 2 min per plan
 
 *Updated after each plan completion*
@@ -97,6 +98,9 @@ Recent decisions affecting current work:
 - [06-02]: Defense treasury formatting: >$3M green, <$1M red (midpoint/minimum targets)
 - [06-02]: Net treasury gradient: $0 red, $50M yellow, $200M green
 - [06-02]: Charts at P1/P17/P33 consistent with plan, right of 14-column data table
+- [07-01]: Dashboard excluded from back-to-doc links; Plan 02 adds its own at F1 after merged title
+- [07-01]: Emission Schedule back-link at K2 (not K1) because K1 is chart anchor
+- [07-01]: LINK_FONT constant and BACK_LINK_COL_ROW dict for consistent navigation styling
 
 ### From v1.0
 
@@ -119,5 +123,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 06-02-PLAN.md -- Treasury charts & conditional formatting (3 charts, 3 CF rules)
+Stopped at: Completed 07-01-PLAN.md -- Documentation tab & 8-tab workbook structure
 Resume file: None
