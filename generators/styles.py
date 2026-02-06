@@ -253,4 +253,5 @@ FORMAT_TO_STYLE = {
     "integer": "integer",
     "price_per_hour": "currency_precise",
     "number": "number",
+    "text": None,  # No numeric style -- plain text (used by Tail Emission Toggle)
 }

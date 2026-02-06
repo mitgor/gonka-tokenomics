@@ -195,9 +195,10 @@ def build_assumptions_tab(wb):
             format_key = param["format"]
             if format_key in FORMAT_TO_STYLE:
                 style_name = FORMAT_TO_STYLE[format_key]
-                # Look up the number_format from the registered named style
-                named_style = wb._named_styles[style_name]
-                value_cell.number_format = named_style.number_format
+                if style_name is not None:
+                    # Look up the number_format from the registered named style
+                    named_style = wb._named_styles[style_name]
+                    value_cell.number_format = named_style.number_format
             value_cell.protection = Protection(locked=False)
 
             # Column C: Unit string (locked by default)

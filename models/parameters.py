@@ -207,6 +207,26 @@ PARAM_GROUPS = OrderedDict([
     ]),
 
     # =========================================================================
+    # FEE TRANSITION
+    # =========================================================================
+    ("FEE TRANSITION", [
+        {
+            "name": "Revenue Per Developer (Annual)",
+            "value": 36000,
+            "unit": "USD/yr",
+            "source": "Rec #4 ($3K/mo avg)",
+            "format": "currency",
+        },
+        {
+            "name": "Tail Emission Toggle",
+            "value": "OFF",
+            "unit": "",
+            "source": "Rec #1",
+            "format": "text",
+        },
+    ]),
+
+    # =========================================================================
     # GPU ECONOMICS
     # =========================================================================
     ("GPU ECONOMICS", [
