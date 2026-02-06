@@ -86,6 +86,7 @@ def generate_all():
     from generators.host_profit import build_host_profit_tab
     from generators.treasury import build_treasury_tab
     from generators.documentation import build_documentation_tab
+    from generators.dashboard import build_dashboard_tab
 
     wb, param_refs = create_workbook()
 
@@ -104,9 +105,10 @@ def generate_all():
     # Phase 6: Treasury & POL Simulation
     treasury_meta = build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta)
 
-    # Phase 7: Dashboard placeholder (Plan 02 fills with KPIs/charts)
+    # Phase 7: Dashboard tab with KPIs, scenario matrix, and charts
     ws_dashboard = wb.create_sheet("Dashboard")
     ws_dashboard.sheet_properties.tabColor = "ED7D31"  # TAB_COLOR_DASHBOARD
+    dashboard_meta = build_dashboard_tab(wb, param_refs, emission_meta, price_meta, fee_meta, host_meta, treasury_meta)
 
     # Phase 7: Documentation tab (inserted at position 0)
     EXPECTED_TABS = [
@@ -132,7 +134,7 @@ def generate_all():
     print(f"  Fee Transition tab: {fee_meta['data_end_row'] - fee_meta['data_start_row'] + 1} periods, 14 columns, 2 matrices")
     print(f"  Host Profitability tab: {host_meta['data_end_row'] - host_meta['data_start_row'] + 1} periods, 13 columns, sensitivity matrix")
     print(f"  Treasury & POL tab: {treasury_meta['data_end_row'] - treasury_meta['data_start_row'] + 1} periods, 14 columns")
-    print(f"  Dashboard tab: placeholder (awaiting Plan 02)")
+    print(f"  Dashboard tab: {dashboard_meta['kpi_end_row'] - dashboard_meta['kpi_start_row'] + 1} KPIs, scenario matrix, 3 charts")
 
 
 if __name__ == "__main__":
