@@ -412,6 +412,11 @@ def build_assumptions_tab(wb):
     # --- Tail Emission Toggle (DataValidation dropdown) ---
     _add_tail_emission_toggle(ws, param_refs)
 
+    # --- What-If Toggles (Y/N DataValidation dropdowns) ---
+    for toggle_name in ("Buyback-Burn Active", "Deploy POL Active"):
+        if toggle_name in param_refs:
+            _add_what_if_toggle(ws, param_refs, toggle_name)
+
     # --- Scenario Selector (dropdown + MATCH + CHOOSE) ---
     current_row = _add_scenario_selector(ws, current_row, param_refs)
 

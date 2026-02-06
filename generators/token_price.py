@@ -210,6 +210,7 @@ def build_token_price_tab(wb, param_refs, emission_meta):
     total_supply_ref = param_refs["Total Supply"]
     fee_rev_ref = param_refs["Assumed Annual Fee Revenue"]
     buyback_ref = param_refs["Buyback-Burn"]
+    buyback_toggle_ref = param_refs["Buyback-Burn Active"]
 
     # Emission Schedule cross-sheet references
     es_sheet = quote_sheetname(emission_meta["sheet_name"])
@@ -319,9 +320,14 @@ def build_token_price_tab(wb, param_refs, emission_meta):
         j_cell.number_format = "#,##0"
 
         # K: Buyback Burn (GNK) = fee_rev * buyback_pct / price / periods_per_year
+        #    Wrapped in IF(toggle="Y",...,0) so buyback can be toggled off
         k_cell = ws.cell(
             row=row, column=11,
-            value=f"={fee_rev_ref}*{buyback_ref}/F{row}/{periods_per_year}",
+            value=(
+                f'=IF({buyback_toggle_ref}="Y",'
+                f"{fee_rev_ref}*{buyback_ref}/F{row}/{periods_per_year},"
+                f"0)"
+            ),
         )
         k_cell.style = "tokens"
 
