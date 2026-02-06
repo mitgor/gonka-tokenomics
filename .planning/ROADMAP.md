@@ -103,7 +103,10 @@ Plans:
   5. Electricity cost sensitivity is modeled at $0.05, $0.08, $0.12/kWh with profitability impact visible per scenario
   6. GPU hardware cost input drives a months-to-breakeven and cumulative ROI calculation
   7. Host churn risk is flagged with red conditional formatting whenever Gonka income drops below traditional rental equivalent
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 05-01-PLAN.md -- Parameters, host profitability data model (13 cols x 32 rows), sensitivity matrix, electricity sensitivity, GPU amortization
+- [ ] 05-02-PLAN.md -- Charts (stacked area, Gonka vs traditional, breakeven price) and conditional formatting (churn risk, sensitivity heat map)
 
 ### Phase 6: Treasury & POL Simulation
 **Goal**: Leadership can project treasury health across all components (Community Pool, POL, buyback-burn, AI Fund, floor defense) and see when critical depletion thresholds are reached
@@ -170,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
+| 5. Host Profitability Model | v1.1 | 0/2 | Not started | - |
 | 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
