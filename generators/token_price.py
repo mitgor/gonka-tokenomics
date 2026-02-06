@@ -24,6 +24,9 @@ Public API:
     build_token_price_tab(wb, param_refs, emission_meta) -> price_meta dict
 """
 
+from openpyxl.chart import LineChart, Reference
+from openpyxl.formatting.rule import CellIsRule
+from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import quote_sheetname
 
 from generators.chart_utils import col_to_num
@@ -54,6 +57,123 @@ _COL_WIDTHS = {
     "F": 16, "G": 22, "H": 18, "I": 20, "J": 18,
     "K": 18, "L": 18,
 }
+
+
+# ---------------------------------------------------------------------------
+# Chart helpers
+# ---------------------------------------------------------------------------
+
+def _create_price_scenarios_chart(ws, meta):
+    """Add a line chart showing all 4 price trajectories on a single plot."""
+    chart = LineChart()
+    chart.title = "GNK Price Scenarios (10-Year)"
+    chart.y_axis.title = "GNK Price (USD)"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # 4 series: Conservative (B), Moderate (C), Aggressive (D), Bitfury (E)
+    for col_key in (
+        "conservative_price",
+        "moderate_price",
+        "aggressive_price",
+        "bitfury_price",
+    ):
+        col_num = col_to_num(meta["cols"][col_key])
+        data = Reference(
+            ws,
+            min_col=col_num,
+            min_row=meta["header_row"],
+            max_row=meta["data_end_row"],
+        )
+        chart.add_data(data, titles_from_data=True)
+
+    # Categories: period labels (column A), data rows only
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(
+        ws,
+        min_col=a_col,
+        min_row=meta["data_start_row"],
+        max_row=meta["data_end_row"],
+    )
+    chart.set_categories(cats)
+
+    # Line width: 25000 EMUs for all 4 series (consistent with Phase 2)
+    for s in chart.series:
+        s.graphicalProperties.line.width = 25000
+
+    ws.add_chart(chart, "N1")
+
+
+def _create_price_supply_chart(ws, meta):
+    """Add a dual-axis chart overlaying price (left Y) with supply (right Y)."""
+    # Primary chart: Active Price on left Y-axis
+    c1 = LineChart()
+    c1.title = "Active Price vs Circulating Supply"
+    c1.y_axis.title = "GNK Price (USD)"
+    c1.x_axis.title = "Period"
+    c1.style = 13
+    c1.width = 20
+    c1.height = 12
+
+    f_col = col_to_num(meta["cols"]["active_price"])
+    price_data = Reference(
+        ws,
+        min_col=f_col,
+        min_row=meta["header_row"],
+        max_row=meta["data_end_row"],
+    )
+    c1.add_data(price_data, titles_from_data=True)
+
+    # Categories: period labels (column A), data rows only
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(
+        ws,
+        min_col=a_col,
+        min_row=meta["data_start_row"],
+        max_row=meta["data_end_row"],
+    )
+    c1.set_categories(cats)
+    c1.y_axis.crosses = "max"
+
+    # Secondary chart: Circulating Supply on right Y-axis
+    c2 = LineChart()
+    c2.y_axis.title = "Circulating Supply (GNK)"
+    c2.y_axis.axId = 200
+
+    g_col = col_to_num(meta["cols"]["circulating_supply"])
+    supply_data = Reference(
+        ws,
+        min_col=g_col,
+        min_row=meta["header_row"],
+        max_row=meta["data_end_row"],
+    )
+    c2.add_data(supply_data, titles_from_data=True)
+
+    # Combine secondary into primary
+    c1 += c2
+
+    ws.add_chart(c1, "N17")
+
+
+def _add_deflationary_formatting(ws, meta):
+    """Apply conditional formatting to highlight deflationary periods in green."""
+    green_fill = PatternFill(
+        start_color="C6EFCE", end_color="C6EFCE", fill_type="solid"
+    )
+    green_font = Font(name="Calibri", size=11, color="006100")
+
+    cell_range = f"L{meta['data_start_row']}:L{meta['data_end_row']}"
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(
+            operator="lessThan",
+            formula=["0"],
+            fill=green_fill,
+            font=green_font,
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -246,5 +366,12 @@ def build_token_price_tab(wb, param_refs, emission_meta):
             "net_supply_change": "L",
         },
     }
+
+    # ------------------------------------------------------------------
+    # Charts and conditional formatting
+    # ------------------------------------------------------------------
+    _add_deflationary_formatting(ws, price_meta)
+    _create_price_scenarios_chart(ws, price_meta)
+    _create_price_supply_chart(ws, price_meta)
 
     return price_meta
