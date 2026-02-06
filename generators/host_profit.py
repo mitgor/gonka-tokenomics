@@ -31,6 +31,7 @@ Public API:
     build_host_profit_tab(wb, param_refs, emission_meta, price_meta, fee_meta) -> host_meta dict
 """
 
+from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
 from openpyxl.styles import Font
 from openpyxl.utils import quote_sheetname
 
@@ -221,6 +222,119 @@ def _build_gpu_amortization(ws, param_refs):
             value=f"=IFERROR((B55*36-{hw_high_ref})/{hw_high_ref},0)").style = "percent"
     ws.cell(row=55, column=5,
             value=f"=IFERROR((B55*60-{hw_high_ref})/{hw_high_ref},0)").style = "percent"
+
+
+# ---------------------------------------------------------------------------
+# Charts
+# ---------------------------------------------------------------------------
+
+def _create_income_composition_chart(ws, meta):
+    """Stacked area chart: Mining Income declining, Fee Income growing."""
+    chart = AreaChart()
+    chart.grouping = "stacked"
+    chart.title = "Host Income Composition (Mining + Fee)"
+    chart.y_axis.title = "USD per Host"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: Mining Income (column C)
+    mining_col = col_to_num(meta["cols"]["mining_income"])
+    data1 = Reference(ws, min_col=mining_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: Fee Income (column D)
+    fee_col = col_to_num(meta["cols"]["fee_income"])
+    data2 = Reference(ws, min_col=fee_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data2, titles_from_data=True)
+
+    # Categories: Period labels (column A)
+    cats = Reference(ws, min_col=1, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "O1")
+
+
+def _create_comparison_chart(ws, meta):
+    """Clustered bar chart: Gonka total income vs Lambda traditional rental."""
+    chart = BarChart()
+    chart.type = "col"
+    chart.grouping = "clustered"
+    chart.title = "Gonka Income vs Traditional GPU Rental (Lambda $2.49/hr, CoreWeave $2.06/hr)"
+    chart.y_axis.title = "USD per Host"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: Total Gonka Income (column E)
+    gonka_col = col_to_num(meta["cols"]["total_gonka_income"])
+    data1 = Reference(ws, min_col=gonka_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: Traditional Rental Income (column H)
+    trad_col = col_to_num(meta["cols"]["traditional_rental"])
+    data2 = Reference(ws, min_col=trad_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data2, titles_from_data=True)
+
+    # Categories: Period labels (column A)
+    cats = Reference(ws, min_col=1, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "O17")
+
+
+def _create_breakeven_chart(ws, meta):
+    """Line chart: Breakeven GNK price trend with $0.85-$3.30 reference range."""
+    chart = LineChart()
+    chart.title = "Breakeven GNK Price for Host Profitability"
+    chart.y_axis.title = "GNK Price (USD)"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: Breakeven GNK Price (column J) - primary line
+    be_col = col_to_num(meta["cols"]["breakeven_gnk"])
+    data1 = Reference(ws, min_col=be_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: Reference Low $0.85 (column K) - flat reference line
+    ref_low_col = col_to_num(meta["cols"]["breakeven_ref_low"])
+    data2 = Reference(ws, min_col=ref_low_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data2, titles_from_data=True)
+
+    # Series 3: Reference High $3.30 (column L) - flat reference line
+    ref_high_col = col_to_num(meta["cols"]["breakeven_ref_high"])
+    data3 = Reference(ws, min_col=ref_high_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data3, titles_from_data=True)
+
+    # Categories: Period labels (column A)
+    cats = Reference(ws, min_col=1, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    # Style reference lines as dashed
+    s2 = chart.series[1]
+    s2.graphicalProperties.line.dashStyle = "dash"
+    s3 = chart.series[2]
+    s3.graphicalProperties.line.dashStyle = "dash"
+
+    # Cap Y-axis at a reasonable max to avoid the 99999 sentinel distorting the chart.
+    chart.y_axis.scaling.max = 15
+    chart.y_axis.scaling.min = 0
+
+    ws.add_chart(chart, "O33")
 
 
 # ---------------------------------------------------------------------------
@@ -424,5 +538,12 @@ def build_host_profit_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
         "electricity_section_start_row": 47,
         "gpu_amortization_start_row": 53,
     }
+
+    # ------------------------------------------------------------------
+    # Charts
+    # ------------------------------------------------------------------
+    _create_income_composition_chart(ws, host_meta)
+    _create_comparison_chart(ws, host_meta)
+    _create_breakeven_chart(ws, host_meta)
 
     return host_meta
