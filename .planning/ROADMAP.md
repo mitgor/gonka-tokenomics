@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Shared Infrastructure** - Parameter system, styles, workbook base, CLI skeleton
 - [x] **Phase 2: Emission Schedule Model** - First model validates formula-writing pattern with emission decay curve
-- [ ] **Phase 3: Token Price Scenarios Model** - Multi-scenario price trajectories with scenario selector pattern
+- [x] **Phase 3: Token Price Scenarios Model** - Multi-scenario price trajectories with scenario selector pattern
 - [ ] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
 - [ ] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
 - [ ] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
@@ -71,8 +71,8 @@ Plans:
   5. A dual-axis chart overlays price curves with circulating supply over time
 **Plans**: 2 plans
 Plans:
-- [ ] 03-01-PLAN.md -- Scenario selector on Assumptions tab + Token Price data table (12 columns, 32 rows)
-- [ ] 03-02-PLAN.md -- Charts (price scenarios, dual-axis price/supply), conditional formatting, CLI integration
+- [x] 03-01-PLAN.md -- Scenario selector on Assumptions tab + Token Price data table (12 columns, 32 rows)
+- [x] 03-02-PLAN.md -- Charts (price scenarios, dual-axis price/supply), conditional formatting, CLI integration
 
 ### Phase 4: Fee Transition Crossover Model
 **Goal**: Leadership can see exactly when (and under what conditions) fee revenue exceeds emission value, with the crossover shown as a matrix across price and growth scenarios rather than a single misleading point
@@ -165,7 +165,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 |-------|-----------|----------------|--------|-----------|
 | 1. Foundation & Shared Infrastructure | v1.1 | 2/2 | Complete | 2026-02-05 |
 | 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 3. Token Price Scenarios Model | v1.1 | 0/2 | Not started | - |
+| 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 4. Fee Transition Crossover Model | v1.1 | 0/TBD | Not started | - |
 | 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
 | 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |

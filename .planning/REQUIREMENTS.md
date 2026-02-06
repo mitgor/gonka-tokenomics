@@ -180,7 +180,7 @@
 | REQ-F05 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U01 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
 | REQ-U02 | Phase 1: Foundation & Shared Infrastructure | Done |
-| REQ-U03 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-U03 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-U04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
 | REQ-U05 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U06 | Phase 1: Foundation & Shared Infrastructure | Done |
@@ -190,12 +190,12 @@
 | REQ-U10 | Phase 9: Polish, Documentation & Validation | Pending |
 | REQ-U11 | Phase 8: Standalone Workbook Generation | Pending |
 | REQ-U12 | Phase 9: Polish, Documentation & Validation | Pending |
-| REQ-M1-01 | Phase 3: Token Price Scenarios Model | Pending |
-| REQ-M1-02 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-M1-01 | Phase 3: Token Price Scenarios Model | Done |
+| REQ-M1-02 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-M1-03 | Phase 2: Emission Schedule Model | Done |
 | REQ-M1-04 | Phase 2: Emission Schedule Model | Done |
-| REQ-M1-05 | Phase 3: Token Price Scenarios Model | Pending |
-| REQ-M1-06 | Phase 3: Token Price Scenarios Model | Pending |
+| REQ-M1-05 | Phase 3: Token Price Scenarios Model | Done |
+| REQ-M1-06 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-M2-01 | Phase 2: Emission Schedule Model | Done |
 | REQ-M2-02 | Phase 4: Fee Transition Crossover Model | Pending |
 | REQ-M2-03 | Phase 4: Fee Transition Crossover Model | Pending |
