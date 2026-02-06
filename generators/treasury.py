@@ -32,9 +32,12 @@ Public API:
     build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta) -> treasury_meta dict
 """
 
-from openpyxl.styles import Font
+from openpyxl.chart import AreaChart, BarChart, LineChart, Reference
+from openpyxl.formatting.rule import CellIsRule, ColorScaleRule
+from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import quote_sheetname
 
+from generators.chart_utils import col_to_num
 from generators.styles import TAB_COLOR_CALC
 
 
@@ -175,6 +178,109 @@ def _build_il_caveat(ws):
         value="IL impact not modeled; see v2 for concentrated position risk analysis",
     )
     caveat_cell.font = Font(name="Calibri", size=11, italic=True, color="9C0006")
+
+
+# ---------------------------------------------------------------------------
+# Charts
+# ---------------------------------------------------------------------------
+
+def _create_treasury_composition_chart(ws, meta):
+    """Stacked area: USD treasury components + Net Treasury total line."""
+    chart = AreaChart()
+    chart.grouping = "stacked"
+    chart.title = "Treasury Components (USD) Over Time"
+    chart.y_axis.title = "USD Value"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series: AI Fund Balance (J), Cumul POL Revenue (E), Defense Treasury (L)
+    for col_key in ["ai_fund_balance", "cumul_pol_revenue", "defense_treasury"]:
+        col_num = col_to_num(meta["cols"][col_key])
+        data = Reference(ws, min_col=col_num, min_row=meta["header_row"],
+                         max_row=meta["data_end_row"])
+        chart.add_data(data, titles_from_data=True)
+
+    # Categories: Period labels (column A)
+    cats = Reference(ws, min_col=1, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "P1")
+
+
+def _create_depletion_chart(ws, meta):
+    """Line chart: CP balance declining + defense treasury accumulating."""
+    chart = LineChart()
+    chart.title = "Community Pool Depletion & Defense Treasury Growth"
+    chart.y_axis.title = "Value"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: CP Balance GNK (column B)
+    cp_col = col_to_num(meta["cols"]["cp_balance"])
+    data1 = Reference(ws, min_col=cp_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: Defense Treasury USD (column L)
+    def_col = col_to_num(meta["cols"]["defense_treasury"])
+    data2 = Reference(ws, min_col=def_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data2, titles_from_data=True)
+
+    cats = Reference(ws, min_col=1, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "P17")
+
+
+def _create_buyback_burn_chart(ws, meta):
+    """Bar chart: cumulative buyback burn with % of supply overlay."""
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Cumulative Buyback-Burn (GNK)"
+    chart.y_axis.title = "GNK Burned"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: Cumulative Burn GNK (column G) - bars
+    burn_col = col_to_num(meta["cols"]["cumul_burn"])
+    data1 = Reference(ws, min_col=burn_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: Burn % of Supply (column H) - line on secondary axis
+    pct_col = col_to_num(meta["cols"]["burn_pct_supply"])
+    data2 = Reference(ws, min_col=pct_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+
+    # Create secondary line chart
+    line = LineChart()
+    line.add_data(data2, titles_from_data=True)
+    line.y_axis.title = "% of Total Supply"
+    line.y_axis.axId = 200
+
+    # Categories
+    cats = Reference(ws, min_col=1, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+    line.set_categories(cats)
+
+    # Style the line series
+    s = line.series[0]
+    s.graphicalProperties.line.width = 25000
+
+    chart.y_axis.crosses = "min"
+    chart += line
+
+    ws.add_chart(chart, "P33")
 
 
 # ---------------------------------------------------------------------------
@@ -373,6 +479,13 @@ def build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
     _build_time_to_x_callouts(ws, treasury_meta, defense_target_low_ref)
     _build_defense_scenario_table(ws, defense_target_low_ref)
     _build_il_caveat(ws)
+
+    # ------------------------------------------------------------------
+    # Charts
+    # ------------------------------------------------------------------
+    _create_treasury_composition_chart(ws, treasury_meta)
+    _create_depletion_chart(ws, treasury_meta)
+    _create_buyback_burn_chart(ws, treasury_meta)
 
     # ------------------------------------------------------------------
     # Column widths
