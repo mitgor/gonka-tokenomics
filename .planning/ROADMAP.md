@@ -171,7 +171,11 @@ Plans:
   3. Print areas are set on every tab with appropriate page breaks, headers, and footers -- printing any tab produces a readable document
   4. All 5 workbooks open correctly in Google Sheets with no `#NAME?` or `#REF!` errors and all charts render
   5. All 5 workbooks open correctly in Excel with charts displaying proper labels, legends, and formatting
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 09-01-PLAN.md -- Source audit enrichment (confidence levels + full citations in parameters.py and workbook_base.py)
+- [ ] 09-02-PLAN.md -- Cell protection + print layout (print_setup.py utility, generate.py and standalone.py integration)
+- [ ] 09-03-PLAN.md -- Cross-platform validation and human verification (regenerate all 5 workbooks, add protection notes, Excel + Google Sheets testing)
 
 ## Progress
 
@@ -188,4 +192,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 8. Standalone Workbook Generation | v1.1 | 4/4 | Complete | 2026-02-07 |
-| 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
+| 9. Polish, Documentation & Validation | v1.1 | 0/3 | Not started | - |
