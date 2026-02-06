@@ -284,6 +284,64 @@ def _create_buyback_burn_chart(ws, meta):
 
 
 # ---------------------------------------------------------------------------
+# Conditional Formatting
+# ---------------------------------------------------------------------------
+
+def _add_cp_balance_formatting(ws, meta):
+    """Red when CP < 10M GNK, green when > 50M GNK."""
+    red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+    red_font = Font(name="Calibri", size=11, color="9C0006")
+    green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+    green_font = Font(name="Calibri", size=11, color="006100")
+
+    cell_range = f"B{meta['data_start_row']}:B{meta['data_end_row']}"
+
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(operator="greaterThan", formula=["50000000"],
+                   fill=green_fill, font=green_font),
+    )
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(operator="lessThan", formula=["10000000"],
+                   fill=red_fill, font=red_font),
+    )
+
+
+def _add_defense_treasury_formatting(ws, meta):
+    """Red when defense < $1M, green when > $3M."""
+    red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+    red_font = Font(name="Calibri", size=11, color="9C0006")
+    green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+    green_font = Font(name="Calibri", size=11, color="006100")
+
+    cell_range = f"L{meta['data_start_row']}:L{meta['data_end_row']}"
+
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(operator="greaterThan", formula=["3000000"],
+                   fill=green_fill, font=green_font),
+    )
+    ws.conditional_formatting.add(
+        cell_range,
+        CellIsRule(operator="lessThan", formula=["1000000"],
+                   fill=red_fill, font=red_font),
+    )
+
+
+def _add_net_treasury_heatmap(ws, meta):
+    """ColorScaleRule: red (low) -> yellow (mid) -> green (high) on net treasury."""
+    cell_range = f"N{meta['data_start_row']}:N{meta['data_end_row']}"
+
+    rule = ColorScaleRule(
+        start_type="num", start_value=0, start_color="F8696B",          # Red
+        mid_type="num", mid_value=50000000, mid_color="FFEB84",         # Yellow ($50M)
+        end_type="num", end_value=200000000, end_color="63BE7B",        # Green ($200M)
+    )
+    ws.conditional_formatting.add(cell_range, rule)
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -486,6 +544,13 @@ def build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta):
     _create_treasury_composition_chart(ws, treasury_meta)
     _create_depletion_chart(ws, treasury_meta)
     _create_buyback_burn_chart(ws, treasury_meta)
+
+    # ------------------------------------------------------------------
+    # Conditional formatting
+    # ------------------------------------------------------------------
+    _add_cp_balance_formatting(ws, treasury_meta)
+    _add_defense_treasury_formatting(ws, treasury_meta)
+    _add_net_treasury_heatmap(ws, treasury_meta)
 
     # ------------------------------------------------------------------
     # Column widths
