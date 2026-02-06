@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 5 Plan 01 complete - Ready for Plan 02: Charts + Conditional Formatting
+**Current focus:** Phase 5 complete - Ready for Phase 6: Liquidity Pool / Protocol-Owned Liquidity
 
 ## Current Position
 
 Phase: 5 of 9 (Host Profitability Model)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-06 -- Completed 05-01-PLAN.md (data model + sensitivity sections)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-06 -- Completed 05-02-PLAN.md (charts + conditional formatting)
 
-Progress: [=========.] ~50% (Phase 1-4 complete, Phase 5 plan 1/2)
+Progress: [==========..........] ~56% (Phase 1-5 complete, 10/18 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 2.6 min
-- Total execution time: 24 min
+- Total execution time: 26 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [=========.] ~50% (Phase 1-4 complete, Phase 5 plan 1/2)
 | 2. Emission Schedule | 2/2 | 3 min | 1.5 min |
 | 3. Token Price Scenarios | 2/2 | 5 min | 2.5 min |
 | 4. Fee Transition | 2/2 | 6 min | 3.0 min |
-| 5. Host Profitability | 1/2 | 3 min | 3.0 min |
+| 5. Host Profitability | 2/2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (2 min), 04-01 (3 min), 04-02 (3 min), 05-01 (3 min)
+- Last 5 plans: 04-01 (3 min), 04-02 (3 min), 05-01 (3 min), 05-02 (2 min)
 - Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
@@ -81,6 +81,9 @@ Recent decisions affecting current work:
 - [05-01]: Breakeven formula: IFERROR(MAX(0,(H-D)/B),99999) -- 0 when fees exceed rental, 99999 for zero-mining edge
 - [05-01]: Sensitivity matrix uses static fee revenue (not scaled with GPU count) -- annotation explains
 - [05-01]: Gross income comparison for churn (traditional rental already bundles electricity)
+- [05-02]: CoreWeave rate in chart title only (not separate series); Lambda is primary benchmark column
+- [05-02]: Breakeven chart Y-axis capped at $15 to avoid 99999 sentinel distortion
+- [05-02]: Sensitivity heat map anchors at -5000/0/5000 for monthly profit range
 
 ### From v1.0
 
@@ -103,5 +106,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 05-01-PLAN.md -- Host Profitability data model with sensitivity sections
+Stopped at: Completed 05-02-PLAN.md -- Host Profitability charts and conditional formatting (Phase 5 complete)
 Resume file: None
