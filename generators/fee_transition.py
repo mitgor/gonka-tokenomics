@@ -31,8 +31,10 @@ Public API:
     build_fee_transition_tab(wb, param_refs, emission_meta, price_meta) -> fee_meta dict
 """
 
+from openpyxl.chart import BarChart, LineChart, Reference
 from openpyxl.utils import quote_sheetname
 
+from generators.chart_utils import col_to_num
 from generators.styles import TAB_COLOR_CALC
 
 
@@ -62,6 +64,110 @@ _COL_WIDTHS = {
     "F": 18, "G": 20, "H": 18, "I": 18, "J": 18,
     "K": 16, "L": 16, "M": 16, "N": 16,
 }
+
+
+# ---------------------------------------------------------------------------
+# Charts
+# ---------------------------------------------------------------------------
+
+def _create_waterfall_chart(ws, meta):
+    """Add a stacked bar chart showing the 70/20/5/5 revenue split."""
+    chart = BarChart()
+    chart.type = "col"
+    chart.grouping = "stacked"
+    chart.overlap = 100  # CRITICAL: without this, bars render side-by-side
+    chart.title = "Fee Revenue Split (Base Growth)"
+    chart.y_axis.title = "USD"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # 4 series: Host Share (K), AI Fund (L), Buyback (M), Yield Pool (N)
+    for col_key in ("host_share", "ai_fund_share", "buyback_share", "yield_share"):
+        col_num = col_to_num(meta["cols"][col_key])
+        data = Reference(ws,
+                         min_col=col_num, min_row=meta["header_row"],
+                         max_row=meta["data_end_row"])
+        chart.add_data(data, titles_from_data=True)
+
+    # Categories: period labels (column A)
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(ws,
+                     min_col=a_col, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "P1")
+
+
+def _create_crossover_timeline_chart(ws, meta):
+    """Add a line chart showing crossover ratios over time for 3 growth scenarios."""
+    chart = LineChart()
+    chart.title = "Fee/Emission Crossover Ratio Over Time"
+    chart.y_axis.title = "Ratio (Fee Revenue / Emission Value)"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # 3 series: Low (H), Base (I), High (J)
+    for col_key in ("crossover_ratio_low", "crossover_ratio_base", "crossover_ratio_high"):
+        col_num = col_to_num(meta["cols"][col_key])
+        data = Reference(ws,
+                         min_col=col_num, min_row=meta["header_row"],
+                         max_row=meta["data_end_row"])
+        chart.add_data(data, titles_from_data=True)
+
+    # Categories: period labels
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(ws,
+                     min_col=a_col, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    # Line widths consistent with Phase 2-3 (25000 EMUs)
+    for s in chart.series:
+        s.graphicalProperties.line.width = 25000
+
+    ws.add_chart(chart, "P17")
+
+
+def _create_fee_vs_emission_chart(ws, meta):
+    """Add a line chart comparing base fee revenue against effective emission value."""
+    chart = LineChart()
+    chart.title = "Fee Revenue vs Emission Value (Base Growth)"
+    chart.y_axis.title = "USD"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: Fee Revenue - Base Growth (D)
+    d_col = col_to_num(meta["cols"]["fee_rev_base"])
+    data1 = Reference(ws,
+                      min_col=d_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: Effective Emission Value (G)
+    g_col = col_to_num(meta["cols"]["effective_emission_value"])
+    data2 = Reference(ws,
+                      min_col=g_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data2, titles_from_data=True)
+
+    # Categories: period labels
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(ws,
+                     min_col=a_col, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    for s in chart.series:
+        s.graphicalProperties.line.width = 25000
+
+    ws.add_chart(chart, "P33")
 
 
 # ---------------------------------------------------------------------------
@@ -408,5 +514,12 @@ def build_fee_transition_tab(wb, param_refs, emission_meta, price_meta):
         "crossover_year_matrix_end_row": 46,
         "danger_zone_rows": [32, 33, 34],
     }
+
+    # ------------------------------------------------------------------
+    # Charts
+    # ------------------------------------------------------------------
+    _create_waterfall_chart(ws, fee_meta)
+    _create_crossover_timeline_chart(ws, fee_meta)
+    _create_fee_vs_emission_chart(ws, fee_meta)
 
     return fee_meta
