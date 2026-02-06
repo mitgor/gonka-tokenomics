@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 5 complete - Ready for Phase 6: Liquidity Pool / Protocol-Owned Liquidity
+**Current focus:** Phase 6 in progress - Treasury & POL Simulation (Plan 1 of 2 complete)
 
 ## Current Position
 
-Phase: 5 of 9 (Host Profitability Model)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-06 -- Completed 05-02-PLAN.md (charts + conditional formatting)
+Phase: 6 of 9 (Treasury & POL Simulation)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-06 -- Completed 06-01-PLAN.md (Treasury & POL data model)
 
-Progress: [==========..........] ~56% (Phase 1-5 complete, 10/18 plans)
+Progress: [===========.........] ~61% (Phase 1-5 complete + 06-01, 11/18 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: 2.6 min
-- Total execution time: 26 min
+- Total plans completed: 11
+- Average duration: 2.5 min
+- Total execution time: 28 min
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [==========..........] ~56% (Phase 1-5 complete, 10/18 plans)
 | 3. Token Price Scenarios | 2/2 | 5 min | 2.5 min |
 | 4. Fee Transition | 2/2 | 6 min | 3.0 min |
 | 5. Host Profitability | 2/2 | 5 min | 2.5 min |
+| 6. Treasury & POL | 1/2 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3 min), 04-02 (3 min), 05-01 (3 min), 05-02 (2 min)
+- Last 5 plans: 04-02 (3 min), 05-01 (3 min), 05-02 (2 min), 06-01 (2 min)
 - Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
@@ -84,6 +85,13 @@ Recent decisions affecting current work:
 - [05-02]: CoreWeave rate in chart title only (not separate series); Lambda is primary benchmark column
 - [05-02]: Breakeven chart Y-axis capped at $15 to avoid 99999 sentinel distortion
 - [05-02]: Sensitivity heat map anchors at -5000/0/5000 for monthly profit range
+- [06-01]: CP waterfall starts at 120M minus POL (one-time) and defense (ongoing prorated)
+- [06-01]: POL revenue uses midpoint of low/high LP fee revenue minus rebalancing cost
+- [06-01]: Buyback burn cross-refs Token Price col K (not recalculated)
+- [06-01]: AI Fund expenses prorated from monthly to period: *days/30
+- [06-01]: Defense treasury accumulation-only in main data; spending scenarios in below-data table
+- [06-01]: Net Treasury USD = CP*price + POL_GNK*price + cumul_POL_fees + defense_treasury + AI_Fund_balance
+- [06-01]: Defense scenario table uses L26 (Year 2 end) as baseline
 
 ### From v1.0
 
@@ -106,5 +114,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 05-02-PLAN.md -- Host Profitability charts and conditional formatting (Phase 5 complete)
+Stopped at: Completed 06-01-PLAN.md -- Treasury & POL data model (14 columns, 32 periods, below-data sections)
 Resume file: None
