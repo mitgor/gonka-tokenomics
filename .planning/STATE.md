@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 8: Standalone Workbook Generation -- Plans 01, 02, and 03 complete. Toggle wiring done, standalone orchestrator next.
+**Current focus:** Phase 8 complete. All 4 standalone workbooks generated. Ready for Phase 9: Protection & Polish.
 
 ## Current Position
 
 Phase: 8 of 9 (Standalone Workbook Generation)
-Plan: 3 of 4 in current phase (Plans 01, 02, and 03 complete)
-Status: In progress
-Last activity: 2026-02-06 -- Completed 08-03-PLAN.md (What-If Toggle Wiring)
+Plan: 4 of 4 in current phase (Phase 8 complete)
+Status: Phase complete
+Last activity: 2026-02-07 -- Completed 08-04-PLAN.md (Standalone Workbook Orchestrator)
 
-Progress: [=================...] ~94% (17/18 plans complete)
+Progress: [==================.] ~100% (18/18 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: 2.5 min
-- Total execution time: 42.8 min
+- Total execution time: 45.8 min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: [=================...] ~94% (17/18 plans complete)
 | 5. Host Profitability | 2/2 | 5 min | 2.5 min |
 | 6. Treasury & POL | 2/2 | 4 min | 2.0 min |
 | 7. Dashboard & Assembly | 2/2 | 5 min | 2.5 min |
-| 8. Standalone Generation | 3/4 | 7.8 min | 2.6 min |
+| 8. Standalone Generation | 4/4 | 10.8 min | 2.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-02 (3 min), 08-02 (1.5 min), 08-01 (3 min), 08-03 (3.3 min)
+- Last 5 plans: 08-02 (1.5 min), 08-01 (3 min), 08-03 (3.3 min), 08-04 (3 min)
 - Trend: Consistent 1.5-3.3 min per plan
 
 *Updated after each plan completion*
@@ -116,6 +116,10 @@ Recent decisions affecting current work:
 - [08-03]: Only column K buyback formula wrapped in token_price.py (downstream L cascades automatically)
 - [08-03]: 5 POL-related formula locations wrapped in treasury.py (B, C, D, M, N columns)
 - [08-03]: Y/N DataValidation added to master build_assumptions_tab() for what-if toggle consistency
+- [08-04]: Definitions back-link at D1 (not C1) to avoid MergedCell collision with glossary title
+- [08-04]: _build_model_tabs helper centralizes dependency-order builder dispatch
+- [08-04]: LINK_FONT redefined locally in standalone.py (same module-local pattern)
+- [08-04]: Tab count computed from config (builders + 3 fixed tabs) without reloading workbook
 
 ### From v1.0
 
@@ -137,6 +141,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-06
-Stopped at: Completed 08-03-PLAN.md (What-If Toggle Wiring)
+Last session: 2026-02-07
+Stopped at: Completed 08-04-PLAN.md (Standalone Workbook Orchestrator) -- Phase 8 complete
 Resume file: None
