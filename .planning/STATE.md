@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 4 in progress - Fee Transition Crossover Model (plan 01 complete, plan 02 next)
+**Current focus:** Phase 4 complete - Ready for Phase 5: Host Profitability Model
 
 ## Current Position
 
-Phase: 4 of 9 (Fee Transition Crossover Model)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-06 -- Completed 04-01-PLAN.md (data model + parameters + toggle)
+Phase: 4 of 9 (Fee Transition Crossover Model) -- COMPLETE
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-02-06 -- Phase 4 fully executed (data model + charts + formatting)
 
-Progress: [=======...] ~39% (Phase 1-3 complete, Phase 4 plan 1/2 done)
+Progress: [=========.] ~44% (Phase 1-4 complete, Phase 5 next)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 2.6 min
-- Total execution time: 18 min
+- Total execution time: 21 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [=======...] ~39% (Phase 1-3 complete, Phase 4 plan 1/2 done)
 | 1. Foundation | 2/2 | 7 min | 3.5 min |
 | 2. Emission Schedule | 2/2 | 3 min | 1.5 min |
 | 3. Token Price Scenarios | 2/2 | 5 min | 2.5 min |
-| 4. Fee Transition | 1/2 | 3 min | 3.0 min |
+| 4. Fee Transition | 2/2 | 6 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (1 min), 03-01 (3 min), 03-02 (2 min), 04-01 (3 min)
+- Last 5 plans: 03-01 (3 min), 03-02 (2 min), 04-01 (3 min), 04-02 (3 min)
 - Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
@@ -72,6 +72,10 @@ Recent decisions affecting current work:
 - [04-01]: "text" format maps to None in FORMAT_TO_STYLE (no numeric style override)
 - [04-01]: Tail emission toggle adds DataValidation to existing PARAM_GROUPS cell
 - [04-01]: Revenue splits reference base fee revenue (column D) for consistency
+- [04-02]: Charts at P1/P17/P33 (right of 14-column data + annotation column O)
+- [04-02]: Stacked bar with overlap=100 for proper stacking (critical openpyxl gotcha)
+- [04-02]: ColorScaleRule with fixed num anchors (0/1/2) not percentile for matrix heat map
+- [04-02]: Danger zone red fill on all 14 columns, red font only on column A labels
 
 ### From v1.0
 
@@ -93,6 +97,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-06T18:50:00Z
-Stopped at: Completed 04-01-PLAN.md -- Fee Transition data model with crossover matrices
+Last session: 2026-02-06
+Stopped at: Phase 4 complete -- Fee Transition Crossover Model fully delivered
 Resume file: None

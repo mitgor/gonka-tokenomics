@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Shared Infrastructure** - Parameter system, styles, workbook base, CLI skeleton
 - [x] **Phase 2: Emission Schedule Model** - First model validates formula-writing pattern with emission decay curve
 - [x] **Phase 3: Token Price Scenarios Model** - Multi-scenario price trajectories with scenario selector pattern
-- [ ] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
+- [x] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
 - [ ] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
 - [ ] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
 - [ ] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
@@ -88,8 +88,8 @@ Plans:
   7. Heat map conditional formatting makes crossover timing visually scannable across the entire matrix
 **Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md -- Parameters, tail emission toggle, and fee transition data model (14 columns, 32 rows, 2 crossover matrices)
-- [ ] 04-02-PLAN.md -- Charts (waterfall, crossover timeline, fee vs emission), conditional formatting, danger zone
+- [x] 04-01-PLAN.md -- Parameters, tail emission toggle, and fee transition data model (14 columns, 32 rows, 2 crossover matrices)
+- [x] 04-02-PLAN.md -- Charts (waterfall, crossover timeline, fee vs emission), conditional formatting, danger zone
 
 ### Phase 5: Host Profitability Model
 **Goal**: Leadership can evaluate whether hosting on Gonka is economically competitive with traditional GPU rental under varying prices, network sizes, and cost structures
@@ -169,7 +169,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 1. Foundation & Shared Infrastructure | v1.1 | 2/2 | Complete | 2026-02-05 |
 | 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 4. Fee Transition Crossover Model | v1.1 | 0/2 | Planned | - |
+| 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
 | 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |

@@ -197,12 +197,12 @@
 | REQ-M1-05 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-M1-06 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-M2-01 | Phase 2: Emission Schedule Model | Done |
-| REQ-M2-02 | Phase 4: Fee Transition Crossover Model | Pending |
-| REQ-M2-03 | Phase 4: Fee Transition Crossover Model | Pending |
-| REQ-M2-04 | Phase 4: Fee Transition Crossover Model | Pending |
-| REQ-M2-05 | Phase 4: Fee Transition Crossover Model | Pending |
-| REQ-M2-06 | Phase 4: Fee Transition Crossover Model | Pending |
-| REQ-M2-07 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-M2-02 | Phase 4: Fee Transition Crossover Model | Done |
+| REQ-M2-03 | Phase 4: Fee Transition Crossover Model | Done |
+| REQ-M2-04 | Phase 4: Fee Transition Crossover Model | Done |
+| REQ-M2-05 | Phase 4: Fee Transition Crossover Model | Done |
+| REQ-M2-06 | Phase 4: Fee Transition Crossover Model | Done |
+| REQ-M2-07 | Phase 4: Fee Transition Crossover Model | Done |
 | REQ-M3-01 | Phase 5: Host Profitability Model | Pending |
 | REQ-M3-02 | Phase 5: Host Profitability Model | Pending |
 | REQ-M3-03 | Phase 5: Host Profitability Model | Pending |
@@ -223,7 +223,7 @@
 | REQ-M5-04 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
 | REQ-M5-05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
 | REQ-D01 | Phase 5: Host Profitability Model | Pending |
-| REQ-D02 | Phase 4: Fee Transition Crossover Model | Pending |
+| REQ-D02 | Phase 4: Fee Transition Crossover Model | Done |
 | REQ-D03 | Phase 8: Standalone Workbook Generation | Pending |
 | REQ-D04 | Phase 9: Polish, Documentation & Validation | Pending |
 | REQ-D05 | Phase 7: Dashboard & Master Workbook Assembly | Pending |
