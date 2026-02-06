@@ -136,6 +136,12 @@ def generate_all():
     print(f"  Treasury & POL tab: {treasury_meta['data_end_row'] - treasury_meta['data_start_row'] + 1} periods, 14 columns")
     print(f"  Dashboard tab: {dashboard_meta['kpi_end_row'] - dashboard_meta['kpi_start_row'] + 1} KPIs, scenario matrix, 3 charts")
 
+    # Phase 8: Standalone workbooks
+    from generators.standalone import generate_standalones
+    print("\nGenerating standalone workbooks...")
+    standalone_results = generate_standalones()
+    print(f"\nGenerated {len(standalone_results) + 1} workbooks total (1 master + {len(standalone_results)} standalone)")
+
 
 if __name__ == "__main__":
     main()
