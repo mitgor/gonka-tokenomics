@@ -50,6 +50,7 @@ def generate_all():
     from generators.chart_utils import fix_chart_rendering
     from generators.fee_transition import build_fee_transition_tab
     from generators.host_profit import build_host_profit_tab
+    from generators.treasury import build_treasury_tab
 
     wb, param_refs = create_workbook()
 
@@ -65,8 +66,8 @@ def generate_all():
     # Phase 5: Host Profitability Model
     host_meta = build_host_profit_tab(wb, param_refs, emission_meta, price_meta, fee_meta)
 
-    # Phase 6+: Future model tabs
-    # Phase 6: treasury.build_treasury_tab(wb, param_refs)
+    # Phase 6: Treasury & POL Simulation
+    treasury_meta = build_treasury_tab(wb, param_refs, emission_meta, price_meta, fee_meta)
 
     output_path = Path("output") / "gonka_master_model.xlsx"
     wb.save(str(output_path))
@@ -77,6 +78,7 @@ def generate_all():
     print(f"  Token Price tab: {price_meta['data_end_row'] - price_meta['data_start_row'] + 1} periods, 2 charts")
     print(f"  Fee Transition tab: {fee_meta['data_end_row'] - fee_meta['data_start_row'] + 1} periods, 14 columns, 2 matrices")
     print(f"  Host Profitability tab: {host_meta['data_end_row'] - host_meta['data_start_row'] + 1} periods, 13 columns, sensitivity matrix")
+    print(f"  Treasury & POL tab: {treasury_meta['data_end_row'] - treasury_meta['data_start_row'] + 1} periods, 14 columns")
 
 
 if __name__ == "__main__":

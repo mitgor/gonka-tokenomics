@@ -488,6 +488,26 @@ PARAM_GROUPS = OrderedDict([
     ]),
 
     # =========================================================================
+    # TREASURY OPERATIONS
+    # =========================================================================
+    ("TREASURY OPERATIONS", [
+        {
+            "name": "AI Fund Monthly Expenses",
+            "value": 50_000,
+            "unit": "USD/month",
+            "source": "Placeholder (leadership adjustable)",
+            "format": "currency",
+        },
+        {
+            "name": "Defense Active Duration",
+            "value": 6,
+            "unit": "months",
+            "source": "Scenario input",
+            "format": "integer",
+        },
+    ]),
+
+    # =========================================================================
     # veGNK PARAMETERS
     # =========================================================================
     ("veGNK PARAMETERS", [
