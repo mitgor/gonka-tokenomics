@@ -69,7 +69,10 @@ Plans:
   3. A scenario selector dropdown on the Assumptions tab switches between Conservative/Base/Aggressive and all calculation cells update accordingly
   4. Net supply (gross emission minus buyback-burn) is shown per scenario, with conditional formatting flagging when net supply becomes deflationary
   5. A dual-axis chart overlays price curves with circulating supply over time
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 03-01-PLAN.md -- Scenario selector on Assumptions tab + Token Price data table (12 columns, 32 rows)
+- [ ] 03-02-PLAN.md -- Charts (price scenarios, dual-axis price/supply), conditional formatting, CLI integration
 
 ### Phase 4: Fee Transition Crossover Model
 **Goal**: Leadership can see exactly when (and under what conditions) fee revenue exceeds emission value, with the crossover shown as a matrix across price and growth scenarios rather than a single misleading point
@@ -162,7 +165,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 |-------|-----------|----------------|--------|-----------|
 | 1. Foundation & Shared Infrastructure | v1.1 | 2/2 | Complete | 2026-02-05 |
 | 2. Emission Schedule Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 3. Token Price Scenarios Model | v1.1 | 0/TBD | Not started | - |
+| 3. Token Price Scenarios Model | v1.1 | 0/2 | Not started | - |
 | 4. Fee Transition Crossover Model | v1.1 | 0/TBD | Not started | - |
 | 5. Host Profitability Model | v1.1 | 0/TBD | Not started | - |
 | 6. Treasury & POL Simulation | v1.1 | 0/TBD | Not started | - |
