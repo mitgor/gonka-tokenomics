@@ -32,10 +32,12 @@ Public API:
 """
 
 from openpyxl.chart import BarChart, LineChart, Reference
+from openpyxl.formatting.rule import CellIsRule, ColorScaleRule
+from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import quote_sheetname
 
 from generators.chart_utils import col_to_num
-from generators.styles import TAB_COLOR_CALC
+from generators.styles import TAB_COLOR_CALC, WARNING_FILL_COLOR, WARNING_FONT_COLOR
 
 
 # ---------------------------------------------------------------------------
@@ -168,6 +170,90 @@ def _create_fee_vs_emission_chart(ws, meta):
         s.graphicalProperties.line.width = 25000
 
     ws.add_chart(chart, "P33")
+
+
+# ---------------------------------------------------------------------------
+# Conditional Formatting
+# ---------------------------------------------------------------------------
+
+def _add_crossover_formatting(ws, meta):
+    """Apply green/red conditional formatting to crossover ratio columns."""
+    # Green: ratio >= 1 (fees exceed emissions)
+    green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+    green_font = Font(name="Calibri", size=11, color="006100")
+
+    # Red: ratio < 1 (fees below emissions)
+    red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+    red_font = Font(name="Calibri", size=11, color="9C0006")
+
+    for col in ("H", "I", "J"):
+        cell_range = f"{col}{meta['data_start_row']}:{col}{meta['data_end_row']}"
+
+        # Green when >= 1
+        ws.conditional_formatting.add(
+            cell_range,
+            CellIsRule(
+                operator="greaterThanOrEqual",
+                formula=["1"],
+                fill=green_fill,
+                font=green_font,
+            ),
+        )
+
+        # Red when < 1
+        ws.conditional_formatting.add(
+            cell_range,
+            CellIsRule(
+                operator="lessThan",
+                formula=["1"],
+                fill=red_fill,
+                font=red_font,
+            ),
+        )
+
+
+def _add_matrix_heatmap(ws, meta):
+    """Apply red-yellow-green color scale to the 9-cell crossover matrix."""
+    matrix_range = f"B{meta['matrix_start_row'] + 1}:D{meta['matrix_end_row']}"
+    # matrix_start_row is 37 (header), data is 38-40
+
+    rule = ColorScaleRule(
+        start_type="num", start_value=0, start_color="F8696B",     # Red
+        mid_type="num", mid_value=1, mid_color="FFEB84",           # Yellow (crossover point)
+        end_type="num", end_value=2, end_color="63BE7B",           # Green
+    )
+
+    ws.conditional_formatting.add(matrix_range, rule)
+
+
+def _add_danger_zone(ws, meta):
+    """Apply red danger zone shading to Year 8-10 rows and add annotation."""
+    danger_fill = PatternFill(
+        start_color=WARNING_FILL_COLOR,
+        end_color=WARNING_FILL_COLOR,
+        fill_type="solid",
+    )
+    danger_font = Font(name="Calibri", size=11, color=WARNING_FONT_COLOR)
+
+    for row in meta["danger_zone_rows"]:  # [32, 33, 34]
+        for col in range(1, 15):  # Columns A-N (1-14)
+            cell = ws.cell(row=row, column=col)
+            cell.fill = danger_fill
+            # Only apply red font to period label (A)
+            # Other cells keep their formula/crossref styling but get the red background
+            if col == 1:
+                cell.font = danger_font
+
+    # Danger zone annotation in column O (outside data area, next to danger rows)
+    annotation_cell = ws.cell(
+        row=32, column=15,
+        value="DANGER ZONE: Emission cliff risk (Year 8-10). "
+              "Fee revenue must exceed emission value to sustain host incentives.",
+    )
+    annotation_cell.font = Font(name="Calibri", size=10, italic=True, color=WARNING_FONT_COLOR)
+
+    # Set column O width for annotation readability
+    ws.column_dimensions["O"].width = 50
 
 
 # ---------------------------------------------------------------------------
@@ -514,6 +600,13 @@ def build_fee_transition_tab(wb, param_refs, emission_meta, price_meta):
         "crossover_year_matrix_end_row": 46,
         "danger_zone_rows": [32, 33, 34],
     }
+
+    # ------------------------------------------------------------------
+    # Conditional formatting
+    # ------------------------------------------------------------------
+    _add_crossover_formatting(ws, fee_meta)
+    _add_matrix_heatmap(ws, fee_meta)
+    _add_danger_zone(ws, fee_meta)
 
     # ------------------------------------------------------------------
     # Charts
