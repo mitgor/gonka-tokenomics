@@ -39,6 +39,33 @@ _COL_WIDTHS = {
 _SOURCE_FONT = Font(name="Calibri", size=11, italic=True)
 
 
+def _add_tail_emission_toggle(ws, param_refs):
+    """Add ON/OFF DataValidation to the Tail Emission Toggle parameter cell.
+
+    The cell already exists from the PARAM_GROUPS loop. This function
+    adds a dropdown constraint so the user can only enter ON or OFF.
+
+    Args:
+        ws: The Assumptions worksheet.
+        param_refs: Dict containing "Tail Emission Toggle" -> "Assumptions!$B$NN".
+    """
+    # Parse row number from param_refs (format: "Assumptions!$B$NN")
+    ref = param_refs["Tail Emission Toggle"]
+    row = int(ref.split("$")[-1])
+
+    toggle_cell = ws.cell(row=row, column=2)
+
+    dv = DataValidation(
+        type="list",
+        formula1='"ON,OFF"',
+        allow_blank=False,
+    )
+    dv.prompt = "Select ON or OFF"
+    dv.promptTitle = "Tail Emission"
+    ws.add_data_validation(dv)
+    dv.add(toggle_cell)
+
+
 def _add_scenario_selector(ws, current_row, param_refs):
     """Add scenario selector dropdown and CHOOSE formulas to Assumptions tab.
 
@@ -215,6 +242,9 @@ def build_assumptions_tab(wb):
 
         # Blank separator row after each group
         current_row += 1
+
+    # --- Tail Emission Toggle (DataValidation dropdown) ---
+    _add_tail_emission_toggle(ws, param_refs)
 
     # --- Scenario Selector (dropdown + MATCH + CHOOSE) ---
     current_row = _add_scenario_selector(ws, current_row, param_refs)
