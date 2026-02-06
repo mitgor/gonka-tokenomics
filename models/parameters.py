@@ -320,6 +320,27 @@ PARAM_GROUPS = OrderedDict([
             "source": "Whitepaper",
             "format": "decay_rate",
         },
+        {
+            "name": "Traditional Rental Rate (Lambda)",
+            "value": 2.49,
+            "unit": "USD/hr",
+            "source": "Lambda Labs Q1 2026",
+            "format": "price_per_hour",
+        },
+        {
+            "name": "Traditional Rental Rate (CoreWeave)",
+            "value": 2.06,
+            "unit": "USD/hr",
+            "source": "CoreWeave 3yr reserved Q1 2026",
+            "format": "price_per_hour",
+        },
+        {
+            "name": "GPU Power Draw",
+            "value": 400,
+            "unit": "watts",
+            "source": "H100 inference avg",
+            "format": "integer",
+        },
     ]),
 
     # =========================================================================
