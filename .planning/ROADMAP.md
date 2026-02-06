@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Token Price Scenarios Model** - Multi-scenario price trajectories with scenario selector pattern
 - [x] **Phase 4: Fee Transition Crossover Model** - First cross-tab model with crossover analysis (Layer 2)
 - [x] **Phase 5: Host Profitability Model** - Most complex cross-tab dependencies, sensitivity tables
-- [ ] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
+- [x] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
 - [ ] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
 - [ ] **Phase 8: Standalone Workbook Generation** - Four focused standalone workbooks with documentation
 - [ ] **Phase 9: Polish, Documentation & Validation** - Cell protection, audit trail, print layout, final testing
@@ -123,8 +123,8 @@ Plans:
   8. Time-to-X callout cells display key milestones (e.g., "Community Pool depleted in: 8.3 years (Base scenario)")
 **Plans**: 2 plans
 Plans:
-- [ ] 06-01-PLAN.md -- Parameters (TREASURY OPERATIONS group) + Treasury data model (14 columns, 32 rows), Time-to-X callouts, defense scenarios, IL caveat
-- [ ] 06-02-PLAN.md -- Charts (treasury composition, CP depletion, cumulative burn) and conditional formatting (CP health, defense health, net treasury gradient)
+- [x] 06-01-PLAN.md -- Parameters (TREASURY OPERATIONS group) + Treasury data model (14 columns, 32 rows), Time-to-X callouts, defense scenarios, IL caveat
+- [x] 06-02-PLAN.md -- Charts (treasury composition, CP depletion, cumulative burn) and conditional formatting (CP health, defense health, net treasury gradient)
 
 ### Phase 7: Dashboard & Master Workbook Assembly
 **Goal**: A single master workbook links all models via shared assumptions with a dashboard summarizing cross-model KPIs, scenario comparisons, and navigation between the 8-tab structure
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 3. Token Price Scenarios Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 6. Treasury & POL Simulation | v1.1 | 0/2 | Planned | - |
+| 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
