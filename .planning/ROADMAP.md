@@ -154,7 +154,12 @@ Plans:
   4. Scenario narratives provide 2-3 sentence plain-English interpretations per scenario per model
   5. What-if toggle switches (buyback-burn Y/N, tail emissions Y/N, deploy POL Y/N) ripple through relevant calculations
   6. Version number and changelog appear on each workbook's cover sheet
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 08-01-PLAN.md -- Foundation: toggle parameters, standalone_config.py, build_filtered_assumptions_tab()
+- [ ] 08-02-PLAN.md -- New tab builders: glossary.py and cover_sheet.py
+- [ ] 08-03-PLAN.md -- Toggle integration: IF() wrappers in token_price.py and treasury.py
+- [ ] 08-04-PLAN.md -- Standalone orchestrator and generate.py integration
 
 ### Phase 9: Polish, Documentation & Validation
 **Goal**: All workbooks meet professional financial modeling standards with cell protection, source audit trails, print-ready layouts, and verified correctness in both Excel and Google Sheets
@@ -182,5 +187,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
+| 8. Standalone Workbook Generation | v1.1 | 0/4 | Not started | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
