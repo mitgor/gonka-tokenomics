@@ -15,6 +15,7 @@ builds the Assumptions tab, and returns (wb, param_refs).
 from openpyxl import Workbook
 from openpyxl.styles import Font, Protection
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.datavalidation import DataValidation
 
 from models.parameters import PARAM_GROUPS
 from generators.styles import (
@@ -36,6 +37,100 @@ _COL_WIDTHS = {
 
 # Font for source citations (italic)
 _SOURCE_FONT = Font(name="Calibri", size=11, italic=True)
+
+
+def _add_scenario_selector(ws, current_row, param_refs):
+    """Add scenario selector dropdown and CHOOSE formulas to Assumptions tab.
+
+    Adds a SCENARIO SELECTOR section with:
+      - DataValidation dropdown (Conservative/Base/Aggressive)
+      - MATCH formula converting text to index 1/2/3
+      - CHOOSE formulas for Active Price Low and Active Price High
+
+    Args:
+        ws: The Assumptions worksheet.
+        current_row: Next available row after PARAM_GROUPS.
+        param_refs: Dict to update with new scenario cell references.
+
+    Returns:
+        int: The next available row after the scenario selector section.
+    """
+    # Section header
+    ws.merge_cells(
+        start_row=current_row, start_column=1,
+        end_row=current_row, end_column=4,
+    )
+    section_cell = ws.cell(row=current_row, column=1, value="SCENARIO SELECTOR")
+    section_cell.style = "section_header"
+    current_row += 1
+
+    # --- Active Scenario dropdown ---
+    ws.cell(row=current_row, column=1, value="Active Scenario")
+    selector_cell = ws.cell(row=current_row, column=2, value="Base")
+    selector_cell.style = "input_cell"
+    selector_cell.protection = Protection(locked=False)
+
+    dv = DataValidation(
+        type="list",
+        formula1='"Conservative,Base,Aggressive"',
+        allow_blank=False,
+    )
+    dv.prompt = "Select scenario"
+    dv.promptTitle = "Active Scenario"
+    ws.add_data_validation(dv)
+    dv.add(selector_cell)
+
+    param_refs["Active Scenario"] = f"Assumptions!$B${current_row}"
+    selector_row = current_row
+    current_row += 1
+
+    # --- Scenario Index (MATCH converts text -> 1/2/3) ---
+    ws.cell(row=current_row, column=1, value="Scenario Index")
+    index_cell = ws.cell(
+        row=current_row, column=2,
+        value=f'=MATCH(B{selector_row},{{"Conservative","Base","Aggressive"}},0)',
+    )
+    index_cell.style = "formula_cell"
+
+    param_refs["Scenario Index"] = f"Assumptions!$B${current_row}"
+    index_row = current_row
+    current_row += 1
+
+    # --- Active Price Low (CHOOSE selects per scenario) ---
+    ws.cell(row=current_row, column=1, value="Active Price Low")
+    low_cell = ws.cell(
+        row=current_row, column=2,
+        value=(
+            f"=CHOOSE($B${index_row},"
+            f"{param_refs['Conservative Price Low']},"
+            f"{param_refs['Moderate Price Low']},"
+            f"{param_refs['Aggressive Price Low']})"
+        ),
+    )
+    low_cell.style = "formula_cell"
+    low_cell.number_format = "$#,##0.00"
+
+    param_refs["Active Price Low"] = f"Assumptions!$B${current_row}"
+    current_row += 1
+
+    # --- Active Price High (CHOOSE selects per scenario) ---
+    ws.cell(row=current_row, column=1, value="Active Price High")
+    high_cell = ws.cell(
+        row=current_row, column=2,
+        value=(
+            f"=CHOOSE($B${index_row},"
+            f"{param_refs['Conservative Price High']},"
+            f"{param_refs['Moderate Price High']},"
+            f"{param_refs['Aggressive Price High']})"
+        ),
+    )
+    high_cell.style = "formula_cell"
+    high_cell.number_format = "$#,##0.00"
+
+    param_refs["Active Price High"] = f"Assumptions!$B${current_row}"
+    current_row += 1
+
+    return current_row
 
 
 def build_assumptions_tab(wb):
@@ -119,6 +214,9 @@ def build_assumptions_tab(wb):
 
         # Blank separator row after each group
         current_row += 1
+
+    # --- Scenario Selector (dropdown + MATCH + CHOOSE) ---
+    current_row = _add_scenario_selector(ws, current_row, param_refs)
 
     # --- Set column widths ---
     for col_letter, width in _COL_WIDTHS.items():

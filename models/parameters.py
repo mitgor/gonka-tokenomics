@@ -389,6 +389,13 @@ PARAM_GROUPS = OrderedDict([
             "source": "Rec #3",
             "format": "percent",
         },
+        {
+            "name": "Assumed Annual Fee Revenue",
+            "value": 1_000_000,
+            "unit": "USD/yr",
+            "source": "Placeholder (Phase 4 replaces)",
+            "format": "currency",
+        },
     ]),
 
     # =========================================================================
