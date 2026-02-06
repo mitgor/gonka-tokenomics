@@ -138,7 +138,10 @@ Plans:
   5. A cover/title sheet includes version, date, "For internal decision-making purposes only" disclaimer, and color convention legend
   6. A hyperlinked TOC provides navigation to every tab, with "Back to TOC" links on each tab
   7. Charts include horizontal breakeven reference lines at threshold values ($0.85, $3.30, etc.) where applicable
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md -- Documentation tab (cover sheet, color legend, hyperlinked TOC) and 8-tab workbook structure with navigation links
+- [ ] 07-02-PLAN.md -- Dashboard tab with 8 KPIs, scenario comparison matrix, 3 summary charts (price bar, breakeven with reference lines, treasury timeline)
 
 ### Phase 8: Standalone Workbook Generation
 **Goal**: Four focused standalone workbooks can be shared independently, each containing only the relevant model with its own filtered assumptions, documentation, glossary, and scenario controls
@@ -178,6 +181,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 4. Fee Transition Crossover Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 7. Dashboard & Master Workbook Assembly | v1.1 | 0/TBD | Not started | - |
+| 7. Dashboard & Master Workbook Assembly | v1.1 | 0/2 | Not started | - |
 | 8. Standalone Workbook Generation | v1.1 | 0/TBD | Not started | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
