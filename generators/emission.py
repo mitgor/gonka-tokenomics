@@ -12,8 +12,10 @@ Public API:
     build_emission_tab(wb, param_refs) -> emission_meta dict
 """
 
+from openpyxl.chart import LineChart, AreaChart, BarChart, Reference
 from openpyxl.utils import get_column_letter
 
+from generators.chart_utils import col_to_num
 from generators.styles import TAB_COLOR_CALC
 
 
@@ -96,6 +98,100 @@ def _build_periods():
         periods.append({"start": start, "end": end, "days": 365, "label": label})
 
     return periods
+
+
+# ---------------------------------------------------------------------------
+# Chart helpers (private)
+# ---------------------------------------------------------------------------
+
+def _create_emission_decay_chart(ws, meta):
+    """Add a line chart showing mining emission decay over 10 years."""
+    chart = LineChart()
+    chart.title = "Mining Emission Decay (10-Year)"
+    chart.y_axis.title = "GNK per Period"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    d_col = col_to_num(meta["cols"]["mining_emission"])
+    data = Reference(ws,
+                     min_col=d_col, min_row=meta["header_row"],
+                     max_row=meta["data_end_row"])
+    chart.add_data(data, titles_from_data=True)
+
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(ws,
+                     min_col=a_col, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    # Line width: 25000 EMUs
+    chart.series[0].graphicalProperties.line.width = 25000
+
+    ws.add_chart(chart, "K1")
+
+
+def _create_supply_composition_chart(ws, meta):
+    """Add a stacked area chart showing circulating supply composition."""
+    chart = AreaChart()
+    chart.grouping = "stacked"
+    chart.title = "Circulating Supply Composition"
+    chart.y_axis.title = "GNK"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Three series: Mining Emission (D), CP Unlock (E), Founder Vesting (F)
+    for col_key in ("mining_emission", "cp_unlock", "founder_vest"):
+        col_num = col_to_num(meta["cols"][col_key])
+        data = Reference(ws,
+                         min_col=col_num, min_row=meta["header_row"],
+                         max_row=meta["data_end_row"])
+        chart.add_data(data, titles_from_data=True)
+
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(ws,
+                     min_col=a_col, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "K17")
+
+
+def _create_inflation_chart(ws, meta):
+    """Add a bar chart showing annualized inflation vs ETH benchmark."""
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Annualized Inflation Rate"
+    chart.y_axis.title = "Inflation Rate"
+    chart.x_axis.title = "Period"
+    chart.style = 13
+    chart.width = 20
+    chart.height = 12
+
+    # Series 1: Inflation Rate (I)
+    i_col = col_to_num(meta["cols"]["inflation_rate"])
+    data1 = Reference(ws,
+                      min_col=i_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data1, titles_from_data=True)
+
+    # Series 2: ETH Benchmark (J)
+    j_col = col_to_num(meta["cols"]["eth_benchmark"])
+    data2 = Reference(ws,
+                      min_col=j_col, min_row=meta["header_row"],
+                      max_row=meta["data_end_row"])
+    chart.add_data(data2, titles_from_data=True)
+
+    a_col = col_to_num(meta["cols"]["period_label"])
+    cats = Reference(ws,
+                     min_col=a_col, min_row=meta["data_start_row"],
+                     max_row=meta["data_end_row"])
+    chart.set_categories(cats)
+
+    ws.add_chart(chart, "K33")
 
 
 # ---------------------------------------------------------------------------
@@ -251,9 +347,9 @@ def build_emission_tab(wb, param_refs):
     ws.freeze_panes = "A3"
 
     # ------------------------------------------------------------------
-    # Return emission_meta for downstream tabs
+    # Build emission_meta for downstream tabs and charts
     # ------------------------------------------------------------------
-    return {
+    meta = {
         "sheet_name": "Emission Schedule",
         "header_row": 2,
         "data_start_row": 3,
@@ -272,3 +368,12 @@ def build_emission_tab(wb, param_refs):
         },
         "validation_row": 36,
     }
+
+    # ------------------------------------------------------------------
+    # Charts
+    # ------------------------------------------------------------------
+    _create_emission_decay_chart(ws, meta)
+    _create_supply_composition_chart(ws, meta)
+    _create_inflation_chart(ws, meta)
+
+    return meta
