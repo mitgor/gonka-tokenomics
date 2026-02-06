@@ -187,5 +187,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 5. Host Profitability Model | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 2/2 | Complete | 2026-02-06 |
-| 8. Standalone Workbook Generation | v1.1 | 0/4 | Not started | - |
+| 8. Standalone Workbook Generation | v1.1 | 0/4 | Planned | - |
 | 9. Polish, Documentation & Validation | v1.1 | 0/TBD | Not started | - |
