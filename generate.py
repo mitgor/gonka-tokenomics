@@ -48,6 +48,7 @@ def generate_all():
     from generators.emission import build_emission_tab
     from generators.token_price import build_token_price_tab
     from generators.chart_utils import fix_chart_rendering
+    from generators.fee_transition import build_fee_transition_tab
 
     wb, param_refs = create_workbook()
 
@@ -57,8 +58,10 @@ def generate_all():
     # Phase 3: Token Price Scenarios Model
     price_meta = build_token_price_tab(wb, param_refs, emission_meta)
 
-    # Phase 4+: Future model tabs (price_meta now available)
-    # Phase 4: fee_transition.build_fee_transition_tab(wb, param_refs, emission_meta)
+    # Phase 4: Fee Transition Crossover Model
+    fee_meta = build_fee_transition_tab(wb, param_refs, emission_meta, price_meta)
+
+    # Phase 5+: Future model tabs
     # Phase 5: host_profit.build_host_profit_tab(wb, param_refs, emission_meta, price_meta)
     # Phase 6: treasury.build_treasury_tab(wb, param_refs)
 
@@ -69,6 +72,7 @@ def generate_all():
     print(f"  Assumptions tab: {len(param_refs)} parameters")
     print(f"  Emission Schedule tab: {emission_meta['data_end_row'] - emission_meta['data_start_row'] + 1} periods, 3 charts")
     print(f"  Token Price tab: {price_meta['data_end_row'] - price_meta['data_start_row'] + 1} periods, 2 charts")
+    print(f"  Fee Transition tab: {fee_meta['data_end_row'] - fee_meta['data_start_row'] + 1} periods, 14 columns, 2 matrices")
 
 
 if __name__ == "__main__":
