@@ -24,6 +24,7 @@ from generators.treasury import build_treasury_tab
 from generators.glossary import build_glossary_tab
 from generators.cover_sheet import build_cover_sheet
 from generators.chart_utils import fix_chart_rendering
+from generators.print_setup import apply_sheet_protection, apply_all_print_settings
 from generators.standalone_config import STANDALONE_CONFIGS, GLOSSARY_TERMS, VERSION_INFO
 
 
@@ -36,7 +37,7 @@ LINK_FONT = Font(name="Calibri", size=11, color="0563C1", underline="single")
 # Back-to-Documentation link positions per tab.
 # Same positions as the master workbook where applicable.
 _BACK_LINK_COL_ROW = {
-    "Assumptions": (6, 1),          # F1 (after A1:E1 merge)
+    "Assumptions": (7, 1),          # G1 (after A1:F1 merge)
     "Emission Schedule": (11, 2),   # K2 (K1 is chart anchor; use row 2)
     "Token Price": (13, 1),         # M1 (after A1:L1 merge, before N1 chart)
     "Fee Transition": (15, 1),      # O1 (after A1:N1 merge, before P1 chart)
@@ -158,7 +159,13 @@ def generate_standalone(config_key):
     # 7. Add "Back to Documentation" links on non-Documentation tabs
     _add_back_to_doc_links(wb)
 
-    # 8. Save workbook and fix chart rendering
+    # 8. Apply print settings (margins, orientation, fit-to-page, footers)
+    apply_all_print_settings(wb)
+
+    # 9. Apply cell protection (must be last before save)
+    apply_sheet_protection(wb)
+
+    # 10. Save workbook and fix chart rendering
     output_path = Path("output") / config["filename"]
     output_path.parent.mkdir(exist_ok=True)
     wb.save(str(output_path))

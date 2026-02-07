@@ -36,7 +36,8 @@ _COL_WIDTHS = {
     "A": 35,
     "B": 20,
     "C": 15,
-    "D": 30,
+    "D": 40,   # Wider for full document-reference citations
+    "E": 12,   # Confidence column (HIGH/MED/LOW)
 }
 
 # Font for source citations (italic)
@@ -89,7 +90,7 @@ def _add_scenario_selector(ws, current_row, param_refs):
     # Section header
     ws.merge_cells(
         start_row=current_row, start_column=1,
-        end_row=current_row, end_column=4,
+        end_row=current_row, end_column=5,
     )
     section_cell = ws.cell(row=current_row, column=1, value="SCENARIO SELECTOR")
     section_cell.style = "section_header"
@@ -223,14 +224,14 @@ def build_filtered_assumptions_tab(wb, param_names,
     ws.title = "Assumptions"
     ws.sheet_properties.tabColor = TAB_COLOR_INPUT
 
-    # --- Row 1: Main header (merged A1:E1) ---
-    ws.merge_cells("A1:E1")
+    # --- Row 1: Main header (merged A1:F1) ---
+    ws.merge_cells("A1:F1")
     cell_a1 = ws["A1"]
     cell_a1.value = "GONKA TOKENOMICS MODEL - ASSUMPTIONS"
     cell_a1.style = "section_header"
 
-    # --- Row 2: Instruction text (merged A2:E2) ---
-    ws.merge_cells("A2:E2")
+    # --- Row 2: Instruction text (merged A2:F2) ---
+    ws.merge_cells("A2:F2")
     cell_a2 = ws["A2"]
     cell_a2.value = "All blue-shaded cells below are adjustable inputs"
 
@@ -249,7 +250,7 @@ def build_filtered_assumptions_tab(wb, param_names,
         # Section header row
         ws.merge_cells(
             start_row=current_row, start_column=1,
-            end_row=current_row, end_column=4,
+            end_row=current_row, end_column=5,
         )
         section_cell = ws.cell(row=current_row, column=1)
         section_cell.value = group_name
@@ -280,6 +281,10 @@ def build_filtered_assumptions_tab(wb, param_names,
             # Column D: Source citation (locked, italic)
             source_cell = ws.cell(row=current_row, column=4, value=param["source"])
             source_cell.font = _SOURCE_FONT
+
+            # Column E: Confidence level (locked, italic)
+            confidence_cell = ws.cell(row=current_row, column=5, value=param.get("confidence", ""))
+            confidence_cell.font = _SOURCE_FONT
 
             # Record the cell reference for this parameter
             param_refs[param["name"]] = f"Assumptions!$B${current_row}"
@@ -347,14 +352,14 @@ def build_assumptions_tab(wb):
     ws.title = "Assumptions"
     ws.sheet_properties.tabColor = TAB_COLOR_INPUT
 
-    # --- Row 1: Main header (merged A1:E1) ---
-    ws.merge_cells("A1:E1")
+    # --- Row 1: Main header (merged A1:F1) ---
+    ws.merge_cells("A1:F1")
     cell_a1 = ws["A1"]
     cell_a1.value = "GONKA TOKENOMICS MODEL - ASSUMPTIONS"
     cell_a1.style = "section_header"
 
-    # --- Row 2: Instruction text (merged A2:E2) ---
-    ws.merge_cells("A2:E2")
+    # --- Row 2: Instruction text (merged A2:F2) ---
+    ws.merge_cells("A2:F2")
     cell_a2 = ws["A2"]
     cell_a2.value = "All blue-shaded cells below are adjustable inputs"
 
@@ -368,7 +373,7 @@ def build_assumptions_tab(wb):
         # Section header row
         ws.merge_cells(
             start_row=current_row, start_column=1,
-            end_row=current_row, end_column=4,
+            end_row=current_row, end_column=5,
         )
         section_cell = ws.cell(row=current_row, column=1)
         section_cell.value = group_name
@@ -400,6 +405,10 @@ def build_assumptions_tab(wb):
             # Column D: Source citation (locked, italic)
             source_cell = ws.cell(row=current_row, column=4, value=param["source"])
             source_cell.font = _SOURCE_FONT
+
+            # Column E: Confidence level (locked, italic)
+            confidence_cell = ws.cell(row=current_row, column=5, value=param.get("confidence", ""))
+            confidence_cell.font = _SOURCE_FONT
 
             # Record the cell reference for this parameter
             param_refs[param["name"]] = f"Assumptions!$B${current_row}"

@@ -33,8 +33,13 @@ def main():
 def generate_test():
     """Generate a minimal test workbook with only the Assumptions tab."""
     from generators.workbook_base import create_workbook
+    from generators.print_setup import apply_sheet_protection, apply_all_print_settings
 
     wb, param_refs = create_workbook()
+
+    # Phase 9: Apply print settings and cell protection (must be last before save)
+    apply_all_print_settings(wb)
+    apply_sheet_protection(wb)
 
     output_path = Path("output") / "gonka_test_assumptions.xlsx"
     wb.save(str(output_path))
@@ -54,7 +59,7 @@ def _add_back_to_doc_links(wb):
     link_font = Font(name="Calibri", size=11, color="0563C1", underline="single")
 
     BACK_LINK_COL_ROW = {
-        "Assumptions": (6, 1),          # F1 (after A1:E1 merge)
+        "Assumptions": (7, 1),          # G1 (after A1:F1 merge)
         "Emission Schedule": (11, 2),   # K2 (K1 is chart anchor; use row 2)
         "Token Price": (13, 1),         # M1 (after A1:L1 merge, before N1 chart)
         "Fee Transition": (15, 1),      # O1 (after A1:N1 merge, before P1 chart)
@@ -122,6 +127,11 @@ def generate_all():
 
     # Add "Back to Documentation" links on every tab except Documentation and Dashboard
     _add_back_to_doc_links(wb)
+
+    # Phase 9: Apply print settings and cell protection (must be last before save)
+    from generators.print_setup import apply_sheet_protection, apply_all_print_settings
+    apply_all_print_settings(wb)
+    apply_sheet_protection(wb)
 
     output_path = Path("output") / "gonka_master_model.xlsx"
     wb.save(str(output_path))
