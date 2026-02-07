@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 9: Polish, Documentation & Validation -- Plan 01 complete.
+**Current focus:** Phase 9: Polish, Documentation & Validation -- Plans 01+02 complete (Wave 1 done).
 
 ## Current Position
 
 Phase: 9 of 9 (Polish, Documentation & Validation)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-07 -- Completed 09-01-PLAN.md (parameter source & confidence enrichment)
+Last activity: 2026-02-07 -- Completed 09-02-PLAN.md (print setup & cell protection)
 
-Progress: [===================] ~90% (19/21 plans complete)
+Progress: [===================.] ~95% (20/21 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 2.6 min
-- Total execution time: 50.0 min
+- Total plans completed: 20
+- Average duration: 2.7 min
+- Total execution time: 53.8 min
 
 **By Phase:**
 
@@ -35,10 +35,10 @@ Progress: [===================] ~90% (19/21 plans complete)
 | 6. Treasury & POL | 2/2 | 4 min | 2.0 min |
 | 7. Dashboard & Assembly | 2/2 | 5 min | 2.5 min |
 | 8. Standalone Generation | 4/4 | 10.8 min | 2.7 min |
-| 9. Polish & Validation | 1/3 | 4.2 min | 4.2 min |
+| 9. Polish & Validation | 2/3 | 8.0 min | 4.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-01 (3 min), 08-03 (3.3 min), 08-04 (3 min), 09-01 (4.2 min)
+- Last 5 plans: 08-03 (3.3 min), 08-04 (3 min), 09-01 (4.2 min), 09-02 (3.8 min)
 - Trend: Consistent 3-4 min per plan
 
 *Updated after each plan completion*
@@ -124,6 +124,10 @@ Recent decisions affecting current work:
 - [09-01]: 70 parameters enriched (not 60 as plan stated; actual count from Phase 1)
 - [09-01]: Confidence distribution: 48 HIGH / 16 MED / 6 LOW based on source reliability
 - [09-01]: Back-to-doc link for Assumptions moved to G1 (was F1) due to expanded merge
+- [09-02]: Dict-based dispatch for print configs (not if/elif chains)
+- [09-02]: Dynamic max_row detection for Documentation, Assumptions, Definitions tabs
+- [09-02]: Protection password 'gonka' with cell selection allowed for copy/view
+- [09-02]: Print order: apply_all_print_settings() then apply_sheet_protection() then wb.save()
 
 ### From v1.0
 
@@ -146,5 +150,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Completed 09-01-PLAN.md (parameter source & confidence enrichment)
+Stopped at: Completed 09-02-PLAN.md (print setup & cell protection)
 Resume file: None
