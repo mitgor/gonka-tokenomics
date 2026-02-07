@@ -5,6 +5,7 @@ Builds the "Documentation" worksheet at index 0 with:
   - Title and subtitle
   - Version (v1.1) and dynamic date (=TODAY())
   - Disclaimer in red italic
+  - Protection compatibility note (Excel-only; Google Sheets strips it)
   - Color convention legend with styled sample cells
   - Hyperlinked Table of Contents for all other tabs
 
@@ -101,9 +102,25 @@ def build_documentation_tab(wb, all_sheet_names):
     )
 
     # =================================================================
-    # Section 4: Color Convention Legend (rows 9-14)
+    # Section 4: Protection Note (row 8)
     # =================================================================
-    ws.cell(row=9, column=1, value="COLOR CONVENTIONS").style = "section_header"
+    ws.merge_cells("A8:F8")
+    protection_note = ws.cell(
+        row=8, column=1,
+        value=(
+            "Note: Cell protection prevents accidental formula edits "
+            "(password: gonka). Google Sheets does not preserve XLSX "
+            "sheet protection."
+        ),
+    )
+    protection_note.font = Font(
+        name="Calibri", size=11, italic=True, color="FF0000",
+    )
+
+    # =================================================================
+    # Section 5: Color Convention Legend (rows 10-15)
+    # =================================================================
+    ws.cell(row=10, column=1, value="COLOR CONVENTIONS").style = "section_header"
 
     _legend_entries = [
         ("Blue cells = Editable inputs (Assumptions tab)", "input_cell"),
@@ -113,17 +130,17 @@ def build_documentation_tab(wb, all_sheet_names):
         ("Red shading = Danger zones / warnings", "warning_cell"),
     ]
     for i, (description, style_name) in enumerate(_legend_entries):
-        row = 10 + i
+        row = 11 + i
         ws.cell(row=row, column=1, value=description)
         sample_cell = ws.cell(row=row, column=2, value="Example")
         sample_cell.style = style_name
 
     # =================================================================
-    # Section 5: Table of Contents (rows 16+)
+    # Section 6: Table of Contents (rows 17+)
     # =================================================================
-    ws.cell(row=16, column=1, value="TABLE OF CONTENTS").style = "section_header"
+    ws.cell(row=17, column=1, value="TABLE OF CONTENTS").style = "section_header"
 
-    toc_row = 17
+    toc_row = 18
     for idx, name in enumerate(all_sheet_names, start=1):
         # Column A: numbered tab name with hyperlink
         cell = ws.cell(row=toc_row, column=1, value=f"{idx}. {name}")

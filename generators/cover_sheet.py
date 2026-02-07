@@ -4,8 +4,9 @@ Gonka Tokenomics - Standalone Cover Sheet (Documentation Tab)
 Builds a "Documentation" worksheet at index 0 for standalone workbooks with:
   - Model-specific title and subtitle
   - Version number and generated date (REQ-D08)
-  - Changelog table (REQ-D08)
   - Disclaimer in red italic
+  - Protection compatibility note (Excel-only; Google Sheets strips it)
+  - Changelog table (REQ-D08)
   - Scenario narratives (REQ-D03)
   - Hyperlinked Table of Contents
   - Color convention legend
@@ -97,22 +98,38 @@ def build_cover_sheet(wb, title, version_info, tab_names, scenario_narratives=No
     )
 
     # =================================================================
-    # Section 4: Changelog (rows 9+)
+    # Section 4: Protection Note (row 8)
     # =================================================================
-    ws.cell(row=9, column=1, value="CHANGELOG").style = "section_header"
+    ws.merge_cells("A8:F8")
+    protection_note = ws.cell(
+        row=8, column=1,
+        value=(
+            "Note: Cell protection prevents accidental formula edits "
+            "(password: gonka). Google Sheets does not preserve XLSX "
+            "sheet protection."
+        ),
+    )
+    protection_note.font = Font(
+        name="Calibri", size=11, italic=True, color="FF0000",
+    )
+
+    # =================================================================
+    # Section 5: Changelog (rows 10+)
+    # =================================================================
+    ws.cell(row=10, column=1, value="CHANGELOG").style = "section_header"
 
     # Column headers
-    ws.cell(row=10, column=1, value="Version").font = Font(
+    ws.cell(row=11, column=1, value="Version").font = Font(
         name="Calibri", size=11, bold=True,
     )
-    ws.cell(row=10, column=2, value="Date").font = Font(
+    ws.cell(row=11, column=2, value="Date").font = Font(
         name="Calibri", size=11, bold=True,
     )
-    ws.cell(row=10, column=3, value="Description").font = Font(
+    ws.cell(row=11, column=3, value="Description").font = Font(
         name="Calibri", size=11, bold=True,
     )
 
-    current_row = 11
+    current_row = 12
     for ver, date, description in version_info["changelog"]:
         ws.cell(row=current_row, column=1, value=ver)
         ws.cell(row=current_row, column=2, value=date)
@@ -120,7 +137,7 @@ def build_cover_sheet(wb, title, version_info, tab_names, scenario_narratives=No
         current_row += 1
 
     # =================================================================
-    # Section 5: Scenario Narratives (if provided) -- REQ-D03
+    # Section 6: Scenario Narratives (if provided) -- REQ-D03
     # =================================================================
     if scenario_narratives:
         current_row += 1  # blank separator
@@ -149,7 +166,7 @@ def build_cover_sheet(wb, title, version_info, tab_names, scenario_narratives=No
             current_row += 2  # blank row between scenarios
 
     # =================================================================
-    # Section 6: Table of Contents
+    # Section 7: Table of Contents
     # =================================================================
     current_row += 1  # blank separator
     ws.cell(
@@ -165,7 +182,7 @@ def build_cover_sheet(wb, title, version_info, tab_names, scenario_narratives=No
         current_row += 1
 
     # =================================================================
-    # Section 7: Color Convention Legend
+    # Section 8: Color Convention Legend
     # =================================================================
     current_row += 1  # blank separator
     ws.cell(
