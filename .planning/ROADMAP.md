@@ -3,7 +3,7 @@
 ## Milestones
 
 - **v1.0 Tokenomics Research & Optimization** -- Phase 1 (shipped 2026-02-05) -- [Archive](milestones/v1.0-ROADMAP.md)
-- **v1.1 Economic Modeling** -- Phases 1-9 (in progress)
+- **v1.1 Economic Modeling** -- Phases 1-9 (complete)
 
 ## Overview
 
@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Treasury & POL Simulation** - Treasury depletion, POL revenue, buyback-burn (most parameters)
 - [x] **Phase 7: Dashboard & Master Workbook Assembly** - Master workbook with linked tabs, dashboard, navigation
 - [x] **Phase 8: Standalone Workbook Generation** - Four focused standalone workbooks with documentation
-- [ ] **Phase 9: Polish, Documentation & Validation** - Cell protection, audit trail, print layout, final testing
+- [x] **Phase 9: Polish, Documentation & Validation** - Cell protection, audit trail, print layout, final testing
 
 ## Phase Details
 
@@ -173,9 +173,9 @@ Plans:
   5. All 5 workbooks open correctly in Excel with charts displaying proper labels, legends, and formatting
 **Plans**: 3 plans
 Plans:
-- [ ] 09-01-PLAN.md -- Source audit enrichment (confidence levels + full citations in parameters.py and workbook_base.py)
-- [ ] 09-02-PLAN.md -- Cell protection + print layout (print_setup.py utility, generate.py and standalone.py integration)
-- [ ] 09-03-PLAN.md -- Cross-platform validation and human verification (regenerate all 5 workbooks, add protection notes, Excel + Google Sheets testing)
+- [x] 09-01-PLAN.md -- Source audit enrichment (confidence levels + full citations in parameters.py and workbook_base.py)
+- [x] 09-02-PLAN.md -- Cell protection + print layout (print_setup.py utility, generate.py and standalone.py integration)
+- [x] 09-03-PLAN.md -- Cross-platform validation and human verification (regenerate all 5 workbooks, add protection notes, Excel + Google Sheets testing)
 
 ## Progress
 
@@ -192,4 +192,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 6. Treasury & POL Simulation | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 7. Dashboard & Master Workbook Assembly | v1.1 | 2/2 | Complete | 2026-02-06 |
 | 8. Standalone Workbook Generation | v1.1 | 4/4 | Complete | 2026-02-07 |
-| 9. Polish, Documentation & Validation | v1.1 | 0/3 | Not started | - |
+| 9. Polish, Documentation & Validation | v1.1 | 3/3 | Complete | 2026-02-07 |

@@ -186,10 +186,10 @@
 | REQ-U06 | Phase 1: Foundation & Shared Infrastructure | Done |
 | REQ-U07 | Phase 2: Emission Schedule Model | Done |
 | REQ-U08 | Phase 2: Emission Schedule Model | Done |
-| REQ-U09 | Phase 9: Polish, Documentation & Validation | Pending |
-| REQ-U10 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-U09 | Phase 9: Polish, Documentation & Validation | Done |
+| REQ-U10 | Phase 9: Polish, Documentation & Validation | Done |
 | REQ-U11 | Phase 8: Standalone Workbook Generation | Done |
-| REQ-U12 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-U12 | Phase 9: Polish, Documentation & Validation | Done |
 | REQ-M1-01 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-M1-02 | Phase 3: Token Price Scenarios Model | Done |
 | REQ-M1-03 | Phase 2: Emission Schedule Model | Done |
@@ -225,7 +225,7 @@
 | REQ-D01 | Phase 5: Host Profitability Model | Done |
 | REQ-D02 | Phase 4: Fee Transition Crossover Model | Done |
 | REQ-D03 | Phase 8: Standalone Workbook Generation | Done |
-| REQ-D04 | Phase 9: Polish, Documentation & Validation | Pending |
+| REQ-D04 | Phase 9: Polish, Documentation & Validation | Done |
 | REQ-D05 | Phase 7: Dashboard & Master Workbook Assembly | Done |
 | REQ-D06 | Phase 6: Treasury & POL Simulation | Done |
 | REQ-D07 | Phase 8: Standalone Workbook Generation | Done |
