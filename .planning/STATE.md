@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-07)
+See: .planning/PROJECT.md (updated 2026-02-13)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Planning next milestone
+**Current focus:** v1.2 Kimi K2.5 Integration & Agent Inference
 
 ## Current Position
 
-Phase: Milestone v1.1 complete. No active milestone.
-Plan: N/A
-Status: Ready for next milestone
-Last activity: 2026-02-07 -- v1.1 Economic Modeling milestone completed and archived
+Phase: Not started (defining requirements)
+Plan: --
+Status: Defining requirements
+Last activity: 2026-02-13 -- Milestone v1.2 started
 
-Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2+ TBD
+Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 ACTIVE
 
 ## Performance Metrics
 
@@ -47,6 +47,14 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - param_refs interface contract proven at scale (70+ parameters)
 - openpyxl 3.1.5 with app.xml chart fix works reliably
 
+### From v1.2 Research
+
+- Top 5 models for Gonka.ai: DeepSeek R1, FLUX.2, Llama 4, Wan 2.1, Qwen3
+- Kimi K2.5 selected as flagship: 1T params, native agentic, multimodal, MIT license
+- K2.5 deployment: vLLM v0.15.0+, 4x H200 production, OpenAI-compatible API
+- Agent inference opportunity: OpenClaw (145k stars), always-on agents drive 70%+ of compute spend
+- Recommended approach: Hybrid Option C (standard inference + agent-aware extensions)
+
 ### Pending Todos
 
 None.
@@ -57,6 +65,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-07
-Stopped at: v1.1 milestone completed and archived
+Last session: 2026-02-13
+Stopped at: Defining v1.2 requirements
 Resume file: None

@@ -8,6 +8,17 @@ Economic modeling tools for Gonka Network's tokenomics. Python scripts generate 
 
 Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions (price, emissions, host profitability, treasury).
 
+## Current Milestone: v1.2 Kimi K2.5 Integration & Agent Inference
+
+**Goal:** Build the infrastructure code to deploy Kimi K2.5 on Gonka.ai as an OpenAI-compatible inference endpoint with agent-aware extensions.
+
+**Target features:**
+- vLLM-based Kimi K2.5 serving with OpenAI-compatible API
+- API gateway with auth, rate limiting, and usage metering
+- Agent-aware inference extensions (session persistence, model tiering)
+- Docker/container deployment configuration
+- Integration with agent frameworks (OpenClaw, CrewAI, LangGraph)
+
 ## Requirements
 
 ### Validated
@@ -27,7 +38,11 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 
 ### Active
 
-(None -- next milestone requirements TBD via `/gsd:new-milestone`)
+- [ ] Kimi K2.5 inference serving via vLLM with OpenAI-compatible API
+- [ ] API gateway (auth, rate limiting, usage metering, multi-model routing)
+- [ ] Agent-aware inference extensions (session persistence, memory API, model tiering)
+- [ ] Docker/container deployment configuration for GPU nodes
+- [ ] Integration testing with OpenClaw, CrewAI, LangGraph agent frameworks
 
 ### Out of Scope
 
@@ -41,17 +56,24 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 
 - **v1.0 research provides all input parameters** -- emission decay rate (-0.000475), revenue splits (70/20/5/5), POL allocation (22M GNK), veGNK lock ranges, fee transition scenarios, GPU pricing trajectories, etc.
 - **v1.1 delivered 5 Excel workbooks** -- 1 master (8 tabs) + 4 standalone, 70 parameters with confidence levels, cell protection, print-ready, cross-platform validated
-- **Primary audience:** Gonka founders/leadership who need to evaluate trade-offs and make implementation decisions
-- **Tech stack:** Python 3.x with openpyxl==3.1.5 (sole dependency), 5,643 LOC across 19 source files
+- **v1.2 expands from modeling to infrastructure** -- building actual deployment code for Gonka.ai platform
+- **Primary audience:** Gonka founders/leadership (strategy) + developers (integration code)
+- **Tech stack (modeling):** Python 3.x with openpyxl==3.1.5 (sole dependency), 5,643 LOC across 19 source files
+- **Tech stack (v1.2 infrastructure):** Python (FastAPI), vLLM, Docker, OpenAI-compatible API
+- **Kimi K2.5:** 1T param MoE model, requires 4x H200 for production, vLLM v0.15.0+, OpenAI-compatible
+- **Agent inference landscape:** OpenClaw (145k+ GitHub stars), CrewAI, LangGraph all support OpenAI-compatible backends
 - **Open concerns from v1.0:** Oracle feed creation (critical path), POL paired asset shortage, governance concentration risk, developer adoption targets
 - **Deferred from v1.1:** IL modeling, tornado charts, competitive benchmarks, cross-model consistency checks
 
 ## Constraints
 
-- **Tech stack**: Python 3.x with openpyxl for Excel generation -- no external data dependencies
-- **Data source**: All parameters from v1.0 research documents (no live API calls)
-- **Output format**: .xlsx files that work in Excel and Google Sheets
-- **Audience**: Non-technical leadership -- models must be intuitive with clear labels and documentation tabs
+- **Tech stack (modeling)**: Python 3.x with openpyxl for Excel generation -- no external data dependencies
+- **Tech stack (v1.2)**: Python (FastAPI + vLLM), Docker -- GPU inference infrastructure
+- **Model serving**: vLLM v0.15.0+ with OpenAI-compatible API -- industry standard
+- **Target hardware**: 4x H200 GPUs minimum for K2.5 production serving
+- **API compatibility**: Must be OpenAI-compatible (drop-in for any existing integration)
+- **Output format**: .xlsx files that work in Excel and Google Sheets (modeling)
+- **Audience**: Non-technical leadership (strategy), developers (API/infrastructure)
 
 ## Key Decisions
 
@@ -66,5 +88,9 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 | Named ranges avoided | Industry anti-pattern; debugging complexity; openpyxl limitations | Good -- direct refs work well |
 | openpyxl 3.1.5 with app.xml fix | Chart rendering bug workaround | Good -- no downgrade needed |
 
+| Kimi K2.5 as flagship model | First-to-market on decentralized, native agentic + multimodal | Pending |
+| Option C hybrid agent inference | Agent-aware extensions over standard API, not full agent hosting | Pending |
+| vLLM over other serving frameworks | Industry standard, OpenAI-compatible, K2.5 officially supported | Pending |
+
 ---
-*Last updated: 2026-02-07 after v1.1 milestone completion*
+*Last updated: 2026-02-13 after v1.2 milestone start*
