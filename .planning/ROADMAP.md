@@ -26,11 +26,11 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
 
 **Phase Numbering:** Continues from v1.1 (phases 1-9). v1.2 starts at phase 10.
 
-- [ ] **Phase 10: K2.5 Model Serving** - Deploy Kimi K2.5 via vLLM with OpenAI-compatible API, tool calling, thinking mode, and Docker packaging
-- [ ] **Phase 11: API Gateway** - FastAPI gateway with auth, rate limiting, usage metering, model routing, streaming, and error handling
-- [ ] **Phase 12: Agent Inference Extensions** - Session persistence, memory API, model tiering, webhook callbacks, and session lifecycle
-- [ ] **Phase 13: Multi-Model & Admin** - Multi-model routing, quantized variants, admin API, and usage dashboard
-- [ ] **Phase 14: Integration Testing** - End-to-end validation with OpenClaw, CrewAI, LangGraph, API compatibility suite, and load testing
+- [x] **Phase 10: K2.5 Model Serving** - Deploy Kimi K2.5 via vLLM with OpenAI-compatible API, tool calling, thinking mode, and Docker packaging
+- [x] **Phase 11: API Gateway** - FastAPI gateway with auth, rate limiting, usage metering, model routing, streaming, and error handling
+- [x] **Phase 12: Agent Inference Extensions** - Session persistence, memory API, model tiering, webhook callbacks, and session lifecycle
+- [x] **Phase 13: Multi-Model & Admin** - Multi-model routing, quantized variants, admin API, and usage dashboard
+- [x] **Phase 14: Integration Testing** - End-to-end validation with OpenClaw, CrewAI, LangGraph, API compatibility suite, and load testing
 
 ## Phase Details
 
@@ -120,8 +120,8 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. K2.5 Model Serving | v1.2 | 0/TBD | Not started | - |
-| 11. API Gateway | v1.2 | 0/TBD | Not started | - |
-| 12. Agent Inference Extensions | v1.2 | 0/TBD | Not started | - |
-| 13. Multi-Model & Admin | v1.2 | 0/TBD | Not started | - |
-| 14. Integration Testing | v1.2 | 0/TBD | Not started | - |
+| 10. K2.5 Model Serving | v1.2 | 1/1 | Complete | 2026-02-13 |
+| 11. API Gateway | v1.2 | 1/1 | Complete | 2026-02-13 |
+| 12. Agent Inference Extensions | v1.2 | 1/1 | Complete | 2026-02-13 |
+| 13. Multi-Model & Admin | v1.2 | 1/1 | Complete | 2026-02-13 |
+| 14. Integration Testing | v1.2 | 1/1 | Complete | 2026-02-13 |
