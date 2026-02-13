@@ -27,6 +27,10 @@ from infrastructure.gateway.errors import (
 from infrastructure.gateway.metering import UsageMeter, UsageRecord
 from infrastructure.gateway.rate_limit import RateLimiter
 from infrastructure.gateway.router import ModelRouter
+from infrastructure.agent.sessions import SessionManager
+from infrastructure.agent.memory import MemoryStore
+from infrastructure.agent.webhooks import WebhookManager
+from infrastructure.agent.routes import router as agent_router, init_agent_routes
 
 # ---------- App Setup ----------
 
@@ -41,6 +45,16 @@ auth_manager = AuthManager(keys_file=settings.api_keys_file)
 rate_limiter = RateLimiter()
 usage_meter = UsageMeter(db_path=f"{settings.data_dir}/usage.db")
 model_router = ModelRouter()
+session_manager = SessionManager(
+    ttl_seconds=settings.session_ttl_seconds,
+    max_history=settings.session_max_history,
+)
+memory_store = MemoryStore(db_path=settings.memory_db_path)
+webhook_manager = WebhookManager()
+
+# Initialize agent routes with shared managers
+init_agent_routes(session_manager, memory_store, webhook_manager, auth_manager)
+app.include_router(agent_router)
 
 app.add_exception_handler(Exception, generic_exception_handler)
 
@@ -89,8 +103,11 @@ async def chat_completions(request: Request):
 
     backend = model_router.resolve(model_name)
 
-    # Extract session ID for agent extensions (Phase 12)
+    # Agent session integration
     session_id = request.headers.get("x-gonka-session-id")
+    if session_id:
+        session_manager.get_or_create(session_id, api_key_str)
+        body["messages"] = session_manager.inject_history(session_id, body.get("messages", []))
 
     # Forward to vLLM backend
     is_streaming = body.get("stream", False)
@@ -143,6 +160,17 @@ async def _forward_response(
 
     # Record tokens for TPM limiting
     rate_limiter.record_tokens(api_key, usage.get("total_tokens", 0))
+
+    # Save to session history
+    if session_id:
+        # Save the user message and assistant response
+        new_messages = body.get("messages", [])[-1:]  # Last user message
+        choices = result.get("choices", [])
+        if choices:
+            assistant_msg = choices[0].get("message", {})
+            if assistant_msg:
+                new_messages.append(assistant_msg)
+        session_manager.append_messages(session_id, new_messages)
 
     return JSONResponse(content=result)
 
@@ -236,7 +264,7 @@ async def health():
 
 @app.on_event("startup")
 async def startup():
-    """Create a dev API key if none exist."""
+    """Bootstrap dev environment and start background tasks."""
     if auth_manager.key_count == 0:
         dev_key = "gk-dev-" + "0" * 48
         auth_manager.add_key(
@@ -247,3 +275,15 @@ async def startup():
             tpm_limit=10_000_000,
         )
         print(f"  Dev API key created: {dev_key}")
+
+    # Start periodic session cleanup
+    asyncio.create_task(_session_cleanup_loop())
+
+
+async def _session_cleanup_loop():
+    """Periodically clean up expired sessions."""
+    while True:
+        await asyncio.sleep(300)  # Every 5 minutes
+        removed = session_manager.cleanup_expired()
+        if removed > 0:
+            print(f"  Cleaned up {removed} expired sessions")
