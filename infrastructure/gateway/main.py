@@ -31,6 +31,9 @@ from infrastructure.agent.sessions import SessionManager
 from infrastructure.agent.memory import MemoryStore
 from infrastructure.agent.webhooks import WebhookManager
 from infrastructure.agent.routes import router as agent_router, init_agent_routes
+from infrastructure.agent.tiering import ModelTiering
+from infrastructure.admin.api import router as admin_router, init_admin_routes
+from infrastructure.serving.health import HealthChecker
 
 # ---------- App Setup ----------
 
@@ -51,10 +54,16 @@ session_manager = SessionManager(
 )
 memory_store = MemoryStore(db_path=settings.memory_db_path)
 webhook_manager = WebhookManager()
+model_tiering = ModelTiering()
+health_checker = HealthChecker(vllm_base_url=settings.vllm_base_url)
 
 # Initialize agent routes with shared managers
 init_agent_routes(session_manager, memory_store, webhook_manager, auth_manager)
 app.include_router(agent_router)
+
+# Initialize admin routes
+init_admin_routes(auth_manager, usage_meter, model_router, session_manager, model_tiering, health_checker)
+app.include_router(admin_router)
 
 app.add_exception_handler(Exception, generic_exception_handler)
 
@@ -100,6 +109,18 @@ async def chat_completions(request: Request):
             return openai_error(400, "No model specified and no default available",
                                 "invalid_request_error", "model_required")
         body["model"] = model_name
+
+    # Model tiering: auto-route based on content if enabled
+    tier_hint = request.headers.get("x-gonka-tier")
+    if tier_hint or not model_name:
+        tiered_model = model_tiering.resolve_model(
+            body.get("messages", []),
+            requested_model=model_name,
+            tier_hint=tier_hint,
+        )
+        if tiered_model:
+            model_name = tiered_model
+            body["model"] = model_name
 
     backend = model_router.resolve(model_name)
 
