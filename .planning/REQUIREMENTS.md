@@ -78,39 +78,39 @@ Requirements for Kimi K2.5 Integration & Agent Inference milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SERV-01 | TBD | Pending |
-| SERV-02 | TBD | Pending |
-| SERV-03 | TBD | Pending |
-| SERV-04 | TBD | Pending |
-| SERV-05 | TBD | Pending |
-| SERV-06 | TBD | Pending |
-| SERV-07 | TBD | Pending |
-| SERV-08 | TBD | Pending |
-| GATE-01 | TBD | Pending |
-| GATE-02 | TBD | Pending |
-| GATE-03 | TBD | Pending |
-| GATE-04 | TBD | Pending |
-| GATE-05 | TBD | Pending |
-| GATE-06 | TBD | Pending |
-| GATE-07 | TBD | Pending |
-| GATE-08 | TBD | Pending |
-| AGNT-01 | TBD | Pending |
-| AGNT-02 | TBD | Pending |
-| AGNT-03 | TBD | Pending |
-| AGNT-04 | TBD | Pending |
-| AGNT-05 | TBD | Pending |
-| AGNT-06 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
-| TEST-04 | TBD | Pending |
-| TEST-05 | TBD | Pending |
+| SERV-01 | Phase 10 | Pending |
+| SERV-02 | Phase 10 | Pending |
+| SERV-03 | Phase 10 | Pending |
+| SERV-04 | Phase 10 | Pending |
+| SERV-05 | Phase 10 | Pending |
+| SERV-06 | Phase 13 | Pending |
+| SERV-07 | Phase 13 | Pending |
+| SERV-08 | Phase 10 | Pending |
+| GATE-01 | Phase 11 | Pending |
+| GATE-02 | Phase 11 | Pending |
+| GATE-03 | Phase 11 | Pending |
+| GATE-04 | Phase 11 | Pending |
+| GATE-05 | Phase 11 | Pending |
+| GATE-06 | Phase 11 | Pending |
+| GATE-07 | Phase 11 | Pending |
+| GATE-08 | Phase 13 | Pending |
+| AGNT-01 | Phase 12 | Pending |
+| AGNT-02 | Phase 12 | Pending |
+| AGNT-03 | Phase 13 | Pending |
+| AGNT-04 | Phase 12 | Pending |
+| AGNT-05 | Phase 13 | Pending |
+| AGNT-06 | Phase 12 | Pending |
+| TEST-01 | Phase 14 | Pending |
+| TEST-02 | Phase 14 | Pending |
+| TEST-03 | Phase 14 | Pending |
+| TEST-04 | Phase 14 | Pending |
+| TEST-05 | Phase 14 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 27 total
-- Mapped to phases: 0
-- Unmapped: 27
+- Mapped to phases: 27
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-13*
-*Last updated: 2026-02-13 after initial definition*
+*Last updated: 2026-02-13 after roadmap creation*
