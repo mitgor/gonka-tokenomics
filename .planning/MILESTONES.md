@@ -1,5 +1,32 @@
 # Project Milestones: Gonka Tokenomics
 
+## v1.2 Kimi K2.5 Integration & Agent Inference (Shipped: 2026-02-13)
+
+**Delivered:** OpenAI-compatible inference infrastructure for Gonka.ai — vLLM-based Kimi K2.5 serving with FastAPI gateway, agent-aware extensions, multi-model routing, and integration tests for OpenClaw, CrewAI, and LangGraph.
+
+**Phases completed:** 10-14 (5 plans total)
+
+**Key accomplishments:**
+
+- Deployed Kimi K2.5 via vLLM with tensor parallelism, tool calling, thinking mode, and Docker packaging (3 GPU tiers)
+- Built FastAPI gateway with API key auth, sliding-window rate limiting, SQLite usage metering, model routing, and SSE streaming
+- Created agent-aware extensions: session persistence, TF-IDF memory API with semantic search, webhook callbacks, model tiering
+- Implemented multi-model routing with quantized variants (Q4/Q2) and admin API for usage stats and key management
+- Validated with integration tests for OpenClaw, CrewAI, LangGraph, API compatibility suite, and Locust load testing
+
+**Stats:**
+
+- 34 files created/modified, 4,000 insertions
+- 3,679 lines of Python across infrastructure code
+- 5 phases, 5 plans
+- 1 day (2026-02-13, single session)
+
+**Git range:** `a3ab35a` -> `f1582da`
+
+**What's next:** Additional model support (FLUX, Wan, DeepSeek, Llama, Qwen), GNK token payments, host node onboarding
+
+---
+
 ## v1.1 Economic Modeling (Shipped: 2026-02-07)
 
 **Delivered:** Five professional-grade Excel workbooks modeling Gonka Network token economics with 70 parameterized assumptions, cross-model dashboard, and what-if scenario analysis for leadership decision-making.

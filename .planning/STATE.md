@@ -2,31 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-13)
+See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** v1.2 Kimi K2.5 Integration & Agent Inference — COMPLETE
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: All phases complete (10-14)
-Plan: All plans executed
-Status: Milestone v1.2 complete — ready for review
-Last activity: 2026-02-13 — All 5 phases built and committed
+Phase: No active phase
+Plan: No active plan
+Status: Between milestones — v1.2 shipped, next milestone TBD
+Last activity: 2026-02-14 — v1.2 milestone archived
 
-Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 COMPLETE
-
-## Performance Metrics
-
-**v1.1 Velocity:**
-- Total plans completed: 21
-- Average duration: 2.7 min per plan
-- Total execution time: ~57 min
-- Phases: 9 (all verified PASSED)
-
-**v1.2 Velocity:**
-- Phases: 5 (10-14)
-- All 27 requirements addressed
+Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED
 
 ## Accumulated Context
 
@@ -49,7 +37,7 @@ See .planning/PROJECT.md Key Decisions table for full history.
 
 ### From v1.2
 
-- Infrastructure code in infrastructure/ directory
+- Infrastructure code in infrastructure/ directory (also at github.com/mitgor/gonka-ai-infrastructure)
 - Serving: vLLM launcher, health checks, Dockerfile, docker-compose with 3 tiers
 - Gateway: FastAPI proxy, API key auth, rate limiting, usage metering (SQLite), model routing, SSE streaming
 - Agent extensions: Session persistence, memory API (TF-IDF search), webhooks, model tiering
@@ -67,6 +55,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-13
-Stopped at: v1.2 milestone complete
+Last session: 2026-02-14
+Stopped at: v1.2 milestone archived
 Resume file: None
