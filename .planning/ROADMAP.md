@@ -35,11 +35,16 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
 </details>
 
 <details>
-<summary>v1.3 GTM Competitive Analysis (Phase 15) - IN PROGRESS</summary>
+<summary>v1.3 GTM Competitive Analysis (Phase 15-20) - IN PROGRESS</summary>
 
 - [ ] Phase 15: Competitive Analysis & Market Mapping
   - [x] Plan 15-01: Competitive Feature Matrix (COMP-01)
   - [x] Plan 15-02: Agent Workload Pricing Analysis (COMP-02) -- completed 2026-04-01
   - [ ] Plan 15-03: Provider Landscape Map (COMP-03)
+
+- [ ] Phase 16: Developer Personas & Journey Mapping
+  **Plans:** 1 plan
+  Plans:
+  - [ ] 16-01-PLAN.md — Developer persona cards and AAARRRP journey maps (MSG-01)
 
 </details>
