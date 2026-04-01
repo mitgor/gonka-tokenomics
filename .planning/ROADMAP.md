@@ -37,10 +37,10 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
 <details>
 <summary>v1.3 GTM Competitive Analysis (Phase 15-20) - IN PROGRESS</summary>
 
-- [ ] Phase 15: Competitive Analysis & Market Mapping
+- [x] Phase 15: Competitive Analysis & Market Mapping -- completed 2026-04-01
   - [x] Plan 15-01: Competitive Feature Matrix (COMP-01)
   - [x] Plan 15-02: Agent Workload Pricing Analysis (COMP-02) -- completed 2026-04-01
-  - [ ] Plan 15-03: Provider Landscape Map (COMP-03)
+  - [x] Plan 15-03: Provider Landscape Map (COMP-03) -- completed 2026-04-01
 
 - [x] Phase 16: Developer Personas & Journey Mapping -- completed 2026-04-01
   **Plans:** 1 plan
@@ -63,10 +63,10 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   Plans:
   - [x] 19-01-PLAN.md — Partnership playbook: four-tier integration roadmap, ClawHub submission, built-in provider PR strategy, technical requirements (GTM-02) -- completed 2026-04-01
 
-- [ ] Phase 20: Product-Led Growth & v1.4 Backlog
+- [x] Phase 20: Product-Led Growth & v1.4 Backlog -- completed 2026-04-01
   **Plans:** 2 plans
   Plans:
   - [x] 20-01-PLAN.md — PLG funnel model, free tier design spec, time-to-first-inference plan (GTM-03) -- completed 2026-04-01
-  - [ ] 20-02-PLAN.md — Prioritized v1.4 engineering backlog with must-ship vs nice-to-have (GTM-03)
+  - [x] 20-02-PLAN.md — Prioritized v1.4 engineering backlog with must-ship vs nice-to-have (GTM-03) -- completed 2026-04-01
 
 </details>

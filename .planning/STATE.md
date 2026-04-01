@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 19-01-PLAN.md (partnership playbook with four-tier roadmap, ClawHub plan, PR strategy) -- Phase 19 complete
+stopped_at: Completed 20-02-PLAN.md (v1.4 engineering backlog) -- Phase 20 complete, v1.3 milestone capstone delivered
 last_updated: "2026-04-01T21:27:28.068Z"
 last_activity: 2026-04-01 -- Phase 20 execution started
 progress:
   total_phases: 16
-  completed_phases: 15
+  completed_phases: 16
   total_plans: 38
-  completed_plans: 37
+  completed_plans: 38
 ---
 
 # Project State
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 20 (plg-v14-backlog) — EXECUTING
-Plan: 2 of 2
-Status: Executing Phase 20
-Last activity: 2026-04-01 -- Completed 20-01-PLAN.md (PLG growth model with funnel, free tier, time-to-first-inference)
+Phase: 20 (plg-v14-backlog) — COMPLETE
+Plan: 2 of 2 (DONE)
+Status: Phase 20 complete -- all plans delivered
+Last activity: 2026-04-01 -- Completed 20-02-PLAN.md (v1.4 engineering backlog with 18 must-ship items, 3-sprint build order)
 
 Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
@@ -90,6 +90,12 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - ClawHub submission plan: SKILL.md teaching agents session/tiering/memory usage, 1-2 weeks from Tier 1 completion
 - Tier validation gates: 10+ active users for Tier 2, 50+ npm installs for Tier 3, 1000+ developers for Tier 4
 - Execution priority matrix: 22 activities across P0-P3, P0 items are infrastructure gaps + Discord presence
+- v1.4 engineering backlog: 18 must-ship items, 14 nice-to-have, 32 unique items after de-duplication
+- Must-ship top 6: production endpoint, docs site, email-only signup, pricing page, OpenClaw npm plugin, persistent sessions (Redis)
+- 3-sprint build order: Foundation (W1-2), Signup Flow (W3-4), Product Hardening (W5-6) -- 6 weeks total
+- v1.4 milestone = developer can go from zero to first inference in <5 min with sessions in Redis and plugin on npm
+- All 28 NEEDED partnership requirements mapped to backlog (14 must-ship, 11 nice-to-have, 3 deferred to community gates)
+- Critical path: endpoint -> email infra -> signup flow (5 weeks minimum to GTM-ready)
 - PLG funnel: 6 stages (Discover->Explore->Sign Up->First Inference->Habitual Use->Paid Conversion) mapped to AAARRRP
 - Free tier: email-only signup, 15M tokens/month, 1000 req/day, 2 sessions, K2.5 lite+mid only
 - Time-to-first-inference: 7 steps, 4m15s target, pre-filled openclaw.json config snippet
@@ -108,5 +114,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 20-01-PLAN.md (PLG growth model with funnel, free tier, time-to-first-inference) -- Plan 2 of 2 remaining
+Stopped at: Completed 20-02-PLAN.md (v1.4 engineering backlog) -- Phase 20 complete, all 16 phases done
 Resume file: None
