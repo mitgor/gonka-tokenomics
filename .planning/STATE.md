@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 16-01-PLAN.md (developer personas and journey mapping)
-last_updated: "2026-04-01T20:26:58.184Z"
-last_activity: 2026-04-01
+status: executing
+stopped_at: Completed 17-01-PLAN.md (message house)
+last_updated: "2026-04-01T20:32:06.569Z"
+last_activity: 2026-04-01 -- Phase 17 execution started
 progress:
-  total_phases: 12
+  total_phases: 13
   completed_phases: 12
-  total_plans: 32
-  completed_plans: 32
+  total_plans: 34
+  completed_plans: 33
 ---
 
 # Project State
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 16 — developer-personas-journey-mapping
+**Current focus:** Phase 17 — positioning-messaging
 
 ## Current Position
 
-Phase: 16
-Plan: Not started
-Status: Phase 16 complete
-Last activity: 2026-04-01
+Phase: 17 (positioning-messaging) — EXECUTING
+Plan: 2 of 2
+Status: Executing Phase 17
+Last activity: 2026-04-01 -- Completed 17-01-PLAN.md (message house)
 
 Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
@@ -70,6 +70,10 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - Each persona has a different #1 decision driver -- cost, reliability, privacy/censorship
 - 3 distinct adoption paths identified: self-service, trust-building, audit-driven
 - AAARRRP priority: Awareness and Acquisition are P0 (universal blockers); Activation and Retention are P1
+- Message house: lead with heartbeat cost reduction (73%), not decentralization
+- 16 crypto terms on never-say list (wallet, staking, mining, DePIN, Web3, etc.)
+- Per-persona competitor focus: Weekend Builder vs OpenRouter, Startup CTO vs Together AI, Privacy-First vs Akash
+- Privacy claims limited to architectural guarantees; TEE not yet built
 
 ### Pending Todos
 
@@ -82,5 +86,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 16-01-PLAN.md (developer personas and journey mapping)
+Stopped at: Completed 17-01-PLAN.md (message house)
 Resume file: None

@@ -50,7 +50,7 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
 - [ ] Phase 17: Positioning & Messaging
   **Plans:** 2 plans
   Plans:
-  - [ ] 17-01-PLAN.md — Message house with core positioning, architecture-to-message mapping, and vocabulary guidelines (MSG-02)
+  - [x] 17-01-PLAN.md — Message house with core positioning, architecture-to-message mapping, and vocabulary guidelines (MSG-02)
   - [ ] 17-02-PLAN.md — Agent-native pitch and objection handling playbook (MSG-02, MSG-03)
 
 </details>
