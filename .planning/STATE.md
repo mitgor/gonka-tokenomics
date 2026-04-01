@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 18-01-PLAN.md (channel strategy with matrix, metrics, content calendar) -- Phase 18 complete
-last_updated: "2026-04-01T21:09:48.578Z"
-last_activity: 2026-04-01
+status: executing
+stopped_at: Completed 19-01-PLAN.md (partnership playbook with four-tier roadmap, ClawHub plan, PR strategy) -- Phase 19 complete
+last_updated: "2026-04-01T21:19:33Z"
+last_activity: 2026-04-01 -- Phase 19 execution complete
 progress:
-  total_phases: 14
-  completed_phases: 14
-  total_plans: 35
-  completed_plans: 35
+  total_phases: 15
+  completed_phases: 15
+  total_plans: 36
+  completed_plans: 36
 ---
 
 # Project State
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 18 complete — channel-strategy
+**Current focus:** Phase 19 complete -- ready for Phase 20
 
 ## Current Position
 
-Phase: 18
-Plan: Not started
-Status: Phase 18 complete
-Last activity: 2026-04-01
+Phase: 19 (partnership-ecosystem-strategy) — COMPLETE
+Plan: 1 of 1 (complete)
+Status: Phase 19 complete
+Last activity: 2026-04-01 -- Completed 19-01 partnership playbook
 
 Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
@@ -84,6 +84,12 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - P0 channels: OpenClaw Provider Directory, GitHub, Discord -- meet developers where they already make provider decisions
 - Anti-metrics explicitly documented: follower counts, Discord members, GitHub stars, impressions are vanity metrics
 - Content calendar: AAARRRP-mapped framework with quarterly templates (Q1 launch 60% Awareness+Acquisition, Q2 growth 50% Activation+Retention)
+- Partnership playbook: four-tier OpenClaw integration roadmap (Listed -> Plugin -> Built-In -> Preferred Partner)
+- Community-first PR strategy: 3-5 merged non-Gonka PRs before proposing built-in provider (3-6 month realistic timeline)
+- Technical partnership requirements: 33 items tracked (5 DONE from v1.2, 28 NEEDED across API, SDK, Community, Reliability, Business)
+- ClawHub submission plan: SKILL.md teaching agents session/tiering/memory usage, 1-2 weeks from Tier 1 completion
+- Tier validation gates: 10+ active users for Tier 2, 50+ npm installs for Tier 3, 1000+ developers for Tier 4
+- Execution priority matrix: 22 activities across P0-P3, P0 items are infrastructure gaps + Discord presence
 
 ### Pending Todos
 
@@ -96,5 +102,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 18-01-PLAN.md (channel strategy with matrix, metrics, content calendar) -- Phase 18 complete
+Stopped at: Completed 19-01-PLAN.md (partnership playbook with four-tier roadmap, ClawHub plan, PR strategy) -- Phase 19 complete
 Resume file: None
