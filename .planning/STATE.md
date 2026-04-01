@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 15-02-PLAN.md (agent workload pricing analysis)
-last_updated: "2026-04-01T20:08:39.979Z"
-last_activity: 2026-04-01
+status: executing
+stopped_at: Completed 16-01-PLAN.md (developer personas and journey mapping)
+last_updated: "2026-04-01T20:23:08Z"
+last_activity: 2026-04-01 -- Phase 16 completed
 progress:
-  total_phases: 11
-  completed_phases: 11
-  total_plans: 31
-  completed_plans: 31
+  total_phases: 12
+  completed_phases: 12
+  total_plans: 32
+  completed_plans: 32
 ---
 
 # Project State
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Planning next milestone
+**Current focus:** Phase 16 — developer-personas-journey-mapping
 
 ## Current Position
 
-Phase: 15
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-04-01
+Phase: 16 (developer-personas-journey-mapping) — COMPLETE
+Plan: 1 of 1 (done)
+Status: Phase 16 complete
+Last activity: 2026-04-01 -- Phase 16 completed
 
 Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
@@ -66,6 +66,10 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - Heartbeat overhead accounts for 44-85% of agent token consumption depending on tier
 - Recommended pricing: Scenario B ($0.35/$1.75) -- 30% below DeepInfra, competitive with sessions
 - Gonka pricing TBD -- all cost projections are scenario-based
+- 3 developer personas: Weekend Builder (cost-driven, Casual), Startup CTO (reliability-driven, Active), Privacy-First Builder (privacy-driven, cross-tier)
+- Each persona has a different #1 decision driver -- cost, reliability, privacy/censorship
+- 3 distinct adoption paths identified: self-service, trust-building, audit-driven
+- AAARRRP priority: Awareness and Acquisition are P0 (universal blockers); Activation and Retention are P1
 
 ### Pending Todos
 
@@ -78,5 +82,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 15-02-PLAN.md (agent workload pricing analysis)
+Stopped at: Completed 16-01-PLAN.md (developer personas and journey mapping)
 Resume file: None

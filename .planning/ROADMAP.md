@@ -42,9 +42,9 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   - [x] Plan 15-02: Agent Workload Pricing Analysis (COMP-02) -- completed 2026-04-01
   - [ ] Plan 15-03: Provider Landscape Map (COMP-03)
 
-- [ ] Phase 16: Developer Personas & Journey Mapping
+- [x] Phase 16: Developer Personas & Journey Mapping -- completed 2026-04-01
   **Plans:** 1 plan
   Plans:
-  - [ ] 16-01-PLAN.md — Developer persona cards and AAARRRP journey maps (MSG-01)
+  - [x] 16-01-PLAN.md — Developer persona cards and AAARRRP journey maps (MSG-01) -- completed 2026-04-01
 
 </details>
