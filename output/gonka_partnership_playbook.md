@@ -284,3 +284,312 @@ When engaging with OpenClaw maintainers, community members, or potential partner
 **Never lead with:** Decentralization, GNK tokens, mining rewards, DePIN, Web3, staking, epochs, validators, or any term on the 16-item never-say list (gonka_message_house.md: Section 6.1).
 
 **For partner-facing technical discussions:** Frame Gonka as "the agent-native inference provider" -- a description that is accurate, memorable, and crypto-free. The decentralized infrastructure is the "how," not the "what." Developers and partners care about what Gonka does for their agents, not how the network achieves consensus.
+
+---
+
+## ClawHub Submission Plan
+
+ClawHub is OpenClaw's marketplace of 5,700+ skills -- markdown-based agent capability definitions (SKILL.md files) injected into system prompts based on context. Publishing Gonka content on ClawHub puts Gonka in front of developers who are actively configuring their agents.
+
+### What to Submit
+
+**1. Gonka Provider Skill (Primary Submission)**
+
+A SKILL.md file that teaches OpenClaw agents how to use Gonka-specific features. When an agent loads this skill, it learns about Gonka's session persistence, model tiering, and memory API -- enabling it to use these features automatically without developer intervention.
+
+Draft SKILL.md outline:
+
+```markdown
+---
+name: gonka-agent-extensions
+description: Use Gonka's agent-native inference features -- server-side sessions,
+  automatic model tiering, and persistent memory
+version: 1.0.0
+author: Gonka Network
+tags: [inference, sessions, memory, tiering, cost-optimization]
+---
+
+# Gonka Agent Extensions
+
+You are connected to a Gonka inference provider. Gonka offers agent-native
+features that reduce your inference costs and improve your capabilities.
+
+## Session Persistence
+
+When making requests to Gonka, include the `X-Gonka-Session-ID` header to
+maintain conversation state server-side. This eliminates the need to resend
+full context on every request, reducing token consumption by up to 80%.
+
+### How to Use Sessions
+
+- On first request: Set `X-Gonka-Session-ID: <unique-id>` header
+- On subsequent requests: Use the same session ID to resume context
+- Sessions persist across requests -- your conversation history is maintained
+  server-side without retransmitting tokens
+
+## Model Tiering
+
+Use the `X-Gonka-Tier` header to select cost-performance tiers per request:
+
+- `X-Gonka-Tier: lite` -- fast classification, simple tasks (lowest cost)
+- `X-Gonka-Tier: mid` -- balanced reasoning tasks
+- `X-Gonka-Tier: full` -- complex reasoning, code generation (highest quality)
+
+### When to Use Each Tier
+
+- Classification and routing decisions: use `lite`
+- Summarization and standard responses: use `mid`
+- Code generation, complex reasoning, multi-step planning: use `full`
+
+## Memory API
+
+Store and retrieve persistent key-value data via the Gonka Memory API:
+
+- Store: `POST /v1/memory` with key-value pairs
+- Recall: `GET /v1/memory?query=<search-term>` (TF-IDF keyword search)
+- Memory persists across sessions and agent restarts
+
+## Example Usage Pattern
+
+For a cost-optimized agent workflow:
+1. Set session ID on first request (eliminate heartbeat costs)
+2. Use `lite` tier for input classification
+3. Use `full` tier for complex reasoning steps
+4. Store important results in memory for future recall
+```
+
+**2. Gonka Configuration Template Skill**
+
+A companion skill providing the exact `openclaw.json` configuration for adding Gonka as a custom provider:
+
+```json
+{
+  "models": {
+    "providers": {
+      "gonka": {
+        "baseUrl": "https://api.gonka.ai/v1",
+        "apiKey": "${GONKA_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "kimi-k2.5",
+            "name": "Kimi K2.5",
+            "contextWindow": 131072,
+            "maxTokens": 8192,
+            "cost": { "input": 0.50, "output": 1.50 }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**3. Gonka Quickstart Skill**
+
+A step-by-step skill that walks an agent through setting up Gonka as a provider. Covers: where to get an API key, how to configure `openclaw.json`, how to verify the connection, and how to enable agent-native features.
+
+### Submission Process
+
+| Step | Action | Timeline |
+|------|--------|----------|
+| 1 | Create GitHub repository `gonka-openclaw-skill` following ClawHub naming conventions | Day 1 |
+| 2 | Write SKILL.md following OpenClaw's skill format (markdown with YAML frontmatter, structured sections for agent consumption) | Day 2-3 |
+| 3 | Test skill locally with an OpenClaw agent to verify system prompt injection works correctly -- agent should demonstrate awareness of Gonka features | Day 4-5 |
+| 4 | Submit to ClawHub via the standard contribution process (PR to skills registry or direct publish through ClawHub interface) | Day 6-7 |
+| 5 | Promote in OpenClaw Discord `#skills` channel and GitHub Discussions -- brief post explaining what the skill does and how it helps agents optimize costs | Day 8-10 |
+
+### Timeline
+
+1-2 weeks from Tier 1 completion. The SKILL.md can be drafted during Tier 1 work and submitted as soon as the public endpoint and API key signup are live.
+
+### Success Metrics
+
+- Skill appears in ClawHub search results for "inference," "cost optimization," "sessions," "agent memory"
+- 25+ installs in first month
+- Skill referenced in OpenClaw community discussions (Discord, GitHub Discussions)
+- Agents using the skill demonstrate correct usage of session headers and tiering
+
+### Maintenance Plan
+
+- Update skill when Gonka adds new features (new models, new MCP tools, new API capabilities)
+- Update when OpenClaw changes skill format or injection mechanism
+- Monitor ClawHub for user issues or questions about the skill
+- Version the skill alongside Gonka API versions
+
+---
+
+## Built-In Provider PR Strategy
+
+Getting Gonka merged as a built-in OpenClaw provider is the single highest-impact GTM action identified in the provider landscape analysis (gonka_provider_landscape_map.md: Phase 19 recommendations). Built-in status eliminates the JSON configuration friction that is the #1 barrier to developer adoption -- developers would set a single environment variable instead of editing a config file.
+
+**Core principle: Community approach, not cold PR -- build relationship first.** A PR from an unknown contributor proposing a new provider will likely be ignored, deprioritized, or rejected. OpenClaw's maintainers receive thousands of PRs. Earning credibility through sustained community contribution is the prerequisite.
+
+### Community Relationship Building (Pre-PR Phase)
+
+**Month 1-2: Establish Presence**
+
+- Join OpenClaw Discord and become a helpful presence in `#help`, `#models`, and `#users-helping-users` channels
+- Answer provider configuration questions -- especially around custom provider setup, model configuration, and common gotchas (like the missing model allowlisting silent failure)
+- Share Gonka config snippets when organically relevant: when developers ask about cost-effective providers, agent-native features, or session management. Not promotional -- only when the question matches Gonka's strengths
+- Follow OpenClaw GitHub repositories: watch issues, read PR discussions, understand the project's code review culture
+- Goal: Be recognized as a helpful community member, not a vendor
+
+**Month 2-3: Contribute Non-Gonka PRs**
+
+- Contribute to openclaw/openclaw with bug fixes, documentation improvements, test coverage, or developer experience enhancements
+- Target 3-5 merged PRs before proposing the Gonka provider. Examples:
+  - Fix a documentation typo or clarify confusing provider setup instructions
+  - Add test coverage for an edge case in the provider loading mechanism
+  - Improve error messages for common configuration mistakes
+  - Write a "troubleshooting custom providers" guide for the docs
+- Each PR builds contributor credibility and demonstrates familiarity with the codebase
+- Goal: Establish a track record as a quality contributor
+
+**Month 3-4: Engage on Provider Architecture**
+
+- Participate in GitHub Discussions about provider architecture, agent infrastructure, and the future of built-in provider support
+- Understand maintainer priorities: What are their pain points? What providers are they considering adding? What criteria matter most?
+- Share insights from the Gonka community plugin experience -- what developers want, what patterns work, what gaps exist
+- Goal: Become a trusted voice in provider-related technical discussions
+
+**Throughout: Track Community Adoption Signals**
+
+- Users mentioning Gonka in OpenClaw Discord
+- Gonka config snippets shared in community channels
+- GitHub issues filed about Gonka integration
+- npm install counts for the community plugin
+- Third-party blog posts or tutorials mentioning Gonka + OpenClaw
+- These metrics will support the eventual PR proposal
+
+### PR Preparation (Technical)
+
+**Study existing implementations:**
+- Examine how OpenRouter, Together AI, and Groq providers are structured in the openclaw/openclaw source
+- Note: file structure, TypeScript patterns, config schema, test patterns, documentation format
+- Ensure the Gonka module follows the same conventions exactly -- do not introduce novel patterns
+
+**Implement the Gonka provider module:**
+- TypeScript module matching OpenClaw's provider implementation pattern
+- Config schema: `GONKA_API_KEY` environment variable, automatic model catalog, capability flags
+- Model catalog with accurate data:
+  - `kimi-k2.5`: contextWindow 131072, maxTokens 8192, pricing (input/output per 1M tokens), capability flags (`reasoning: true`, `toolUse: true`)
+  - Include all quantization tiers if exposed as separate model IDs
+- Handle Gonka-specific headers (`X-Gonka-Session-ID`, `X-Gonka-Tier`) as optional provider extensions that enhance but do not break standard OpenClaw flow
+- Ensure standard chat completions, tool calling, and streaming work without any Gonka-specific headers
+
+**Write comprehensive tests:**
+- Jest tests matching OpenClaw's test patterns (same assertion style, same file naming)
+- Test: provider initialization, model listing, chat completion, streaming, tool calling, error handling
+- Test: Gonka-specific headers are passed through when set, omitted gracefully when not set
+
+**Write documentation:**
+- Documentation page matching existing provider docs format
+- Setup instructions: "Set `GONKA_API_KEY` environment variable, Gonka models are available immediately"
+- Feature highlights: session persistence, model tiering, memory API (as optional advanced features)
+- Pricing and model capabilities table
+
+### PR Submission Strategy
+
+**Step 1: Open a GitHub Discussion BEFORE the PR**
+
+Title: "RFC: Add Gonka as Built-In Provider"
+
+Content:
+- Why Gonka is different from existing providers (not just another OpenAI wrapper -- agent-native extensions that reduce inference costs by up to 73% through server-side sessions)
+- Community adoption metrics: npm plugin installs, active developer count, Discord mentions, community feedback
+- Link to existing community plugin and ClawHub skill
+- Technical readiness: OpenAI-compatible API, comprehensive tests, stable uptime stats
+- Ask for feedback on the proposal before submitting code
+
+**Step 2: Wait for maintainer feedback**
+
+- Do not submit the PR until at least one maintainer responds positively to the Discussion
+- Address any concerns or questions raised
+- Incorporate feedback into the implementation
+
+**Step 3: Submit PR with complete context**
+
+PR description template:
+- **What:** Add Gonka as a built-in provider
+- **Why:** Gonka offers agent-native extensions (sessions, memory, tiering) that no other built-in provider has; [X] developers already use Gonka via community plugin; built-in status reduces setup from npm install + JSON config to a single env var
+- **How:** Provider module matching existing patterns (link to code), tests (link), docs (link)
+- **Adoption data:** npm downloads, API-active developer count, community plugin installs, Discord mentions
+- **Maintenance commitment:** Gonka team commits to maintaining the provider module, updating model catalog, and responding to issues
+
+**Step 4: Iterate on review feedback**
+
+- Respond to code review within 24 hours
+- Make requested changes promptly
+- Do not argue with stylistic preferences -- match the project's conventions
+
+### Handling Rejection
+
+| Rejection Reason | Response | Timeline |
+|-----------------|----------|----------|
+| Insufficient adoption | Set concrete metric targets (e.g., 500+ npm installs, 100+ API-active developers); revisit in 3 months with updated data | 3 months |
+| Technical concerns | Address every piece of feedback; resubmit with improvements; offer to pair with a maintainer on the implementation | 2-4 weeks |
+| Too many providers | Propose "community-maintained" provider with lighter integration -- provider config in a contrib/ directory with community ownership | 1-2 weeks |
+| No response | Follow up once after 2 weeks; engage in other Discussions to stay visible; try again with updated metrics in 2 months | 2 months |
+| Philosophical disagreement | Accept and continue with community plugin approach; community plugin gives 90% of built-in benefits with no approval needed | Ongoing |
+
+### Realistic Timeline
+
+| Phase | Duration | Cumulative |
+|-------|----------|------------|
+| Community presence and initial contributions | 1-2 months | 1-2 months |
+| Non-Gonka PR contributions (3-5 merged) | 1-2 months | 2-4 months |
+| RFC Discussion and feedback cycle | 2-4 weeks | 3-5 months |
+| PR preparation | 1-2 weeks | 3-5 months |
+| PR review and iteration | 2-4 weeks | 4-6 months |
+| **Total** | **3-6 months** from starting community engagement |
+
+**Important caveat:** This is NOT a guaranteed outcome. It depends on Gonka's community traction, OpenClaw team's priorities, and the quality of the relationship built during the pre-PR phase. The community plugin (Tier 2) provides 90% of the developer experience benefit and is fully within Gonka's control. Built-in status (Tier 3) is a goal worth pursuing, but the strategy should not depend on it.
+
+---
+
+## Execution Priority Matrix
+
+All partnership and ecosystem activities ordered by priority, with dependencies and target dates.
+
+| Priority | Activity | Tier | Effort | Dependencies | Target Date |
+|----------|----------|------|--------|--------------|-------------|
+| P0 | Deploy public endpoint (`api.gonka.ai/v1`) | 1 | 1-2 weeks | v1.3 completion | Month 1 |
+| P0 | Launch API documentation site (docs.gonka.ai) | 1 | 2-3 weeks | None | Month 1 |
+| P0 | Implement self-service API key signup | 1 | 1-2 weeks | Docs site | Month 1 |
+| P0 | Publish pricing page with cost calculator | 1 | 1 week | Pricing decision (Leadership) | Month 1 |
+| P0 | Publish `openclaw.json` config template | 1 | 1 day | Public endpoint | Month 1 |
+| P0 | Join OpenClaw Discord; begin community presence | 1 | Ongoing | None | Immediately |
+| P1 | Write and publish OpenClaw integration guide | 1 | 2-3 days | Docs site, config template | Month 1-2 |
+| P1 | Submit Gonka Provider Skill to ClawHub | 2 | 1-2 weeks | Public endpoint, API key signup | Month 2-3 |
+| P1 | Build npm plugin (`openclaw-plugin-gonka`) | 2 | 2-3 weeks | Tier 1 validation (10+ users) | Month 2-3 |
+| P1 | Build MCP server for agent extensions | 2 | 2-3 weeks | npm plugin | Month 2-3 |
+| P1 | Create quickstart GitHub template repo | 2 | 1 week | Config template, integration guide | Month 2-3 |
+| P1 | Publish integration guide on dev.to / Medium | 2 | 3-5 days | Working integration | Month 2-3 |
+| P1 | Migrate sessions from in-memory to Redis | 3 | 1-2 weeks | None (v1.2 tech debt) | Month 2-3 |
+| P2 | Record video tutorial ("OpenClaw + Gonka in 5 min") | 2 | 1 week | Working integration | Month 3-4 |
+| P2 | Contribute 3-5 non-Gonka PRs to openclaw/openclaw | 3 | 2-4 weeks | Community presence | Month 2-4 |
+| P2 | Launch public uptime/status page | 3 | 1 week | Public endpoint | Month 3-4 |
+| P2 | Publish benchmark results (latency, throughput) | 3 | 1 week | Production traffic data | Month 3-4 |
+| P2 | Build cost comparison calculator tool | 2 | 3-5 days | Published pricing | Month 3-4 |
+| P3 | Open RFC Discussion for built-in provider | 3 | 2 days | 3-5 merged PRs, adoption metrics | Month 4-5 |
+| P3 | Prepare and submit built-in provider PR | 3 | 1-2 weeks | Positive RFC feedback | Month 5-6 |
+| P3 | Publish SLA terms document | 4 | 1 week | Uptime track record | Month 6+ |
+| P3 | Pursue co-development opportunities | 4 | Ongoing | Built-in provider status | Month 9-12+ |
+
+---
+
+## Next Steps
+
+The three most important immediate actions to start executing this playbook:
+
+1. **Close P0 infrastructure gaps (Month 1).** Deploy the public API endpoint, launch docs.gonka.ai with the OpenClaw integration guide, implement self-service API key signup, and publish the pricing page. These are table-stakes prerequisites -- nothing else in this playbook can proceed without them. See the provider landscape gap analysis (gonka_provider_landscape_map.md: Must Close Before GTM Push) for the "closed" definition of each gap.
+
+2. **Establish OpenClaw Discord presence (Immediately).** Join the OpenClaw Discord and begin participating in `#help`, `#models`, and `#users-helping-users` channels. This is zero-cost, zero-dependency, and can start today. The goal is to become a recognized, helpful community member before any Gonka promotion begins. Every month of community presence before the built-in provider PR increases the probability of acceptance.
+
+3. **Publish the `openclaw.json` config template (Week 1 of Tier 1).** The configuration template is the single most reusable asset in this playbook. It appears in the integration guide, the ClawHub skill, the community plugin, the quickstart repo, and every piece of content about Gonka + OpenClaw. Create it once, publish it on docs.gonka.ai, and reference it everywhere.
+
+---
+
+*Document: gonka_partnership_playbook.md | Version 1.0 | 2026-04-01*
+*Companion documents: gonka_message_house.md (positioning), gonka_channel_strategy.md (channels), gonka_competitive_feature_matrix.md (competitive analysis), gonka_provider_landscape_map.md (gap analysis)*
