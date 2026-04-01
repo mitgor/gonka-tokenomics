@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
+status: executing
 stopped_at: Completed 19-01-PLAN.md (partnership playbook with four-tier roadmap, ClawHub plan, PR strategy) -- Phase 19 complete
-last_updated: "2026-04-01T21:23:08.110Z"
-last_activity: 2026-04-01
+last_updated: "2026-04-01T21:27:28.068Z"
+last_activity: 2026-04-01 -- Phase 20 execution started
 progress:
-  total_phases: 15
+  total_phases: 16
   completed_phases: 15
-  total_plans: 36
-  completed_plans: 36
+  total_plans: 38
+  completed_plans: 37
 ---
 
 # Project State
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
-**Current focus:** Phase 19 complete -- ready for Phase 20
+**Current focus:** Phase 20 — plg-v14-backlog
 
 ## Current Position
 
-Phase: 19
-Plan: Not started
-Status: Phase 19 complete
-Last activity: 2026-04-01
+Phase: 20 (plg-v14-backlog) — EXECUTING
+Plan: 2 of 2
+Status: Executing Phase 20
+Last activity: 2026-04-01 -- Completed 20-01-PLAN.md (PLG growth model with funnel, free tier, time-to-first-inference)
 
 Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
@@ -90,6 +90,12 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - ClawHub submission plan: SKILL.md teaching agents session/tiering/memory usage, 1-2 weeks from Tier 1 completion
 - Tier validation gates: 10+ active users for Tier 2, 50+ npm installs for Tier 3, 1000+ developers for Tier 4
 - Execution priority matrix: 22 activities across P0-P3, P0 items are infrastructure gaps + Discord presence
+- PLG funnel: 6 stages (Discover->Explore->Sign Up->First Inference->Habitual Use->Paid Conversion) mapped to AAARRRP
+- Free tier: email-only signup, 15M tokens/month, 1000 req/day, 2 sessions, K2.5 lite+mid only
+- Time-to-first-inference: 7 steps, 4m15s target, pre-filled openclaw.json config snippet
+- Upgrade triggers via API headers (X-Gonka-Usage-Remaining), not hard blocks
+- Atomic growth unit: openclaw.json config snippet as viral mechanism (copy-pasteable, version-controlled, portable)
+- Funnel math at target rates: 1000 discovers -> ~17 API-active devs -> ~1 paying user
 
 ### Pending Todos
 
@@ -102,5 +108,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 19-01-PLAN.md (partnership playbook with four-tier roadmap, ClawHub plan, PR strategy) -- Phase 19 complete
+Stopped at: Completed 20-01-PLAN.md (PLG growth model with funnel, free tier, time-to-first-inference) -- Plan 2 of 2 remaining
 Resume file: None
