@@ -47,10 +47,10 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   Plans:
   - [x] 16-01-PLAN.md — Developer persona cards and AAARRRP journey maps (MSG-01) -- completed 2026-04-01
 
-- [ ] Phase 17: Positioning & Messaging
+- [x] Phase 17: Positioning & Messaging -- completed 2026-04-01
   **Plans:** 2 plans
   Plans:
   - [x] 17-01-PLAN.md — Message house with core positioning, architecture-to-message mapping, and vocabulary guidelines (MSG-02)
-  - [ ] 17-02-PLAN.md — Agent-native pitch and objection handling playbook (MSG-02, MSG-03)
+  - [x] 17-02-PLAN.md — Agent-native pitch and objection handling playbook (MSG-02, MSG-03) -- completed 2026-04-01
 
 </details>

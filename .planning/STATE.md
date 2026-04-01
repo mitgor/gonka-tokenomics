@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 17-01-PLAN.md (message house)
-last_updated: "2026-04-01T20:32:06.569Z"
-last_activity: 2026-04-01 -- Phase 17 execution started
+stopped_at: Completed 17-02-PLAN.md (agent-native pitch & objection playbook)
+last_updated: "2026-04-01T20:49:30Z"
+last_activity: 2026-04-01 -- Phase 17 completed (all plans done)
 progress:
   total_phases: 13
-  completed_phases: 12
+  completed_phases: 13
   total_plans: 34
-  completed_plans: 33
+  completed_plans: 34
 ---
 
 # Project State
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 17 (positioning-messaging) — EXECUTING
-Plan: 2 of 2
-Status: Executing Phase 17
-Last activity: 2026-04-01 -- Completed 17-01-PLAN.md (message house)
+Phase: 17 (positioning-messaging) — COMPLETE
+Plan: 2 of 2 (all complete)
+Status: Phase 17 complete
+Last activity: 2026-04-01 -- Completed 17-02-PLAN.md (agent-native pitch & objection playbook)
 
 Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
@@ -74,6 +74,11 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - 16 crypto terms on never-say list (wallet, staking, mining, DePIN, Web3, etc.)
 - Per-persona competitor focus: Weekend Builder vs OpenRouter, Startup CTO vs Together AI, Privacy-First vs Akash
 - Privacy claims limited to architectural guarantees; TEE not yet built
+- Agent-native pitch: agents are "buyers" making runtime provider selection decisions -- Gonka wins 3/7 task profiles
+- Gonka wins: long-running agents (sessions), multi-agent systems (sessions+tiering), privacy-sensitive (no filtering)
+- Gonka loses: model diversity (OpenRouter), single-shot (Together AI), quality/uptime (OpenAI)
+- ACE objection framework: Acknowledge concern, Counter with evidence, point to Evidence source
+- 12 objections documented: P0 priorities are awareness, crypto perception, SLA gap, prompt privacy
 
 ### Pending Todos
 
@@ -86,5 +91,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 17-01-PLAN.md (message house)
+Stopped at: Completed 17-02-PLAN.md (agent-native pitch & objection playbook) -- Phase 17 complete
 Resume file: None
