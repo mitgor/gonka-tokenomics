@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Economic modeling tools and inference infrastructure for Gonka Network. Python scripts generate 5 Excel workbooks with 70 adjustable parameters for tokenomics analysis (v1.0-v1.1). Infrastructure code deploys Kimi K2.5 as an OpenAI-compatible inference endpoint with agent-aware extensions, API gateway, and multi-model routing (v1.2).
+Economic modeling tools, inference infrastructure, and go-to-market strategy for Gonka Network. Python scripts generate 5 Excel workbooks with 70 adjustable parameters for tokenomics analysis (v1.0-v1.1). Infrastructure code deploys Kimi K2.5 as an OpenAI-compatible inference endpoint with agent-aware extensions, API gateway, and multi-model routing (v1.2). GTM research provides competitive analysis, developer personas, messaging, channel strategy, partnership playbook, and PLG growth model targeting OpenClaw developers (v1.3).
 
 ## Core Value
 
@@ -29,21 +29,20 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 - Agent-aware inference extensions (session persistence, memory API, model tiering) -- v1.2
 - Docker/container deployment configuration for GPU nodes -- v1.2
 - Integration testing with OpenClaw, CrewAI, LangGraph agent frameworks -- v1.2
+- Competitive feature matrix across 5 providers and 8 agent-relevant dimensions -- v1.3
+- Agent workload pricing analysis with 3 tiers and session-adjusted cost modeling -- v1.3
+- Provider landscape map with 4-segment categorization and gap analysis -- v1.3
+- Developer persona cards (Weekend Builder, Startup CTO, Privacy-First Builder) with AAARRRP journey maps -- v1.3
+- Message house with core positioning, architecture-to-message mapping, and vocabulary guidelines -- v1.3
+- Agent-native pitch with programmatic provider selection test -- v1.3
+- Channel strategy with P0-P3 tiered matrix and 70/30 AI-dev/crypto split -- v1.3
+- Partnership playbook with four-tier OpenClaw integration roadmap -- v1.3
+- PLG growth model with free tier spec and time-to-first-inference plan -- v1.3
+- Prioritized v1.4 engineering backlog (18 must-ship, 14 nice-to-have) -- v1.3
 
 ### Active
 
-## Current Milestone: v1.3 OpenClaw Go-To-Market Research
-
-**Goal:** Research how to convince OpenClaw developers and OpenClaw agents themselves to choose Gonka over OpenRouter and traditional LLM providers, covering product development, marketing, audience strategy, and channels.
-
-**Target features:**
-- Competitive positioning: Gonka vs OpenRouter vs OpenAI/Anthropic for OpenClaw agents
-- Product development priorities: what Gonka.ai needs to build to win OpenClaw developers
-- Target audience analysis: OpenClaw developer personas, agent builder profiles, decision drivers
-- Marketing strategy: messaging, value propositions, objection handling
-- Channel strategy: where to reach OpenClaw developers (communities, platforms, events)
-- Agent-native advantages: why OpenClaw agents themselves would prefer Gonka
-- Partnership & ecosystem play: OpenClaw integration depth, SDK support, developer relations
+(No active milestone — use `/gsd:new-milestone` to start next)
 
 ### Out of Scope
 
@@ -56,6 +55,8 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 - Image/video model serving (FLUX, Wan) -- separate milestone; focus on LLM serving first
 - Training/fine-tuning infrastructure -- inference-only
 - Web dashboard UI -- admin API only; UI deferred
+- Implementation of GTM strategy -- v1.3 produced research/strategy; execution is v1.4+
+- Paid advertising -- developer-first organic strategy per v1.3 research
 
 ## Context
 
@@ -69,6 +70,9 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 - **Open concerns from v1.0:** Oracle feed creation (critical path), POL paired asset shortage, governance concentration risk, developer adoption targets
 - **Deferred from v1.1:** IL modeling, tornado charts, competitive benchmarks
 - **Tech debt from v1.2:** TF-IDF search (needs vector embeddings), in-memory sessions (needs Redis), JSON key storage (needs DB), no GPU load balancing
+- **v1.3 delivered 11 GTM research documents** -- competitive analysis, developer personas, message house, agent-native pitch, objection playbook, channel strategy, partnership playbook, PLG growth model, v1.4 engineering backlog; 4,955 lines total
+- **v1.3 key findings:** Gonka wins 2/8 competitive dimensions (sessions, tiering), 73% cost savings at Active tier via session persistence, 5 must-close gaps before GTM push, lead with developer outcomes not decentralization
+- **v1.4 backlog ready** -- 18 must-ship items in 3 sprints (6 weeks): docs site, self-serve signup, OpenClaw plugin, persistent sessions, pricing page
 
 ## Constraints
 
@@ -95,6 +99,10 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 | Kimi K2.5 as flagship model | First-to-market on decentralized, native agentic + multimodal | Good -- shipped in v1.2 |
 | Option C hybrid agent inference | Agent-aware extensions over standard API, not full agent hosting | Good -- shipped in v1.2 |
 | vLLM over other serving frameworks | Industry standard, OpenAI-compatible, K2.5 officially supported | Good -- shipped in v1.2 |
+| Lead with developer outcomes, not decentralization | Web2-native audience (28M devs vs 23K Web3); crypto-first messaging alienates 99.9% | Good -- validated in v1.3 research |
+| OpenClaw as primary GTM target | 250K+ stars, fastest growing OSS project, forming ecosystem defaults NOW | Good -- validated in v1.3 |
+| Session persistence as #1 differentiator | Only provider offering agent sessions; 73% cost reduction for Active tier agents | Good -- validated in v1.3 |
+| Free tier: email-only, 15M tokens/month | No crypto knowledge required; removes adoption barrier for Web2 developers | Pending -- spec ready for v1.4 |
 
 ---
 ## Evolution
@@ -115,4 +123,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-01 after v1.3 milestone started*
+*Last updated: 2026-04-01 after v1.3 milestone completion*
