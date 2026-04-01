@@ -1,418 +1,311 @@
-# Technology Stack: Excel Financial Model Generation
+# Technology Stack: OpenClaw Go-To-Market Research
 
-**Project:** Gonka Tokenomics Economic Modeling (v1.1)
-**Researched:** 2026-02-05
-**Overall Confidence:** HIGH
-
----
-
-## Recommendation: openpyxl (not XlsxWriter)
-
-**Use openpyxl 3.1.5 as the sole Excel generation library.** Do not add XlsxWriter, pandas, or xlwings. The rationale is below.
+**Project:** Gonka Tokenomics v1.3 -- OpenClaw GTM Strategy
+**Researched:** 2026-04-01
+**Overall Confidence:** HIGH (OpenClaw ecosystem), MEDIUM (GTM tooling)
 
 ---
 
-## Recommended Stack
+## Context: What This Stack Is For
 
-### Core Library
+v1.3 is a **research and strategy milestone**, not an engineering milestone. The "stack" here means: what tools, data sources, platforms, and technical knowledge are needed to research and write a go-to-market strategy for convincing OpenClaw developers and agents to use Gonka.ai as their inference provider.
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| **openpyxl** | 3.1.5 | Excel .xlsx generation | Read/write/modify, full chart support, conditional formatting, named ranges, data validation -- everything needed for financial models in one library |
-| Python | 3.10+ | Runtime | Match project's existing environment; openpyxl requires >=3.8 |
-
-### Supporting (Standard Library Only)
-
-| Module | Purpose | Notes |
-|--------|---------|-------|
-| `math` | Exponential decay calculations (e^(-0.000475*t)) | Built-in, no install needed |
-| `datetime` | Date handling for timeline projections | Built-in |
-| `decimal` | Precision for financial calculations | Built-in; use for intermediate calcs, write as float to cells |
-| `pathlib` | Output path management | Built-in |
-| `typing` | Type hints for maintainability | Built-in |
-
-### Installation
-
-```bash
-pip install openpyxl==3.1.5
-```
-
-That is the entire dependency. One library. Zero transitive dependencies that matter (et-xmlfile is pulled in automatically).
+This is NOT about building software. It is about understanding the OpenClaw ecosystem deeply enough to produce actionable GTM documents.
 
 ---
 
-## openpyxl vs XlsxWriter: Decision Rationale
+## 1. OpenClaw Technical Architecture (What We Need to Know)
 
-This was a close call. Both libraries produce valid .xlsx files. Here is why openpyxl wins for this specific project.
+### Overview
 
-### Comparison Matrix
+OpenClaw is the fastest-growing open-source project in GitHub history: 250K+ stars in ~4 months, 1,075 contributors, 124K LOC. It is a self-hosted AI agent gateway that bridges messaging apps (WhatsApp, Telegram, Discord, Slack, iMessage, etc.) to LLM inference providers. Users deploy a Gateway process on their machine that routes messages to AI agents backed by configurable model providers.
 
-| Capability | openpyxl 3.1.5 | XlsxWriter 3.2.9 | Winner for This Project |
-|------------|----------------|-------------------|------------------------|
-| **Write new .xlsx** | Yes | Yes | Tie |
-| **Read existing .xlsx** | Yes | No (write-only) | openpyxl -- enables template-based workflow later |
-| **Modify existing .xlsx** | Yes | No | openpyxl |
-| **Charts** | 10+ types (line, bar, area, scatter, pie, doughnut, radar, stock, bubble, surface) | 9 types (area, bar, column, line, pie, doughnut, scatter, stock, radar) | Tie (both cover financial chart needs) |
-| **Conditional formatting** | CellIsRule, ColorScaleRule, FormulaRule, IconSetRule, DataBarRule | CellIsRule, ColorScale, DataBar, Formula, IconSet | Tie |
-| **Named ranges** | Global + worksheet-scoped DefinedName | define_name() method | Tie |
-| **Data validation** | List, whole, decimal, date, time, textLength, custom formula | List, whole, decimal, date, time, textLength, custom | Tie |
-| **Formulas** | Write formula strings (not calculated) | Write formula strings (stores 0 as placeholder result) | openpyxl -- does not inject misleading 0 values |
-| **Number formats** | Full Excel format codes + built-in named styles (Currency, Percent) | Full Excel format codes | openpyxl -- named styles reduce boilerplate |
-| **Cell protection** | Sheet protection + per-cell lock/unlock | Sheet protection + per-cell lock/unlock | Tie |
-| **Freeze panes** | ws.freeze_panes = 'A2' | worksheet.freeze_panes(1, 0) | Tie |
-| **Performance (write)** | Slower for large datasets (~50x file size in memory) | Faster, lower memory | XlsxWriter -- but irrelevant here (small datasets) |
-| **Write-only mode** | Available (under 10MB memory for huge files) | Default mode | Tie for this use case |
-| **Dependencies** | et-xmlfile only | Standard library only | XlsxWriter (marginal advantage) |
-| **Active maintenance** | Latest release: 2024-06-28 (3.1.5) | Latest release: 2025-09-16 (3.2.9) | XlsxWriter (more recent, but openpyxl is stable) |
-| **License** | MIT | BSD-2-Clause | Tie (both permissive) |
-| **Python version** | >=3.8 | >=3.8 | Tie |
+**Confidence:** HIGH -- verified across official docs, GitHub, and multiple sources.
 
-### Why openpyxl Wins
+### How Agents Select Inference Providers
 
-1. **Read+Write matters for iteration.** During development, being able to load a generated workbook, inspect it programmatically, and modify it is invaluable for debugging. XlsxWriter cannot open files at all -- every change requires regenerating from scratch.
+This is the critical GTM question. OpenClaw uses a **declarative configuration model** in `~/.openclaw/openclaw.json`:
 
-2. **Formula result handling is cleaner.** XlsxWriter stores `0` as the cached formula result. When opened in Google Sheets (which sometimes does not recalculate on open), users may see zeros instead of computed values. openpyxl does not inject a misleading cached result.
+```json5
+{
+  models: {
+    providers: {
+      "gonka": {
+        baseUrl: "https://api.gonka.ai/v1",
+        apiKey: "${GONKA_API_KEY}",
+        api: "openai-completions",
+        models: [
+          {
+            id: "kimi-k2.5",
+            name: "Kimi K2.5",
+            contextWindow: 131072,
+            maxTokens: 8192,
+            cost: { input: 0.50, output: 1.50 }
+          }
+        ]
+      }
+    }
+  },
+  agents: {
+    defaults: {
+      models: {
+        "gonka/kimi-k2.5": { alias: "k2.5" }
+      }
+    }
+  }
+}
+```
 
-3. **Named styles reduce financial formatting boilerplate.** openpyxl's `NamedStyle` lets you define `currency_style`, `pct_style`, `header_style` once and apply across thousands of cells. XlsxWriter uses `Format` objects which are similar but less idiomatic.
+**Provider selection is a TWO-STEP process:**
 
-4. **PROJECT.md already specifies openpyxl.** The project decision was made; this research validates it was the correct choice.
+1. **Provider definition** -- `models.providers` block with `baseUrl`, `apiKey`, `api` type, and model list
+2. **Model allowlisting** -- `agents.defaults.models` must include fully-qualified `provider/model` names
 
-5. **Performance is irrelevant.** The tokenomics models have at most a few thousand rows. openpyxl's higher memory usage (50x file size) means a 1MB workbook uses ~50MB RAM. This is negligible on any modern machine.
+Missing either step causes silent failure. This is a known gotcha in the OpenClaw community.
 
-### When XlsxWriter Would Have Won
+**Key rotation and failover:**
+- Keys checked in priority order: `OPENCLAW_LIVE_<PROVIDER>_KEY` > `<PROVIDER>_API_KEYS` > `<PROVIDER>_API_KEY` > `<PROVIDER>_API_KEY_*`
+- Retry with next key ONLY on rate-limit responses (429, quota_exceeded)
+- Non-rate-limit errors fail immediately (no fallback)
 
-- Generating reports with 100K+ rows (performance matters)
-- No need to ever read files back
-- Need for the latest maintenance cadence (XlsxWriter is more actively updated)
-- Strict zero-dependency requirement
+**API compatibility requirement:** OpenClaw requires either `openai-completions` or `anthropic-messages` API format. Gonka.ai already implements OpenAI-compatible `/v1/chat/completions` -- this is table stakes and already shipped in v1.2.
 
-None of these apply to this project.
+**Confidence:** HIGH -- verified against official docs at docs.openclaw.ai and GitHub source.
+
+### Built-In vs Custom Providers
+
+OpenClaw ships with ~20 built-in provider plugins:
+- **API key providers:** OpenAI, Anthropic, Google Gemini, Mistral, OpenRouter, Together, Groq, Cerebras, NVIDIA, MiniMax, Moonshot, Kimi Coding, Qianfan
+- **OAuth providers:** GitHub Copilot, OpenAI Codex, Google Vertex
+- **Local/self-hosted:** Ollama, vLLM, SGLang
+
+**Gonka is NOT a built-in provider.** This means every Gonka user must manually configure `openclaw.json`. This is both a GTM challenge (friction) and opportunity (becoming a built-in provider via PR to openclaw/openclaw would be a major win).
+
+**Confidence:** HIGH -- verified from official model-providers documentation.
+
+### Plugin Architecture
+
+OpenClaw supports two extension types:
+- **Plugins** -- TypeScript modules loaded at runtime via jiti. Can register providers, tools, hooks, channels, CLI commands, background services. Run in-process with Gateway (trusted code).
+- **Skills** -- Markdown-based agent capability definitions (SKILL.md). 5,700+ skills in ClawHub marketplace. Skills are injected into system prompts based on context.
+
+A **Gonka provider plugin** could be distributed via npm and installed by users, reducing configuration to `npm install openclaw-gonka-plugin` + API key. This is a high-value GTM engineering task.
+
+**Confidence:** HIGH -- verified from OpenClaw plugin docs and DeepWiki analysis.
+
+### vLLM Integration Details
+
+OpenClaw has first-class vLLM support as a bundled provider. Critical gotchas for vLLM-backed providers:
+- vLLM must be started with `--enable-auto-tool-choice` and `--tool-call-parser` flags for tool calling
+- After config change, run `openclaw models scan` to populate tool capability metadata
+- Without `toolUse: true` metadata, agents silently fail (stopReason: "stop" instead of tool invocation)
+
+**Gonka.ai already runs vLLM** (shipped in v1.2). The GTM strategy must document that Gonka handles these vLLM gotchas server-side so OpenClaw users don't have to.
+
+**Confidence:** HIGH -- verified from multiple sources including official docs and community tutorials.
 
 ---
 
-## openpyxl Capabilities Deep Dive
+## 2. Competitive Intelligence Sources
 
-### Charts (HIGH confidence -- official docs verified)
+### Direct Competitors to Track
 
-Supported chart types relevant to financial modeling:
+| Competitor | What to Track | Data Source | Update Frequency |
+|------------|--------------|-------------|------------------|
+| **OpenRouter** | Pricing, model catalog, 5.5% fee changes, free tier limits | openrouter.ai/pricing, openrouter.ai/models | Weekly |
+| **OpenAI** | API pricing, rate limits, new model launches | platform.openai.com/docs | On announcement |
+| **Anthropic** | Claude pricing, context window pricing, batch API | docs.anthropic.com/en/docs/pricing | On announcement |
+| **Google** | Gemini API pricing, free tier generosity | ai.google.dev/pricing | On announcement |
+| **Together AI** | Open-model pricing (Llama, Mixtral) | together.ai/pricing | Monthly |
+| **Groq** | Speed-optimized inference pricing | groq.com/pricing | Monthly |
+| **DeepSeek** | Ultra-low-cost pricing ($0.55/$2.19 per M tokens) | platform.deepseek.com | Monthly |
 
-| Chart Type | Use Case in This Project | Google Sheets Compatible |
-|------------|--------------------------|--------------------------|
-| **LineChart** | Token price trajectories over time, emission decay curves | Yes -- renders correctly |
-| **BarChart** | Revenue breakdown comparisons, fee vs emission bars | Yes -- renders correctly |
-| **AreaChart** | Cumulative treasury balance, stacked revenue streams | Yes -- renders correctly |
-| **ScatterChart** | ROI vs GNK price correlation, crossover point analysis | Yes -- renders correctly |
-| **PieChart** | Revenue allocation split (70/20/5/5), token distribution | Yes -- renders correctly |
+### Pricing Tracking Approach
 
-Chart types to AVOID for Google Sheets compatibility:
-- **3D charts** -- rendering varies between Excel and Sheets
-- **Surface charts** -- not supported in Google Sheets
-- **Stock charts** -- limited support; use line charts with markers instead
+Use a lightweight manual tracking spreadsheet (openpyxl, naturally) rather than paying $25K+/yr for Crayon/Klue. The competitive landscape moves fast enough that automated scraping becomes stale quickly anyway.
 
-Chart configuration capabilities:
-- Titles, axis labels, legend positioning
-- Multiple series per chart
-- Secondary Y-axis (useful for dual-scale: price + emissions)
-- Custom colors, line styles, markers
-- Chart size: default 15cm x 7.5cm, fully adjustable via `width` and `height`
-- Combination charts (e.g., line + bar on same plot)
+**Key metrics to track per competitor:**
+- Input token price per 1M tokens
+- Output token price per 1M tokens
+- Context window sizes
+- Rate limits (RPM, TPM)
+- Free tier availability and limits
+- Tool/function calling support
+- Streaming support quality
+- Uptime/reliability (community reports)
 
-### Conditional Formatting (HIGH confidence -- official docs verified)
+**Current benchmark pricing (April 2026):**
 
-| Rule Type | Use Case | Example |
-|-----------|----------|---------|
-| **CellIsRule** | Highlight negative values red, positive green | `CellIsRule(operator='lessThan', formula=['0'], fill=redFill)` |
-| **ColorScaleRule** | Heat map for ROI across scenarios | 2-color or 3-color gradient (red-yellow-green) |
-| **DataBarRule** | Visual bar for emission amounts in cells | In-cell bar proportional to value |
-| **FormulaRule** | Highlight crossover year (fees > emissions) | `FormulaRule(formula=['$B2>$C2'], fill=greenFill)` |
-| **IconSetRule** | Traffic light indicators for health metrics | 3TrafficLights, 3Arrows, 5Arrows |
+| Provider | Model | Input/1M | Output/1M | Context |
+|----------|-------|----------|-----------|---------|
+| OpenRouter (pass-through) | GPT-5.4 | $2.50 | $15.00 | 1M |
+| OpenRouter | Gemini 3.1 Flash Lite | $0.25 | $1.50 | -- |
+| OpenAI direct | GPT-4o | $5.00 | $15.00 | 128K |
+| Anthropic direct | Claude Opus | $15.00 | $75.00 | 200K |
+| DeepSeek | V3.2 | $0.55 | $2.19 | 128K |
+| **Gonka target** | Kimi K2.5 | **TBD** | **TBD** | 131K |
 
-**Google Sheets note:** Basic conditional formatting (cell-is, formula-based, color scales) imports reliably. Icon sets and data bars may not render identically -- test during development.
+Gonka's pricing advantage comes from decentralized compute (50-70% lower cost than centralized clouds per Gonka's own claims). The GTM research must validate this claim against actual provider pricing.
 
-### Named Ranges (HIGH confidence -- official docs verified)
-
-```python
-from openpyxl.workbook.defined_name import DefinedName
-from openpyxl.utils import quote_sheetname, absolute_coordinate
-
-# Global named range (accessible from any sheet)
-ref = f"{quote_sheetname('Assumptions')}!{absolute_coordinate('B2:B20')}"
-defn = DefinedName("assumptions_range", attr_text=ref)
-wb.defined_names["assumptions_range"] = defn
-
-# Use in formulas across sheets
-ws['A1'] = '=VLOOKUP("emission_rate", assumptions_range, 2, FALSE)'
-```
-
-Named ranges are critical for this project:
-- **Assumption cells** should be named (`gnk_price_base`, `emission_decay_rate`, `revenue_split_host`)
-- **Cross-sheet references** use names instead of fragile cell addresses
-- **Google Sheets** preserves named ranges on import
-
-### Data Validation (HIGH confidence -- official docs verified)
-
-```python
-from openpyxl.worksheet.datavalidation import DataValidation
-
-# Dropdown for scenario selection
-scenario_dv = DataValidation(
-    type="list",
-    formula1='"Conservative,Moderate,Aggressive"',
-    allow_blank=False
-)
-scenario_dv.prompt = "Select a scenario"
-scenario_dv.promptTitle = "Scenario"
-ws.add_data_validation(scenario_dv)
-scenario_dv.add('B2')
-
-# Numeric range for adjustable parameters
-pct_dv = DataValidation(
-    type="decimal",
-    operator="between",
-    formula1=0,
-    formula2=1
-)
-pct_dv.error = "Enter a value between 0% and 100%"
-ws.add_data_validation(pct_dv)
-pct_dv.add('B5:B10')
-```
-
-### Financial Number Formats (HIGH confidence -- official docs verified)
-
-```python
-from openpyxl.styles import NamedStyle, Font, Border, Side, Alignment, numbers
-
-# Define reusable financial styles
-currency_style = NamedStyle(name="currency")
-currency_style.number_format = '"$"#,##0.00'
-currency_style.font = Font(name='Calibri', size=11)
-
-pct_style = NamedStyle(name="pct")
-pct_style.number_format = '0.00%'
-
-token_style = NamedStyle(name="tokens")
-token_style.number_format = '#,##0'
-
-large_currency = NamedStyle(name="large_currency")
-large_currency.number_format = '"$"#,##0.0,,"M"'  # Displays as $22.0M
-
-# Register once, use everywhere
-wb.add_named_style(currency_style)
-wb.add_named_style(pct_style)
-wb.add_named_style(token_style)
-wb.add_named_style(large_currency)
-
-# Apply
-cell.style = "currency"
-cell.style = "pct"
-```
-
-Key format codes for tokenomics:
-- `'"$"#,##0.00'` -- currency with 2 decimals ($1,234.56)
-- `'0.00%'` -- percentage (5.25%)
-- `'#,##0'` -- whole number with thousands separator (1,000,000)
-- `'"$"#,##0.0,,"M"'` -- millions shorthand ($22.0M)
-- `'0.000000'` -- high-precision decimal for decay rates
-- `'#,##0.00" GNK"'` -- token amounts with unit suffix
-
-### Sheet Protection (HIGH confidence -- official docs verified)
-
-```python
-# Protect sheet but allow users to change specific input cells
-ws.protection.sheet = True
-ws.protection.password = 'readonly'
-
-# Unlock input cells (everything else stays locked by default)
-from openpyxl.styles import Protection
-unlocked = Protection(locked=False)
-ws['B2'].protection = unlocked  # User can edit this assumption
-```
-
-This pattern is essential: protect formula cells and structural elements while letting leadership adjust assumption inputs.
-
-### Freeze Panes (HIGH confidence)
-
-```python
-ws.freeze_panes = 'B3'  # Freeze row 1-2 headers and column A labels
-```
+**Confidence:** MEDIUM -- pricing data from search results; exact numbers shift frequently.
 
 ---
 
-## What NOT to Add (and Why)
+## 3. OpenClaw Community Channels
 
-| Library | Why People Add It | Why NOT to Add It |
-|---------|-------------------|-------------------|
-| **pandas** | DataFrame operations, pivot tables | Overkill -- models are formula-driven, not data-driven. Adding pandas pulls in numpy (~30MB). Write formulas directly. |
-| **xlsxwriter** | "Better charts" / "faster" | Not better for this use case. Adds confusion having two Excel libraries. Cannot read files. |
-| **xlwings** | Live Excel integration | Requires Excel to be installed. Does not work headlessly. Not cross-platform reliable. |
-| **numpy** | Math operations | All calculations are either done in Excel formulas or simple Python math. `math.exp()` handles decay. |
-| **matplotlib** | Generate chart images | Embeds static images, not interactive Excel charts. Users cannot modify. Defeats the purpose. |
-| **jinja2** | Template engine | Templating adds complexity. Generate workbooks programmatically with code, not templates. |
-| **defusedxml** | XML attack protection | Only needed if reading untrusted .xlsx files. We generate our own files. |
+### Where OpenClaw Developers Congregate
 
----
+| Channel | Type | Reach | GTM Relevance |
+|---------|------|-------|---------------|
+| **GitHub openclaw/openclaw** | Code + Issues + Discussions | 250K+ stars, 9,574 open issues | HIGH -- PRs for built-in provider, issue engagement |
+| **OpenClaw Discord** | Community chat | Thousands of active members | HIGH -- #help, #models, #users-helping-users channels |
+| **GitHub openclaw/community** | Discord policies, community docs | -- | MEDIUM -- understand community norms |
+| **X/Twitter** | Social | Viral lobster memes, organic growth | HIGH -- developer word-of-mouth |
+| **Medium / dev.to** | Blog posts | Heavy tutorial ecosystem | HIGH -- publish integration guides |
+| **Weibo / Zhihu** | Chinese community | Massive (lobster culture viral) | MEDIUM -- if targeting Chinese devs |
+| **YouTube** | Video tutorials | Growing | MEDIUM -- demo videos |
+| **ClawHub Skills Marketplace** | Skill registry | 5,700+ skills | HIGH -- publish Gonka skill |
 
-## Formula Patterns for Scenario Modeling
+### Community Engagement Strategy Sources
 
-### Pattern 1: Assumption-Driven Formulas
+The OpenClaw community grew entirely organically -- no Product Hunt, no VC-funded growth team. Word of mouth + GitHub trending + social sharing. This means:
+- **Authentic technical content wins** over marketing speak
+- **Contributing upstream** (PRs, plugins, skills) earns credibility
+- **Tutorial content** on dev.to/Medium gets discovered by new users
 
-All models should reference a central Assumptions sheet via named ranges:
-
-```python
-# On Assumptions sheet
-ws_assumptions['A1'] = 'Parameter'
-ws_assumptions['B1'] = 'Value'
-ws_assumptions['A2'] = 'Base GNK Price'
-ws_assumptions['B2'] = 0.50  # User-editable
-
-# Define named range
-defn = DefinedName("gnk_price_base", attr_text="Assumptions!$B$2")
-wb.defined_names["gnk_price_base"] = defn
-
-# On calculation sheet -- formula references the named range
-ws_calc['B5'] = '=gnk_price_base * (1 + B4)'  # B4 = growth rate
-```
-
-### Pattern 2: Scenario Toggle with INDEX/MATCH
-
-```python
-# Scenarios in a table
-# A: Conservative, B: Moderate, C: Aggressive
-# Row with dropdown selects which column to use
-
-ws['B1'] = '=INDEX(scenarios_table, MATCH("growth_rate", scenario_params, 0), MATCH(scenario_selector, scenario_names, 0))'
-```
-
-### Pattern 3: Time-Series with Relative References
-
-```python
-# Emission decay: each period references previous period
-for row in range(3, 103):  # 100 periods
-    ws[f'B{row}'] = f'=B{row-1} * EXP(-$B$1)'  # $B$1 = decay rate (named range)
-    ws[f'C{row}'] = f'=B{row} * gnk_price_base'  # Dollar value
-```
-
-### Pattern 4: Crossover Detection
-
-```python
-# Find where fees exceed emissions
-for row in range(3, 103):
-    ws[f'E{row}'] = f'=IF(AND(C{row}>D{row}, C{row-1}<=D{row-1}), "CROSSOVER", "")'
-```
-
-### Formula Complexity Limits
-
-- **Maximum formula length:** 8,192 characters (Excel limit, not openpyxl limit)
-- **Maximum nesting depth:** 64 levels of IF() nesting (Excel limit)
-- **Circular references:** Not supported by openpyxl (and should be avoided in these models)
-- **openpyxl does NOT calculate formulas.** It writes formula strings. Excel/Sheets calculates on open.
-- **Array formulas:** Supported but use sparingly for Google Sheets compatibility
+**Confidence:** HIGH -- verified from multiple sources.
 
 ---
 
-## Google Sheets Compatibility Matrix
+## 4. Research & Analysis Tooling
 
-Critical requirement: all workbooks must open and function in Google Sheets.
+### What v1.3 Needs to Produce GTM Research Documents
 
-| Feature | Excel | Google Sheets | Compatibility Notes |
-|---------|-------|---------------|---------------------|
-| Basic formulas (SUM, IF, VLOOKUP) | Full | Full | No issues |
-| Named ranges | Full | Full | Preserved on import |
-| Data validation dropdowns | Full | Full | Works reliably |
-| Conditional formatting (cell-is) | Full | Full | Colors preserved |
-| Conditional formatting (formula) | Full | Mostly | Test custom formulas; some may need adjustment |
-| Color scales | Full | Full | Works |
-| Icon sets | Full | Partial | May not render; use color-based formatting as fallback |
-| Data bars | Full | Partial | May not render identically |
-| Line/Bar/Area/Scatter charts | Full | Full | Chart axis labels may shift; verify after import |
-| Pie charts | Full | Full | Works |
-| 3D charts | Full | Partial | Avoid -- inconsistent rendering |
-| Stock charts | Full | No | Use line charts with markers instead |
-| Surface charts | Full | No | Do not use |
-| Combination charts | Full | Partial | May split into separate charts; test carefully |
-| Secondary Y-axis | Full | Partial | Google Sheets has limited dual-axis support; test |
-| Freeze panes | Full | Full | Works |
-| Sheet protection | Full | Partial | Password protection not enforced in Sheets |
-| Number formats | Full | Mostly | Custom format codes may need verification |
-| Cell comments | Full | Converted | Become Google Sheets "notes" |
-| Merged cells | Full | Full | Works |
+Since v1.3 is a research milestone (like v1.0), the primary output is **documents**, not code. The stack is:
 
-### Safe Strategy for Dual Compatibility
+| Tool | Purpose | Why |
+|------|---------|-----|
+| **Markdown** | Primary document format | All research files, strategy docs. Matches repo convention. |
+| **openpyxl 3.1.5** | Competitive pricing comparison workbook | Reuse existing stack from v1.1. One workbook tracking competitor pricing over time. |
+| **Python 3.10+** | Data processing if needed | Existing stack. May be needed for pricing analysis scripts. |
 
-1. **Stick to 2D charts:** Line, Bar, Area, Scatter, Pie only
-2. **Use basic conditional formatting:** CellIsRule and FormulaRule with color fills
-3. **Avoid icon sets and data bars** as primary indicators (use as enhancement only)
-4. **Test every workbook in both Excel and Google Sheets** before delivery
-5. **Use standard formula functions** (SUM, IF, VLOOKUP, INDEX, MATCH, EXP, LN) -- avoid Excel-only functions like XLOOKUP (not in older Google Sheets versions)
-6. **Document any Google Sheets quirks** in a README tab within each workbook
+### No New Dependencies Needed
+
+v1.3 does not require new libraries, frameworks, or tools. The research output is markdown documents and potentially one Excel workbook for competitive pricing tracking. Everything needed is already installed.
 
 ---
 
-## Project File Structure Recommendation
+## 5. GTM Engineering Artifacts to Research (Not Build in v1.3)
 
-```
-gonka-tokenomics/
-  models/
-    __init__.py
-    styles.py          # Shared NamedStyles (currency, pct, header, etc.)
-    utils.py           # Helper functions (add_chart, format_range, etc.)
-    assumptions.py     # Shared assumptions sheet builder
-    price_model.py     # Token price scenario workbook
-    emission_model.py  # Emission decay + fee transition workbook
-    host_model.py      # Host profitability ROI workbook
-    treasury_model.py  # Treasury & POL simulation workbook
-    master_model.py    # Unified workbook linking all models
-  output/              # Generated .xlsx files (gitignored)
-  requirements.txt     # openpyxl==3.1.5
-  generate.py          # CLI entry point: python generate.py [--model=all]
-```
+The GTM research should identify and spec these engineering deliverables for a future milestone:
 
-### Why This Structure
+| Artifact | What It Is | OpenClaw Integration Point |
+|----------|-----------|---------------------------|
+| **Gonka provider plugin** | npm package (`openclaw-plugin-gonka`) | `models.providers` auto-configuration |
+| **Gonka OpenClaw skill** | SKILL.md for ClawHub | System prompt injection for Gonka-aware agents |
+| **One-line onboarding** | `openclaw onboard --auth-choice gonka` | CLI provider setup flow |
+| **openclaw.json template** | Pre-configured JSON for copy-paste | Eliminates manual config errors |
+| **Integration guide** | dev.to / Medium tutorial | Community discovery |
+| **Quickstart repo** | GitHub template with working OpenClaw + Gonka setup | Reduces time-to-first-inference |
 
-- **styles.py** -- single source of truth for formatting; change once, all models update
-- **utils.py** -- DRY helpers for chart creation, range formatting, header rows
-- **assumptions.py** -- shared assumption sheet generator; each model imports this
-- **Separate model files** -- each can be developed/tested independently
-- **master_model.py** -- composes the others into a unified multi-tab workbook
-- **generate.py** -- simple entry point for non-technical users to regenerate
+These are **not in scope for v1.3** but the GTM research must document what they are, why they matter, and prioritize them.
 
 ---
 
-## Version Pinning and Reproducibility
+## 6. Key Technical Facts for GTM Positioning
 
-```
-# requirements.txt
-openpyxl==3.1.5
-```
+### What Gonka.ai Already Has (v1.2 shipped)
 
-Pin the exact version. openpyxl 3.1.5 is production-stable (released 2024-06-28). There is no 3.2.x or 4.x to worry about. The library has been stable at 3.1.x for years.
+| Capability | Status | OpenClaw Compatibility |
+|------------|--------|----------------------|
+| OpenAI-compatible `/v1/chat/completions` | Shipped | Direct compatibility |
+| API key authentication | Shipped | Maps to `apiKey` in provider config |
+| Rate limiting | Shipped | Handles OpenClaw's key rotation retry on 429 |
+| Usage metering | Shipped | Foundation for per-token billing |
+| Model routing / tiering | Shipped | Can serve cheap + strong models for OpenClaw's intent classification + planning steps |
+| Session persistence | Shipped | Unique differentiator (no competitor offers this at provider level) |
+| Memory API | Shipped | Unique differentiator for stateful agents |
+| Webhooks | Shipped | Enables event-driven agent patterns |
+| Tool calling (vLLM) | Shipped | Critical for OpenClaw agent tool execution |
 
-No virtual environment tooling is prescribed here -- use whatever the team already uses (venv, poetry, etc.). The dependency is trivial enough that it does not matter.
+### What Gonka.ai Does NOT Have Yet (gaps to address)
+
+| Gap | Why It Matters for OpenClaw | Priority |
+|-----|---------------------------|----------|
+| **Not a built-in OpenClaw provider** | Users must manually configure JSON | CRITICAL |
+| **No npm plugin package** | Cannot `npm install` to add Gonka | HIGH |
+| **No ClawHub skill** | Agents don't know Gonka exists | HIGH |
+| **No public pricing page** | Can't compare against OpenRouter | HIGH |
+| **No uptime/status page** | Developers need reliability signals | MEDIUM |
+| **TF-IDF search (not vector)** | Memory API less useful without good retrieval | MEDIUM |
+| **In-memory sessions** | Production reliability concern | MEDIUM |
+| **JSON key storage** | Security concern for enterprise | LOW (for early GTM) |
+
+---
+
+## Alternatives Considered
+
+### Research Approach Alternatives
+
+| Category | Recommended | Alternative | Why Not |
+|----------|-------------|-------------|---------|
+| Competitive tracking | Manual spreadsheet (openpyxl) | Crayon/Klue ($25K+/yr) | Overkill for 7 competitors; pricing changes are easy to track manually |
+| Community research | Direct observation (GitHub, Discord, X) | Social listening tools (Brandwatch, etc.) | OpenClaw community is concentrated in few channels; tools add cost without value |
+| Developer surveys | N/A for v1.3 | Typeform/SurveyMonkey | No community presence yet; survey without trust = low response rate |
+| Pricing analysis | Excel workbook | SaaS pricing intelligence | Manual is sufficient at this scale |
+
+### GTM Delivery Format Alternatives
+
+| Category | Recommended | Alternative | Why Not |
+|----------|-------------|-------------|---------|
+| Strategy docs | Markdown in repo | Google Docs / Notion | Repo is the single source of truth; leadership can review via GitHub |
+| Pricing comparison | openpyxl workbook | Google Sheets | Consistency with v1.1 tooling; portable .xlsx |
+| Competitive matrix | Markdown tables | Spreadsheet | Simple enough for markdown; no formulas needed |
+
+---
+
+## OpenClaw Ecosystem Key Numbers
+
+| Metric | Value | Source | Confidence |
+|--------|-------|--------|------------|
+| GitHub stars | 250K+ | GitHub, multiple sources | HIGH |
+| Contributors | 1,075 | GitHub | HIGH |
+| Lines of code | 124K | Community reports | MEDIUM |
+| Skills in marketplace | 5,700+ | ClawHub, community reports | MEDIUM |
+| Built-in providers | ~20 | Official docs | HIGH |
+| Custom provider API formats | 2 (openai-completions, anthropic-messages) | Official docs | HIGH |
+| Time since public launch | ~3 months (Jan 25, 2026) | Multiple sources | HIGH |
+| GitHub forks | 48K+ | GitHub | HIGH |
+| Messaging channels supported | 50+ | Official docs | HIGH |
+| NemoClaw (Nvidia security addon) | Released Mar 16, 2026 | News reports | MEDIUM |
 
 ---
 
 ## Sources
 
 ### HIGH Confidence (Official Documentation)
-- [openpyxl PyPI -- version 3.1.5](https://pypi.org/project/openpyxl/)
-- [openpyxl official documentation](https://openpyxl.readthedocs.io/en/stable/)
-- [openpyxl charts documentation](https://openpyxl.readthedocs.io/en/stable/charts/introduction.html)
-- [openpyxl conditional formatting](https://openpyxl.readthedocs.io/en/stable/formatting.html)
-- [openpyxl defined names / named ranges](https://openpyxl.readthedocs.io/en/stable/defined_names.html)
-- [openpyxl data validation](https://openpyxl.readthedocs.io/en/stable/validation.html)
-- [openpyxl styles documentation](https://openpyxl.readthedocs.io/en/stable/styles.html)
-- [openpyxl protection](https://openpyxl.readthedocs.io/en/stable/protection.html)
-- [openpyxl optimized modes](https://openpyxl.readthedocs.io/en/stable/optimized.html)
-- [XlsxWriter PyPI -- version 3.2.9](https://pypi.org/project/XlsxWriter/)
-- [XlsxWriter chart class documentation](https://xlsxwriter.readthedocs.io/chart.html)
-- [XlsxWriter known issues](https://xlsxwriter.readthedocs.io/bugs.html)
-- [XlsxWriter changelog](https://xlsxwriter.readthedocs.io/changes.html)
+- [OpenClaw Model Providers -- Official Docs](https://docs.openclaw.ai/concepts/model-providers)
+- [OpenClaw Model Providers -- GitHub Source](https://github.com/openclaw/openclaw/blob/main/docs/concepts/model-providers.md)
+- [OpenClaw Plugin System -- Official Docs](https://docs.openclaw.ai/tools/plugin)
+- [OpenClaw GitHub Repository](https://github.com/openclaw/openclaw)
+- [OpenClaw AGENTS.md](https://github.com/openclaw/openclaw/blob/main/AGENTS.md)
+- [OpenClaw Community Repository](https://github.com/openclaw/community)
+- [OpenRouter Pricing](https://openrouter.ai/pricing)
+- [OpenRouter Models](https://openrouter.ai/models)
 
 ### MEDIUM Confidence (Verified with Multiple Sources)
-- [Google Sheets conditional formatting import behavior](https://support.google.com/docs/thread/204202052/importing-conditional-formatting-to-sheets)
-- [Google Sheets chart axis compatibility issues](https://support.google.com/docs/thread/210590195/chart-axis-changes-when-importing-excel-file-into-google-sheets)
-- [openpyxl vs XlsxWriter comparison](https://stringfestanalytics.com/how-to-understand-the-difference-between-the-openpyxl-and-xlsxwriter-python-packages-for-excel/)
+- [OpenClaw 250K Stars Milestone -- OpenClaw Blog](https://openclaws.io/blog/openclaw-250k-stars-milestone)
+- [Custom LLM Provider Setup Guide -- haimaker.ai](https://haimaker.ai/blog/integrating-custom-llm-providers-with-clawdbot/)
+- [vLLM Self-Hosting with OpenClaw -- DeepWiki](https://deepwiki.com/gensecaihq/Wazuh-Openclaw-Autopilot/7.3-vllm-self-hosting)
+- [OpenClaw vLLM Custom Endpoints -- Stanza](https://www.stanza.dev/courses/openclaw-production/local-models/openclaw-production-vllm-custom-endpoints)
+- [OpenClaw Extensions Architecture -- DeepWiki](https://deepwiki.com/openclaw/openclaw/5-extensions)
+- [Awesome OpenClaw Skills -- VoltAgent](https://github.com/VoltAgent/awesome-openclaw-skills)
+- [OpenRouter Pricing Calculator -- CostGoat](https://costgoat.com/pricing/openrouter)
+- [Gonka Network -- MEXC Analysis](https://www.mexc.com/news/734910)
+- [Gonka Whitepaper](https://gonka.ai/whitepaper.pdf)
+- [OpenClaw Architecture Guide -- Milvus Blog](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md)
 
 ### LOW Confidence (Single Source / Community)
-- Google Sheets icon set and data bar rendering behavior (based on community reports, not official documentation)
-- XlsxWriter formula cached result behavior in Google Sheets (based on known issues page inference)
+- OpenClaw Discord server size and activity levels (inferred from docs, not directly measured)
+- Gonka compute cost advantage of 50-70% (Gonka's own marketing claims, not independently verified)
+- DeepSeek V3.2 achieving "~90% of GPT-5.4 performance" (community benchmark claims)

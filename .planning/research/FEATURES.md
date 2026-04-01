@@ -1,284 +1,256 @@
-# Feature Landscape: Tokenomics Economic Modeling Workbooks
+# Feature Landscape: OpenClaw Go-To-Market
 
-**Domain:** Financial modeling spreadsheets for crypto tokenomics (leadership-facing)
-**Researched:** 2026-02-05
-**Context:** 4 model areas + master unified model, generated as .xlsx via Python/openpyxl, targeting Gonka founders/leadership
-
----
-
-## Table Stakes: Universal (All Workbooks)
-
-Features leadership expects in any professional financial model. Missing any of these makes the model feel amateur or untrustworthy.
-
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Cover/title sheet** with project name, version, date, disclaimer | First impression; signals professionalism | Low | Include "For internal decision-making purposes only" disclaimer |
-| **Assumptions sheet** (separated from calculations) | Leadership needs to see what drives the numbers; core financial modeling standard | Low | All inputs blue-shaded, all formulas black. Every hard-coded number lives here. |
-| **3 named scenarios** (Conservative / Base / Aggressive) | Leadership thinks in scenarios, not point estimates. Single-number models feel naive. | Medium | Use a scenario selector (cell-driven switch) that ripples through all calculations |
-| **Executive summary tab** with key metrics and charts | Leadership reads summary first, digs into detail only if needed | Medium | 1-page printable: 3-5 KPIs, 2-3 charts, headline conclusion per scenario |
-| **Color-coded cell convention** (inputs vs formulas) | Industry standard for auditability -- blue = input, black = formula, green = linked from another sheet | Low | Document the convention on the cover sheet |
-| **Number formatting** (consistent currency, percentages, commas) | Sloppy formatting destroys credibility instantly | Low | USD with `$#,##0` or `$#,##0.00`, percentages with `0.0%`, large numbers with commas |
-| **Time axis** (epoch/month/year columns) | All models are time-series; leadership needs to see evolution, not snapshots | Low | Standardize: monthly for Year 1-2, annual for Year 3-10 |
-| **Chart visualizations** (at least 2-3 per model) | Numbers alone are insufficient for pattern recognition | Medium | Line charts for trends, stacked area for composition, bar for comparisons |
-| **Print-friendly layout** | Leadership may print or export to PDF for board meetings | Low | Set print areas, page breaks, headers/footers |
-| **Cell protection** on formula cells | Prevents accidental formula overwrites when leadership tweaks inputs | Low | Lock all formula cells, leave input cells unlocked |
-| **Source references** per assumption | Leadership asks "where did this number come from?" for every key assumption | Low | Add a "Source" column next to each assumption (e.g., "v1.0 Research, Rec #2") |
-| **Units labeled** on every column/row | Ambiguity about "is this GNK or USD?" erodes trust | Low | Always label: GNK, USD, %, GNK/day, USD/yr, etc. |
-| **Definitions tab** | Non-technical leadership needs term definitions (TWAP, veGNK, POL, EIP-1559, etc.) | Low | Alphabetical glossary, keep concise |
+**Domain:** Decentralized AI inference provider targeting OpenClaw agent developers
+**Researched:** 2026-04-01
+**Context:** Gonka v1.2 already ships OpenAI-compatible API with agent extensions; this research identifies what features convince OpenClaw developers to switch from OpenRouter/OpenAI/Anthropic
 
 ---
 
-## Table Stakes: Per-Model
+## Developer Decision Criteria
 
-### Model 1: Token Price Scenarios
+Before mapping features, understanding what OpenClaw developers actually optimize for when choosing an inference provider. Evidence drawn from community discussions, inference provider guides, and OpenClaw pain point analysis.
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Multiple price trajectories** (3-5 curves) | Leadership wants to see bear/base/bull, not a single optimistic line | Medium | Conservative ($0.50-$1.00), Moderate ($1.00-$3.00), Aggressive ($3.00-$10.00), plus "Bitfury floor" ($0.60 flat) |
-| **Market cap calculations** at each price point | Leadership thinks in market cap, not just price. "At $3 GNK, what's our FDV?" | Low | `Price x Circulating Supply` and `Price x Total Supply` side by side |
-| **Circulating supply schedule** over time | Price without supply context is meaningless -- leadership needs to see dilution | Medium | Epoch emissions + Community Pool unlocks + founder vesting = circulating at each time point |
-| **Inflation rate** (annualized) at each time point | Leadership compares inflation to ETH, BTC, SOL as mental benchmarks | Low | `Annual New Tokens / Current Circulating Supply` |
-| **Buyback-burn impact** on net supply | With 5% revenue going to burns, leadership needs to see net issuance vs gross | Medium | Gross emission - burns = net supply change. Show when net deflationary under each scenario. |
-| **Price x supply crossover chart** | The single most important visual: when does FDV reach $X under each scenario | Medium | Overlay price curves with circulating supply on dual-axis chart |
+### Primary Decision Drivers (ranked by community evidence)
 
-### Model 2: Emission vs Fee Transition
+| # | Criterion | Evidence | Gonka Position |
+|---|-----------|----------|----------------|
+| 1 | **Cost per task** (not per token) | OpenClaw agents make 3-10x more LLM calls than chatbots; "$300+ in 2 days" complaints common; heartbeat system sends full context every 30 min | STRONG: Decentralized compute 60-80% cheaper than centralized; tiered routing already built |
+| 2 | **Reliability / uptime** | OpenRouter free tier: models "appear, disappear, hit throttles, degrade under peak load"; free requests queued behind paid | WEAK: Unproven at scale; no SLA; single-provider risk (K2.5 only) |
+| 3 | **Model quality for agentic tasks** | OpenClaw devs need tool calling, long context, multi-step reasoning; 76% use multiple models | MEDIUM: K2.5 scores 76.8% SWE-Bench Verified, stable across 200-300 sequential tool calls; but limited model variety |
+| 4 | **Ease of integration** | OpenClaw supports 14 built-in providers; adding a custom provider = editing one JSON block with baseUrl | STRONG: Already OpenAI-compatible; vLLM provider is first-class in OpenClaw |
+| 5 | **Latency (TTFT)** | Agent loops hit LLM 10-20 times per task; TTFT multiplied across every step | UNKNOWN: Depends on GPU proximity; decentralized may add latency vs edge-optimized centralized |
+| 6 | **No vendor lock-in** | "Everyone supports OpenAI-compatible APIs now, switching is just changing a base URL" | STRONG: OpenAI-compatible by design; switching cost near zero |
+| 7 | **Data privacy** | OpenRouter allows restricting to trusted providers; some devs run local models for privacy | STRONG: Decentralized = no single entity logs all prompts; potential for encrypted inference |
+| 8 | **Censorship resistance** | Growing demand for uncensored models; OpenClaw devs want agents that can discuss anything | STRONG: Decentralized network has no content policy; K2.5 is open-weight |
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Emission decay curve** (epochs to years) | Core of the transition story -- when do emissions become negligible? | Low | Already have formula: `323,000 * exp(-0.000475 * epochs)`. Visualize it. |
-| **Fee revenue projection** under each growth scenario | The "other half" of the transition -- when does fee revenue compensate for declining emissions? | Medium | 3 dev growth rates (10%, 25%, 50%) x 3 price scenarios = 9-cell matrix |
-| **Crossover point identification** (highlighted) | The moment fee revenue exceeds emission value is THE key decision point | Medium | Conditional formatting: green when fees > emissions, red when fees < emissions |
-| **Revenue split waterfall** (70/20/5/5) | Leadership needs to see where money flows at each revenue level | Medium | Stacked bar or waterfall chart: Host share, AI Fund, Buyback, Yield Pool |
-| **"Danger zone" flagging** (Year 8-12) | Research identifies Year 8-12 as critical when emissions are negligible but fees may not dominate | Low | Red shading or border on the danger zone columns with annotation |
-| **Tail emission contingency** toggle | Leadership needs to model "what if we activate tail emissions?" | Medium | Boolean toggle on assumptions sheet: ON/OFF for 10,000 GNK/day tail emission |
-| **Developer count assumptions** as driver | Fee revenue is a function of developer growth -- make this visible and adjustable | Low | Input row showing developer count per year, feeding into fee revenue calculation |
+**Confidence:** MEDIUM -- based on community discussions, provider comparison guides, and OpenClaw Discord analysis. Not direct user interviews.
 
-### Model 3: Host Profitability
+---
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Dual income breakdown** (mining rewards + work fees) | Hosts earn from two sources; leadership needs to see relative contribution over time | Medium | Stacked area chart: emission income declining, fee income growing |
-| **Breakeven GNK price** at each time point | "What price does GNK need to be for hosts to be profitable?" is the #1 host question | Medium | `(Host_Cost - Fee_Income) / Daily_GNK_Earned` = breakeven price. Already have $0.85-$3.30 range. |
-| **Traditional rental comparison** ($/hr equivalence) | Leadership compares to "what if hosts just rented GPUs on Lambda/CoreWeave?" | Low | Side-by-side: Gonka income vs traditional rental income at each price point |
-| **Network size sensitivity** (hosts x GPUs) | More hosts = less reward per host. Model needs to show dilution. | Medium | Input for total network GPUs, shows per-host reward at different network sizes |
-| **Electricity cost sensitivity** | Electricity is 75-85% of operating costs -- small changes flip profitability | Low | Input for $/kWh, show profitability at $0.05, $0.08, $0.12/kWh |
-| **GPU cost amortization** | H100 costs $25-40K; hosts need to see payback period | Medium | Input for hardware cost, show months-to-breakeven and cumulative ROI |
-| **Host churn risk indicator** | When profitability index drops below 1.0x, hosts leave. Model this threshold. | Low | Conditional formatting: red when Gonka income < traditional rental |
+## Table Stakes
 
-### Model 4: Treasury & POL Simulation
+Features OpenClaw developers expect from ANY inference provider. Missing any = immediate disqualification.
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Community Pool depletion schedule** | 120M GNK pool with planned outflows (POL, dev grants, floor defense). When does it run out? | Medium | Waterfall: starting balance - POL allocation - dev grants - floor defense = remaining per year |
-| **POL LP fee revenue projection** | 22M GNK deployed, $550K-$1.1M annual fees expected. Model across scenarios. | Medium | Input for fee tier, utilization, price range. Output: annual revenue, cumulative returns. |
-| **Impermanent loss estimation** | Leadership needs to understand POL downside. IL is the #1 concern. | High | Model IL at different price movements: +-25%, +-50%, +-75% from deployment price |
-| **Buyback-burn cumulative impact** | 5% of revenue to burns. Show cumulative tokens burned over 10 years. | Medium | Running total: tokens purchased and burned each period. Show as % of total supply. |
-| **AI Training Fund balance** with surplus mechanism | Fund at 20% of revenue, surplus above 6-month runway distributed. Track balance. | Medium | Inflows (20% revenue) - outflows (expenses) - surplus distribution = fund balance |
-| **Floor defense treasury** depletion scenarios | $2-5M USDC target. Model trigger activations and spend-down. | Medium | Inputs for trigger price levels. Output: treasury balance after X months of defense. |
-| **Net treasury value** (GNK + USDC + LP positions) | Single number: "what is the protocol worth on its balance sheet?" | Medium | Sum of all treasury assets in USD at current GNK price per scenario |
+| Feature | Why Expected | Gonka Status | Gap? |
+|---------|--------------|-------------|------|
+| **OpenAI-compatible `/v1/chat/completions`** | OpenClaw's vLLM provider uses openai-completions API type; every provider supports this | BUILT (v1.2) | No |
+| **`/v1/models` endpoint** | OpenClaw auto-discovers models from this endpoint | BUILT (v1.2) | No |
+| **Tool calling support** | OpenClaw agents rely on tool use for skills; vLLM requires `--enable-auto-tool-choice` flag | BUILT (K2.5 supports native tool calling) | Verify vLLM flags are set correctly |
+| **Streaming responses** | OpenClaw streams by default for responsive agent UX | BUILT (vLLM provides SSE streaming) | No |
+| **API key authentication** | Every provider requires bearer token auth | BUILT (v1.2 gateway auth) | No |
+| **Rate limit headers** | OpenClaw/LiteLLM read `x-ratelimit-*` headers for backoff | PARTIAL -- rate limiting exists but need to verify header format | Check OpenAI-standard headers |
+| **Error responses in OpenAI format** | `{"error": {"message": "...", "type": "...", "code": "..."}}` | BUILT (v1.2 error handler) | No |
+| **Reasonable uptime (>99%)** | Production agents cannot tolerate frequent outages | NOT PROVEN | Yes -- need monitoring, health checks, failover |
+| **Documentation** | OpenClaw devs need a page showing baseUrl, model IDs, capabilities, pricing | NOT BUILT | Yes -- critical gap |
+| **Signup/onboarding flow** | Get API key in <5 minutes | NOT BUILT | Yes -- need self-serve key provisioning |
+| **Usage dashboard / billing** | Developers need to see spend and set budgets (cost anxiety is #1 OpenClaw pain) | PARTIAL -- admin API tracks usage, no developer-facing UI | Yes -- at minimum, API endpoint for usage stats |
+| **Multiple model options** | 76% of teams use multiple models; OpenRouter offers 290+ | LIMITED -- K2.5 only (3 quantization tiers) | Yes -- biggest gap vs OpenRouter |
 
-### Model 5: Master Unified Workbook
-
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Linked assumptions** across all sub-models | Change GNK price once, all models update. This is the whole point of a master model. | High | Single assumptions tab drives all calculations via cell references |
-| **Dashboard tab** with cross-model KPIs | Leadership needs the "one page" that summarizes everything | High | 6-8 key metrics pulled from each sub-model, with sparkline charts |
-| **Scenario comparison matrix** | "Show me conservative vs aggressive side by side for ALL models" | Medium | Summary table: rows = metrics, columns = scenarios. Color-coded. |
-| **Waterfall: token flow from supply to sinks** | The full token lifecycle: emission -> circulation -> staking/burning/treasury | High | Visual showing where tokens are at each time point across all categories |
-| **Navigation** (hyperlinked table of contents) | 10+ tabs is disorienting without navigation | Low | TOC tab with hyperlinks to each sheet. Consistent "Back to TOC" links. |
+**Confidence:** HIGH -- based on OpenClaw official docs (provider configuration requirements) and OpenRouter feature set.
 
 ---
 
 ## Differentiators
 
-Features that elevate the model from "functional" to "trustworthy and genuinely useful." These separate professional-grade models from hobby projects.
+Features that set Gonka apart. Not expected, but create switching motivation.
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| **Two-variable sensitivity tables** | Show how any output changes across two input variables simultaneously. E.g., "Host ROI at different GNK prices AND network sizes" | Medium | Use Excel Data Table format (row input + column input). 5-7 values per axis = 25-49 cell grid. Conditionally format green/yellow/red. |
-| **Conditional formatting heat maps** | Instantly see where problems are. Green = healthy, red = danger. | Medium | Apply to crossover tables, profitability matrices, treasury balances. More informative than raw numbers. |
-| **Tornado chart** (sensitivity ranking) | Shows which single variable has the biggest impact on a key output. Answers "what matters most?" | Medium | Rank variables by impact on host profitability or treasury runway. Leadership loves these for prioritization. |
-| **Scenario narrative** on each summary tab | A 2-3 sentence plain-English interpretation of what the numbers mean under each scenario | Low | E.g., "Under conservative growth, host breakeven price reaches $3.30 by Year 6, making the network uncompetitive without tail emissions." |
-| **Assumption audit trail** (source + date + confidence) | Each assumption cites its source document, research date, and confidence level (HIGH/MEDIUM/LOW) | Low | Extra columns on assumptions tab. Dramatically increases trust with technical leadership. |
-| **Breakeven lines on charts** | Horizontal reference lines showing thresholds (breakeven price, profitability floor, danger zones) | Low | E.g., horizontal line at $0.85 GNK on host profitability chart with label "Host breakeven floor" |
-| **Time-to-X calculations** | "How many months until Community Pool is depleted?" "When does fee revenue exceed $100M?" | Low | Clear callout cells: "Community Pool depleted in: 8.3 years (Base scenario)" |
-| **Cross-model consistency checks** | Automated checks that verify inputs match across models (e.g., total supply in Model 1 = total supply in Model 4) | Medium | A hidden "Checks" tab with TRUE/FALSE flags. Surface any FALSE on the dashboard. |
-| **Print-optimized chart formatting** | Charts that look professional in black-and-white print (patterns, not just colors) | Low | Use distinct line styles (solid, dashed, dotted) in addition to colors. Label directly on chart lines, not just legend. |
-| **Version number and changelog** | Track model evolution. "v1.1 added tail emission toggle per leadership feedback" | Low | Small changelog on cover sheet. Builds institutional memory. |
-| **Competitive benchmarks** embedded in charts | Show Gonka metrics alongside Akash, Render, Bittensor, ETH inflation rates | Low | Reference lines or secondary data series. E.g., "ETH inflation: ~0.5%/yr" as benchmark on Gonka inflation chart. |
-| **What-if toggle switches** for policy decisions | Boolean inputs: "Enable buyback-burn? Y/N", "Activate tail emissions? Y/N", "Deploy POL? Y/N" | Medium | Each toggle ripples through the model. Leadership can "turn on" recommendations one at a time to see impact. |
+### Tier 1: High-Impact, Buildable Now
+
+| Feature | Value Proposition | Complexity | Why It Wins |
+|---------|-------------------|------------|-------------|
+| **Agent cost optimizer** -- auto-route heartbeats/simple calls to cheap Q2 model, complex reasoning to full K2.5 | OpenClaw's heartbeat system sends full context every 30 min on expensive models; auto-tiering saves 60-80% on background calls | Low (ALREADY BUILT -- v1.2 tiering system) | Directly addresses #1 OpenClaw cost pain. No other provider does this automatically. Market with "cut your OpenClaw bill by 70%". |
+| **Session persistence** -- server-side context so agents don't re-send full history | OpenClaw agents resend entire conversation on every call, paying for the same tokens repeatedly; server-side sessions eliminate this | Low (ALREADY BUILT -- v1.2 sessions) | Prompt caching saves 40-90% of redundant computation. Gonka already stores sessions server-side. |
+| **Flat-rate or heavily discounted agent plans** | OpenClaw devs fear runaway costs; predictable pricing removes anxiety | Medium (pricing strategy, not code) | Neither OpenRouter nor direct providers offer agent-specific plans. "Unlimited agent inference for $X/month" is a powerful message. |
+| **OpenClaw provider plugin** -- first-class Gonka plugin for ClawHub | OpenClaw has ClawHub marketplace with 100+ skills; a provider plugin means one-click setup instead of manual JSON config | Medium | Removes all integration friction. Devs install plugin, enter API key, done. No other decentralized provider has this. |
+
+### Tier 2: High-Impact, Requires Investment
+
+| Feature | Value Proposition | Complexity | Why It Wins |
+|---------|-------------------|------------|-------------|
+| **GNK token payments with discount** | Pay with GNK for 20-30% discount vs USD; creates token demand flywheel | High (smart contracts, payment rails) | Only decentralized providers can offer this. Creates aligned incentives: devs hold GNK, use Gonka, GNK appreciates. |
+| **Censorship-free inference** | No content filtering, no prompt logging, no usage policy restrictions | Medium (policy + marketing) | OpenAI/Anthropic have strict content policies. OpenRouter routes to those providers. Gonka on decentralized infra = no central authority to censor. Major draw for specific use cases. |
+| **Open model marketplace** | Community can deploy and serve any open-weight model on Gonka network; devs access via same API | High (model deployment infra) | Competes with OpenRouter's 290+ model catalog but in a decentralized way. Hosts earn GNK for serving models. |
+| **Agent memory as a service** | Persistent vector memory across sessions, accessible via API; agents remember across restarts | Medium (PARTIALLY BUILT -- v1.2 has memory API; needs vector embeddings, noted as tech debt) | No inference provider offers persistent agent memory. This is an agent-native feature that centralized providers ignore. |
+| **Webhook notifications** | Notify agent's backend when async tasks complete, costs exceed threshold, models update | Low (ALREADY BUILT -- v1.2 webhooks) | Enables truly autonomous agents that react to events rather than polling. |
+
+### Tier 3: Moonshot Differentiators
+
+| Feature | Value Proposition | Complexity | Why It Wins |
+|---------|-------------------|------------|-------------|
+| **Earn-while-you-infer** | OpenClaw devs who run their own GPUs can serve Gonka inference AND use it -- hosting subsidizes usage | Very High (full network integration) | Unique value prop: "Your GPU earns GNK while your agents spend GNK." No centralized provider can offer this. |
+| **Privacy-preserving inference** | Encrypted prompts; no host sees plaintext | Very High (TEE/confidential computing) | Ultimate privacy story. Decentralized + encrypted = no one can see your agent's prompts. |
+| **Agent swarm optimization** | K2.5 supports 100 sub-agent swarms with 1,500 tool calls; Gonka can parallelize across network GPUs | High | Native capability of K2.5 + distributed compute = faster parallel agent execution than any single-datacenter provider. |
+
+**Confidence:** MEDIUM -- differentiator impact estimated from community pain points and competitive gaps. Actual developer response needs validation.
 
 ---
 
 ## Anti-Features
 
-Features to explicitly NOT build. Common mistakes in financial modeling that waste effort or actively harm the model's credibility and usability.
+Features to explicitly NOT build. Tempting but wrong for this stage.
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| **Monte Carlo / stochastic simulation** | Already out of scope per PROJECT.md. Deterministic scenarios are what leadership needs for decision-making. Probability distributions confuse non-technical audiences. | Use 3-5 named deterministic scenarios. Leadership needs "if X then Y," not "there's a 73% chance of Z." |
-| **Live API price feeds** | Breaks the model when APIs change or are offline. Creates dependency management overhead. Makes the model non-reproducible ("it showed different numbers yesterday"). | Hard-code current prices as inputs. The point is scenario analysis, not live tracking. |
-| **Named ranges for cells** | Seems helpful but creates phantom references that are nearly impossible to debug. Industry anti-pattern confirmed by ICAEW and Wall Street Prep. | Use standard cell references (e.g., `Assumptions!B12`) with clear column/row labels. |
-| **Overly complex formulas** (>half the formula bar) | Long formulas are unauditable. Leadership will not trust numbers they cannot trace. Errors hide in complexity. | Break complex calculations into intermediate rows. Each row does one step. More rows is better than fewer clever formulas. |
-| **Hard-coded constants inside formulas** | The classic financial modeling sin. Someone buries `0.05` in a formula instead of referencing the assumptions sheet. Changes get missed. | EVERY number lives on the assumptions sheet. Formulas only reference cells, never contain literal numbers (except 0 and 1). |
-| **Circular references** | Some modelers use circular references for iterative calculations (e.g., interest on debt that affects cash that affects debt). Excel handles them poorly and they confuse users. | Use previous-period values to break circularity. Slightly less "accurate" but vastly more reliable and understandable. |
-| **VBA macros** | Not supported in openpyxl-generated files. Also: macros trigger security warnings in Excel, break in Google Sheets, and are a maintenance nightmare. | Use Excel-native formulas (IF, CHOOSE, INDEX/MATCH) and openpyxl-generated structure. |
-| **Too many scenarios** (>5) | Analysis paralysis. Every additional scenario dilutes attention. Leadership needs 3 clear choices, not 12 permutations. | 3 primary scenarios (Conservative/Base/Aggressive) + 1-2 special scenarios (e.g., "Bear market + tail emissions"). Max 5. |
-| **Precise decimal places on projections** | Showing "$127,432,891.47" for a Year 5 projection implies false precision. Nobody knows Year 5 revenue to 11 significant digits. | Round to thousands or millions for projections beyond Year 1. Display as "$127.4M" not "$127,432,891.47". Use `$#,##0,K` or `$#,##0,,M` formatting. |
-| **Pivot tables / dynamic features** | openpyxl has limited pivot table support. Even if possible, pivot tables require user interaction that breaks the "print and read" workflow. | Pre-calculate all summary views as static tables. Build the pivots into the Python generation logic. |
-| **Multiple fonts / decorative formatting** | Every font change, gradient, or decorative element reduces the professional feel. Wall Street models use ONE font. | Single font (Calibri 10pt or Arial 10pt). Bold for headers only. Minimal borders. Let the data speak. |
-| **Embedding images / logos** | Adds file size, breaks formatting on different screen sizes, distracts from data. | Text-only branding on cover sheet. Professional models are clean and minimal. |
-| **Real-time dashboards / interactivity** | Already out of scope. Spreadsheets are not dashboards. Trying to make them interactive leads to fragile, unmaintainable models. | Static, well-designed charts that tell the story. If dashboards are needed later, that is a separate product. |
+| **290+ model catalog (matching OpenRouter)** | Cannot win on breadth. OpenRouter aggregates every provider; Gonka would be permanently behind. | Win on depth: K2.5 is the best open-source agentic model (76.8% SWE-Bench). Position as "the best model for agents" not "every model." Add 2-3 complementary models (DeepSeek R1, Llama 4) max. |
+| **Free tier** | OpenRouter's free tier has 25+ models. Competing on free attracts price-sensitive users who never convert. Free models are unreliable (rate limits, queuing, disappearing). | Offer a generous trial credit ($5-10) instead. Shows real pricing, no bait-and-switch. "Try Gonka with $10 free credit" is more honest than "free but throttled." |
+| **Web UI / playground** | Every provider has a playground. It is table stakes for direct users but OpenClaw devs use CLI/API exclusively. Building a web UI diverts resources from API features. | Provide a curl-based quickstart and OpenClaw config snippet. Devs copy-paste a JSON block, not click buttons. |
+| **Fine-tuning service** | Already out of scope (PROJECT.md). Fine-tuning is a different product entirely. Inference-only focus is correct. | Partner with fine-tuning platforms or point devs to HuggingFace for custom model training, then serve the result on Gonka. |
+| **Enterprise SSO / SAML** | OpenClaw developers are individuals and small teams, not enterprises with IT departments. | API key auth is sufficient. Add team features (shared billing, multiple keys) before SSO. |
+| **Real-time model benchmarks** | Benchmark leaderboards change weekly. Maintaining one is a full-time job that distracts from infrastructure. | Link to Artificial Analysis, cite K2.5's benchmark numbers in docs, update quarterly. |
+| **Agent hosting (full compute)** | Already rejected in v1.2 (Option B too complex). Running user agent code is a different business than inference. | Stay inference-only. Let OpenClaw be the agent runtime; Gonka is the brain. |
+
+**Confidence:** HIGH -- anti-features derived from PROJECT.md constraints and competitive analysis showing where breadth-competition is unwinnable.
+
+---
+
+## Feature Gap Analysis: Gonka vs Competitors
+
+### What Gonka Has (v1.2) vs What Competitors Offer
+
+| Capability | Gonka (v1.2) | OpenRouter | OpenAI Direct | Anthropic Direct |
+|------------|-------------|------------|---------------|-----------------|
+| OpenAI-compatible API | Yes | Yes | Yes (native) | No (own format) |
+| Model variety | 1 model, 3 quants | 290+ models | ~10 models | ~5 models |
+| Agent session persistence | Yes (server-side) | No | No | No |
+| Auto model tiering | Yes (content-based routing) | No (manual model selection) | No | No |
+| Webhook notifications | Yes | No | No | No |
+| Memory API | Yes (TF-IDF, needs upgrade) | No | No | No |
+| Usage metering | Yes (API-level) | Yes (dashboard) | Yes (dashboard) | Yes (dashboard) |
+| Developer dashboard | No (admin API only) | Yes | Yes | Yes |
+| Self-serve signup | No | Yes | Yes | Yes |
+| Documentation site | No | Yes | Yes | Yes |
+| SDK/client libraries | No (uses OpenAI SDK) | Own SDK | Own SDK | Own SDK |
+| Prompt caching | Via sessions | Via provider | Yes (native) | Yes (native) |
+| Free tier | No | Yes (25+ models) | No | No |
+| SLA guarantee | No | No (free), Yes (enterprise) | Yes | Yes |
+| Content filtering | None (open) | Provider-dependent | Strict | Strict |
+| Token payments | No (API keys, USD) | No (USD/crypto credits) | No (USD) | No (USD) |
+| Decentralized infra | Yes | No | No | No |
+
+### Critical Gaps to Close Before GTM
+
+1. **Documentation site** -- OpenClaw devs need a provider page at minimum
+2. **Self-serve API key signup** -- Cannot require manual key provisioning
+3. **At least 2-3 model options** -- K2.5-only is too narrow for multi-model workflows
+4. **Usage visibility** -- Developer-facing endpoint or simple dashboard showing spend
+5. **OpenClaw provider plugin on ClawHub** -- Eliminates all integration friction
+
+### Competitive Advantages Already Built (Undermarketed)
+
+1. **Session persistence** -- No other provider stores conversation server-side
+2. **Auto-tiering** -- Automatic cost optimization; unique to Gonka
+3. **Webhook events** -- Agent-native async notifications
+4. **No content filtering** -- Open-weight model on decentralized infra
+5. **Agent-aware extensions** -- Purpose-built for agent workloads, not bolted-on chat API
+
+---
+
+## Messaging Themes for OpenClaw Developers
+
+Based on the pain points and differentiators above, these are the messaging angles that resonate with OpenClaw developers specifically (not generic AI developer messaging).
+
+### Theme 1: "Cut Your Agent Bill by 70%"
+**Pain:** OpenClaw costs $5-30/month for casual use, $100-300+/month for heavy use. Heartbeats and context re-sending are the primary cost drivers.
+**Message:** Gonka's server-side sessions eliminate re-sent context (40-90% savings). Auto-tiering routes heartbeats to cheap models. Decentralized compute is 60-80% cheaper per token.
+**Proof point:** Calculate actual savings for a typical OpenClaw agent running 24/7 with heartbeats.
+
+### Theme 2: "Built for Agents, Not Chat"
+**Pain:** OpenAI/Anthropic/OpenRouter APIs are designed for single-turn chat. Agent patterns (sessions, memory, tiering, webhooks) are afterthoughts.
+**Message:** Gonka is the only inference provider with native agent extensions. Sessions, memory, tiering, webhooks -- built in, not bolted on.
+**Proof point:** Show OpenClaw config comparison: 3 lines for Gonka vs 20+ lines for equivalent setup with OpenRouter + external services.
+
+### Theme 3: "No Rules, No Logs, No Limits"
+**Pain:** OpenAI refuses certain prompts. Anthropic has strict content policies. Developers building autonomous agents need unrestricted inference.
+**Message:** Open-weight models on decentralized infrastructure. No content policies. No prompt logging by default. Your agent, your rules.
+**Proof point:** Demonstrate OpenClaw agent performing tasks that trigger content filters on other providers.
+
+### Theme 4: "The Best Open-Source Agentic Model"
+**Pain:** OpenClaw devs want strong tool calling and reasoning without GPT-4/Claude pricing.
+**Message:** K2.5 scores 76.8% on SWE-Bench Verified, handles 200-300 sequential tool calls without drift, supports 128K context. Open-weight, served on Gonka for a fraction of frontier model costs.
+**Proof point:** Side-by-side benchmark comparison vs GPT-4o and Claude on agentic tasks, with pricing.
+
+### Theme 5: "Earn While Your Agent Thinks" (Future)
+**Pain:** OpenClaw devs with GPUs pay for inference AND have idle compute.
+**Message:** Run a Gonka node, earn GNK. Spend GNK on inference for your agents. Your GPU pays for itself.
+**Proof point:** ROI calculator showing breakeven timeline.
+
+**Confidence:** MEDIUM -- messaging themes derived from research, not A/B tested with actual developers.
 
 ---
 
 ## Feature Dependencies
 
 ```
-Assumptions Sheet (all models)
+Documentation + Signup (must come first)
   |
-  +---> Model 1: Token Price Scenarios
-  |       |-- Circulating supply schedule
-  |       |-- Price trajectories
-  |       +-- Market cap calculations
+  +---> OpenClaw Provider Plugin (ClawHub)
+  |       |-- Requires: documented baseUrl, model IDs, auth flow
+  |       +-- Unlocks: zero-friction onboarding
   |
-  +---> Model 2: Emission vs Fee Transition
-  |       |-- Emission decay curve (from supply schedule)
-  |       |-- Fee revenue projections (from dev growth assumptions)
-  |       +-- Crossover analysis
+  +---> Cost Calculator / Comparison Tool
+  |       |-- Requires: pricing finalized
+  |       +-- Unlocks: "save 70%" messaging proof
   |
-  +---> Model 3: Host Profitability
-  |       |-- Mining rewards (from emission curve)
-  |       |-- Fee income (from fee projections)
-  |       |-- Traditional rental comparison
-  |       +-- Breakeven calculations
+  +---> Model Expansion (DeepSeek R1, Llama 4)
+  |       |-- Requires: additional vLLM backends, GPU capacity
+  |       +-- Unlocks: multi-model developer workflows
   |
-  +---> Model 4: Treasury & POL Simulation
-  |       |-- Community Pool outflows
-  |       |-- POL LP revenue (linked to price scenarios)
-  |       |-- Buyback-burn (linked to fee revenue)
-  |       +-- Floor defense spend
+  +---> Developer Usage API
+  |       |-- Requires: metering (already built)
+  |       +-- Unlocks: spend visibility, budget alerts
   |
-  +---> Model 5: Master Unified
-          |-- Links to all 4 models above
-          |-- Dashboard (pulls KPIs from each)
-          |-- Scenario comparison matrix
-          +-- Consistency checks
+  +---> GNK Token Payments
+          |-- Requires: smart contracts, payment rails
+          +-- Unlocks: discount incentive, token demand flywheel
 ```
 
-**Key dependency insight:** Models 2, 3, and 4 all depend on the emission schedule from Model 1 and the fee revenue projection from Model 2. Build Model 1 and 2 first, then 3 and 4 can be parallelized, then the Master model links everything.
+**Key insight:** Documentation and signup are prerequisites for everything. No marketing, no plugin, no growth without them. These are Phase 1.
 
 ---
 
 ## MVP Recommendation
 
-For the first deliverable, prioritize features that create the most decision-making value with the least implementation risk.
+### Must-Have Before Any GTM Push
 
-### Must-Have for First Release
+1. **Provider documentation page** -- baseUrl, model list, capabilities, pricing, OpenClaw config snippet
+2. **Self-serve API key signup** -- email + API key in <2 minutes
+3. **OpenClaw provider plugin** -- npm package or ClawHub listing for one-click setup
+4. **Cost comparison calculator** -- "Your OpenClaw bill with OpenRouter vs Gonka" interactive tool
+5. **At least one additional model** -- DeepSeek R1 70B as a budget option alongside K2.5
 
-1. **All table-stakes universal features** (assumptions sheet, 3 scenarios, color coding, number formatting, units, source references)
-2. **Model 1: Token Price Scenarios** with circulating supply, 3 price trajectories, market cap, inflation rate
-3. **Model 2: Emission vs Fee Transition** with crossover analysis, danger zone flagging, revenue waterfall
-4. **Model 3: Host Profitability** with dual income breakdown, breakeven price, traditional rental comparison
-5. **Model 4: Treasury & POL** with Community Pool depletion, POL revenue, buyback-burn cumulative
-6. **Master: Dashboard tab** with linked assumptions and cross-model KPIs
-7. **Sensitivity tables** (two-variable) for the highest-leverage decisions: host breakeven (price x network size) and treasury runway (revenue x growth rate)
-8. **Conditional formatting** on crossover tables and profitability matrices
+### Defer to Post-Launch
 
-### Defer to Post-First-Release
+- GNK token payments (requires smart contract milestone)
+- Open model marketplace (requires hosting infra beyond current scope)
+- Vector-based memory upgrade (tech debt from v1.2, can iterate)
+- Agent swarm optimization (K2.5 capability exists, network parallelization is complex)
+- Privacy-preserving inference (TEE research needed)
 
-- **Tornado charts** (nice-to-have, complex to implement in openpyxl)
-- **Impermanent loss modeling** (high complexity, requires concentrated liquidity math)
-- **Competitive benchmark overlays** (requires additional research data)
-- **What-if toggle switches** for individual policy decisions (adds complexity to formula structure)
-- **Cross-model consistency checks** (implement after models stabilize)
+### Never Build (for GTM purposes)
 
-### Never Build
-
-- Monte Carlo simulation
-- Live API feeds
-- VBA macros
-- Pivot tables
-- Interactive dashboards
-
----
-
-## Specific Gonka Parameters That Must Be Modelable
-
-These are the specific numbers from v1.0 research that leadership will want to adjust. Every one must be an input cell on the assumptions sheet, not hard-coded in formulas.
-
-| Parameter | Default Value | Source | Used In |
-|-----------|--------------|--------|---------|
-| Initial epoch reward | 323,000 GNK/day | Whitepaper | Models 1, 2, 3 |
-| Emission decay rate | -0.000475 per epoch | Whitepaper | Models 1, 2, 3 |
-| Total supply | 1,000,000,000 GNK | Whitepaper | All models |
-| Mining allocation | 680,000,000 GNK | Whitepaper | Models 1, 2 |
-| Community Pool | 120,000,000 GNK | Whitepaper | Model 4 |
-| Founder allocation | 200,000,000 GNK | Whitepaper | Model 1 |
-| Revenue split: hosts | 70% | Rec #3 | Models 2, 3 |
-| Revenue split: AI Fund | 20% | Rec #3 | Model 4 |
-| Revenue split: buyback-burn | 5% | Rec #3 | Models 1, 4 |
-| Revenue split: veGNK yield | 5% | Rec #3 | Model 4 |
-| POL allocation | 22,000,000 GNK | Rec #2 | Model 4 |
-| POL GNK/USDC split | 60% | Rec #2 | Model 4 |
-| POL fee tier | 0.3% | Rec #2 | Model 4 |
-| Expected LP fee revenue | $550K-$1.1M/yr | Rec #2 | Model 4 |
-| Developer count (initial) | 2,200 | Network data | Models 2, 3 |
-| Developer growth rates | 10%, 25%, 50% annual | Rec #4 | Model 2 |
-| Host count (initial) | 448 | Network data | Model 3 |
-| GPU count (initial) | 6,000 H100-eq | Network data | Model 3 |
-| GPU pricing H100 current | $2.00-$2.50/hr | Rec #5 | Model 3 |
-| GPU annual price deflation | 30-50% | Research | Model 3 |
-| Electricity cost range | $0.05-$0.12/kWh | Industry | Model 3 |
-| H100 hardware cost | $25,000-$40,000 | Market data | Model 3 |
-| Tail emission rate (contingency) | 10,000 GNK/day | Rec #1 | Models 2, 3 |
-| Floor defense trigger | 75% of 30-day TWAP | Rec #7 | Model 4 |
-| Floor defense treasury target | $2-5M USDC | Rec #7 | Model 4 |
-| Bitfury Schelling point | $0.60 | Strategic data | Models 1, 4 |
-| veGNK lock rate (expected) | 35-50% | Rec #6 | Model 1 |
-| Governance quorum | 33.4% | Whitepaper | Definitions only |
-
----
-
-## openpyxl Feature Feasibility
-
-Features confirmed available in openpyxl (verified via official documentation):
-
-| Feature | openpyxl Support | Confidence | Notes |
-|---------|-----------------|------------|-------|
-| Conditional formatting (cell rules) | Full support | HIGH | CellIsRule, ColorScaleRule, DataBarRule, IconSetRule |
-| Color-coded cells (fill, font) | Full support | HIGH | PatternFill for backgrounds, Font for text color |
-| Charts (line, bar, area, scatter) | Full support | HIGH | LineChart, BarChart, AreaChart, ScatterChart |
-| Dual-axis charts | Supported | HIGH | Secondary y-axis via series assignment |
-| Number formatting | Full support | HIGH | cell.number_format = '$#,##0' etc. |
-| Cell protection / sheet protection | Full support | HIGH | worksheet.protection, cell.protection |
-| Data validation (dropdowns) | Full support | HIGH | DataValidation class with list type |
-| Merged cells | Full support | HIGH | worksheet.merge_cells() |
-| Hyperlinks | Full support | HIGH | cell.hyperlink |
-| Print settings | Full support | HIGH | worksheet.print_area, page_setup |
-| Freeze panes | Full support | HIGH | worksheet.freeze_panes |
-| Column width / row height | Full support | HIGH | worksheet.column_dimensions |
-| Named styles | Full support | HIGH | NamedStyle for reusable formatting |
-| Data tables (What-If) | NOT supported | HIGH | Must pre-calculate in Python and output as static grid |
-| Pivot tables | NOT supported | HIGH | Must pre-calculate in Python and output as static tables |
-| Sparklines | NOT supported | HIGH | Use small embedded charts instead |
-| VBA macros | NOT supported | HIGH | Not applicable; excluded as anti-feature |
-
-**Key constraint:** Excel's native Data Table (What-If Analysis) feature cannot be generated by openpyxl. Sensitivity tables must be pre-calculated in Python and written as static formatted grids. This is actually an advantage -- the spreadsheet works identically in Google Sheets since it contains no Excel-specific compute features.
+- Matching OpenRouter's model catalog breadth
+- Free tier with rate-limited models
+- Web playground UI
+- Fine-tuning service
+- Enterprise SSO
 
 ---
 
 ## Sources
 
-- [InnMind Tokenomics Spreadsheet Template](https://innmind.com/downloads/tokenomics-spreadsheet/) -- Feature reference for tokenomics models
-- [Foresight Token Distribution Model](https://foresight.is/token-distribution-model/) -- Model structure reference
-- [FMI Financial Modeling Best Practices](https://fminstitute.com/modeling-resources/financial-modeling-best-practices/) -- Professional Excel standards
-- [ICAEW Financial Modelling Code](https://www.icaew.com/-/media/corporate/files/technical/technology/excel/financial-modelling-code.ashx) -- Industry standards for model governance
-- [Wall Street Prep: Sensitivity Analysis](https://www.wallstreetprep.com/knowledge/financial-modeling-techniques-sensitivity-what-if-analysis-2/) -- Two-variable data table best practices
-- [DataCamp: Sensitivity Analysis Tutorial](https://www.datacamp.com/tutorial/sensitivity-analysis-in-excel) -- Practical implementation guidance
-- [openpyxl Conditional Formatting Docs](https://openpyxl.readthedocs.io/en/3.1/formatting.html) -- Feature verification
-- [Fortress Accounting: Tokenomics Financial Modeling](https://fortress-accounting.com/tokenomics-financial-modeling-web3-startups/) -- Web3 modeling best practices
-- [Black Tokenomics: Monte Carlo in Tokenomics](https://blacktokenomics.com/monte-carlo-simulation-in-tokenomics/) -- Advanced simulation reference (excluded from scope)
-- Gonka v1.0 Research: Fine-Tuning Recommendations (10 recommendations with specific parameters)
-- Gonka v1.0 Research: Macro-Economic Research Synthesis v2.0
-- Gonka v1.0 Research: Deep Tokenomics Analysis v3.0
+- [OpenClaw Official Documentation](https://docs.openclaw.ai/) -- provider configuration, vLLM setup, plugin system
+- [OpenClaw vLLM Provider Docs](https://docs.openclaw.ai/providers/vllm) -- baseUrl config, auto-discovery, tool calling flags
+- [OpenClaw GitHub](https://github.com/openclaw/openclaw) -- 247K+ stars, 14 built-in providers, plugin architecture
+- [OpenRouter Pricing](https://openrouter.ai/pricing) -- 290+ models, 5.5% credit fee, pay-per-token passthrough
+- [OpenRouter Free API Changes 2026](https://www.marketingscoop.com/developer/openrouter-free-api-explained-what-it-is-what-changed-in-2026-and-the-tradeoffs-before-you-build-on-it/) -- free tier limits (20 RPM, 200 RPD), unreliable for production
+- [GMI Cloud: Choosing LLM Inference Provider 2025](https://www.gmicloud.ai/blog/choosing-a-low-latency-llm-inference-provider-2025) -- TTFT, throughput, cost as primary constraints
+- [LangChain State of Agent Engineering](https://www.langchain.com/state-of-agent-engineering) -- 76% multi-model usage, agent architecture patterns
+- [Kimi K2.5 Artificial Analysis](https://artificialanalysis.ai/models/kimi-k2-5) -- benchmark scores, pricing analysis
+- [Kimi K2.5 Tech Blog](https://www.kimi.com/blog/kimi-k2-5) -- 76.8% SWE-Bench, 200-300 tool calls, swarm mode
+- [OpenClaw Pricing Guide](https://www.thecaio.ai/blog/openclaw-pricing-guide) -- $5-30/month typical, $300+ heavy use
+- [Agent Cost Optimization Wiki](https://agentwiki.org/agent_cost_optimization) -- 3-10x LLM calls vs chatbots, prompt caching savings
+- [AI Inference Cost Crisis 2026](https://oplexa.com/ai-inference-cost-crisis-2026/) -- inference = 85% of AI budget
+- [Decentralized Compute Pricing](https://cryptonium.cloud/articles/decentralized-ai-compute-data-infrastructure-2026) -- 60-80% cheaper than centralized
+- [OpenClaw ClawHub Marketplace](https://www.c-sharpcorner.com/news/openclaw-2026322-release-adds-plugin-marketplace-and-multimodel-support) -- plugin marketplace, provider registration API
+- [Haimaker Custom LLM Setup](https://haimaker.ai/blog/integrating-custom-llm-providers-with-clawdbot/) -- custom provider baseUrl configuration
+- [Brian Gershon: Avoiding Runaway OpenClaw Costs](https://www.briangershon.com/blog/openclaw-avoid-runaway-api-costs) -- heartbeat cost issues, budget strategies

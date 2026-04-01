@@ -1,275 +1,227 @@
 # Project Research Summary
 
-**Project:** Gonka Tokenomics v1.1 Economic Modeling
-**Domain:** Python-generated Excel financial models for crypto tokenomics (leadership-facing)
-**Researched:** 2026-02-05
-**Confidence:** HIGH
+**Project:** Gonka Network v1.3 -- OpenClaw Go-To-Market Strategy
+**Domain:** B2D go-to-market strategy for decentralized AI inference targeting OpenClaw agent developers
+**Researched:** 2026-04-01
+**Confidence:** MEDIUM (GTM strategy inherently hypothesis-driven; OpenClaw technical facts HIGH)
 
 ## Executive Summary
 
-This project generates professional-grade Excel workbooks (.xlsx) that model the Gonka Network's token economics for founder/leadership decision-making. The domain is well-understood: it combines Python-to-Excel code generation (openpyxl) with Wall Street financial modeling conventions (centralized assumptions, formula-driven calculations, scenario analysis). The recommended approach is a single-dependency Python codebase (`openpyxl` only) that writes Excel formulas -- not computed values -- into structured workbooks so leadership can adjust assumptions and see results recalculate live in Excel or Google Sheets.
+Gonka v1.3 is a research-and-strategy milestone, not an engineering milestone. The goal is to produce actionable GTM documents that position Gonka.ai as the inference provider of choice for OpenClaw developers -- the 250K+ GitHub star ecosystem of self-hosted AI agent gateways. Gonka already has the right technical foundation from v1.2: OpenAI-compatible `/v1/chat/completions`, vLLM serving of Kimi K2.5, session persistence, auto-tiering, memory API, webhooks, and integration tests against OpenClaw. The gap is go-to-market, not product. The strategic opportunity is to claim the "agent-native inference" positioning before centralized providers add agent features or other decentralized networks build compatible APIs.
 
-The core deliverable is five workbooks: four standalone models (Token Price Scenarios, Emission vs Fee Transition, Host Profitability, Treasury and POL Simulation) plus a Master Unified Workbook that links all four via a shared Assumptions tab. Each workbook follows financial modeling best practices: blue-shaded input cells, formula-protected calculation cells, 3 named scenarios (Conservative/Base/Aggressive), inline charts, and a summary Dashboard tab. The architecture uses a layered dependency model where the Assumptions tab feeds into independent models (Emission, Token Price, Treasury) which then feed into dependent models (Fee Transition, Host Profitability) before everything rolls up into the Dashboard.
+The recommended approach is a research-first, build-second strategy: produce six interlocking GTM documents (competitive analysis, developer personas, positioning/messaging, channel strategy, partnership roadmap, product-led growth plan) in a sequence where each informs the next. The most critical decision in this milestone is vocabulary: Gonka must lead with developer outcomes (cost, reliability, agent features) and frame decentralization as the mechanism, never the headline. The target audience is Web2-native OpenClaw builders, not crypto-native token holders. Every piece of content, every doc page, and every error message must pass the test "would a developer who has never heard of blockchain understand this?"
 
-The primary risks are: (1) the reflexivity trap where token price is both an input and an output, requiring explicit scenario consistency checks; (2) floating-point precision errors in the exponential decay calculation compounding over 10-year horizons; (3) openpyxl formulas having no cached values, which can cause blank cells or errors in Google Sheets; and (4) a version conflict between researchers on openpyxl pinning (3.1.5 vs 3.1.3 for chart rendering). All four are addressable with specific prevention strategies documented in the research.
+The primary risks are: (1) crypto-first messaging that alienates the mainstream OpenClaw developer audience, (2) unreliable inference that damages trust on first contact and takes 3-6 months to repair, and (3) missing the ecosystem formation window -- OpenClaw's integration defaults are being set NOW as the project hits 250K stars, and being absent from ClawHub and the provider directory means being permanently behind entrenched defaults. The single most time-sensitive action is submitting a Gonka provider listing to ClawHub and OpenClaw's community documentation before competitors occupy that position.
+
+---
 
 ## Key Findings
 
 ### Recommended Stack
 
-**Use openpyxl as the sole dependency.** The library handles every Excel feature needed for this project: charts (line, bar, area, scatter, pie), conditional formatting, named ranges, data validation dropdowns, cell protection, freeze panes, and custom number formats. It beats XlsxWriter for this use case because it can read/modify files (critical for debugging), does not inject misleading cached formula values, and provides NamedStyle for DRY formatting. No other libraries are needed -- all math uses Python's standard `math`, `decimal`, and `datetime` modules.
+v1.3 produces documents, not software. The "stack" is research tooling: Markdown for all strategy documents (consistent with repo convention), openpyxl 3.1.5 for a competitive pricing tracker workbook (reusing the v1.1 stack), and Python 3.10+ if pricing analysis scripts are needed. No new dependencies are required.
+
+The GTM documents must be informed by deep knowledge of OpenClaw's technical architecture. OpenClaw uses a declarative `openclaw.json` config with a two-step provider registration (define provider + allowlist models). Gonka already satisfies both API format requirements (`openai-completions`). The OpenClaw plugin system supports TypeScript plugins and ClawHub Markdown skills -- both are distribution vectors for Gonka adoption in a future engineering milestone (v1.4 candidate).
 
 **Core technologies:**
-- **openpyxl** (version TBD -- see Conflicts section): Excel .xlsx generation with read/write/modify, charts, conditional formatting, named ranges, data validation
-- **Python 3.10+**: Runtime, matching existing project environment
-- **Standard library only** for computation: `math.exp()` for decay, `decimal.Decimal` for precision, `pathlib` for file management
+- **Markdown**: All GTM research documents -- repo-native format, reviewable via GitHub
+- **openpyxl 3.1.5**: Competitive pricing tracker workbook -- reuses v1.1 stack, portable .xlsx
+- **OpenClaw `openclaw.json` config pattern**: The copy-paste provider config snippet is the "product" in Gonka's PLG motion -- every doc must include it
 
-**What NOT to add:** pandas (pulls numpy, overkill for formula-driven models), XlsxWriter (cannot read files), matplotlib (embeds static images instead of interactive charts), numpy (unnecessary), xlwings (requires Excel installed).
+**Key technical facts verified (HIGH confidence):**
+- OpenClaw: 250K+ stars, 1,075 contributors, 124K LOC, launched Jan 25 2026 (~3 months old)
+- Built-in providers: ~20 (OpenRouter, OpenAI, Anthropic, Groq, Together, Ollama, vLLM, etc.)
+- Gonka is NOT a built-in provider -- requires manual JSON config (friction + opportunity)
+- Two API formats supported: `openai-completions` and `anthropic-messages` -- Gonka uses the former (already shipped)
+- Gonka capabilities already built in v1.2: sessions, tiering, memory, webhooks, tool calling, multi-model routing
 
 ### Expected Features
 
-**Must have (table stakes) -- universal across all workbooks:**
-- Cover/title sheet with version, date, disclaimer
-- Centralized Assumptions tab (blue-shaded inputs, all hard-coded numbers live here)
-- 3 named scenarios (Conservative/Base/Aggressive) with cell-driven scenario selector
-- Executive summary tab with 3-5 KPIs and 2-3 charts
-- Color-coded cell convention (blue=input, black=formula, green=cross-tab link)
-- Consistent number formatting (currency, percentages, commas, units labeled)
-- Time axis standardized: monthly for Year 1-2, annual for Year 3-10
-- 2-3 chart visualizations per model
-- Cell protection on formula cells
-- Source references per assumption
-- Definitions/glossary tab
+Features are categorized by what OpenClaw developers actually need vs what would be premature to build.
 
-**Must have (table stakes) -- per-model highlights:**
-- Model 1 (Token Price): 3-5 price trajectories, market cap calculations, circulating supply schedule, inflation rate, buyback-burn impact
-- Model 2 (Fee Transition): Emission decay curve, fee revenue projections (3 growth x 3 price = 9-cell matrix), crossover point identification, revenue split waterfall, danger zone flagging (Year 8-12), tail emission toggle
-- Model 3 (Host Profitability): Dual income breakdown (mining + fees), breakeven GNK price, traditional rental comparison, network size sensitivity, electricity cost sensitivity, GPU amortization
-- Model 4 (Treasury & POL): Community Pool depletion schedule, POL LP fee revenue, impermanent loss estimation, buyback-burn cumulative impact, AI Training Fund balance, floor defense scenarios, net treasury value
-- Model 5 (Master): Linked assumptions across all sub-models, Dashboard tab, scenario comparison matrix, navigation (hyperlinked TOC)
+**Must have (table stakes -- blockers for any GTM push):**
+- OpenAI-compatible `/v1/chat/completions` and `/v1/models` endpoints -- BUILT (v1.2)
+- Tool calling support (vLLM `--enable-auto-tool-choice` + `--tool-call-parser` flags) -- BUILT
+- Streaming SSE responses -- BUILT
+- API key authentication -- BUILT
+- OpenAI-format error responses -- BUILT
+- Provider documentation page (baseUrl, model IDs, capabilities, pricing, OpenClaw config snippet) -- NOT BUILT (critical gap)
+- Self-serve API key signup (email + API key in under 2 minutes) -- NOT BUILT (critical gap)
+- Developer usage visibility (spend, limits, error rates) -- PARTIAL (admin API exists, no developer-facing UI)
+- At least 2-3 model options (K2.5-only is too narrow for multi-model workflows) -- NOT BUILT (gap)
 
-**Should have (differentiators):**
-- Two-variable sensitivity tables (host breakeven: price x network size; treasury runway: revenue x growth rate)
-- Conditional formatting heat maps on crossover tables and profitability matrices
-- Scenario narratives (2-3 sentence plain-English interpretations)
-- Assumption audit trail (source + date + confidence level per assumption)
-- Breakeven reference lines on charts
-- Time-to-X calculations ("Community Pool depleted in 8.3 years")
-- Cross-model consistency checks (hidden Checks tab with TRUE/FALSE flags)
-- What-if toggle switches for policy decisions (buyback-burn Y/N, tail emissions Y/N)
+**Should have (differentiators that motivate switching from OpenRouter):**
+- Agent cost optimizer via auto-tiering (heartbeats to cheap model, reasoning to strong model) -- BUILT, undermarketed
+- Session persistence (server-side context, eliminates re-sending full history) -- BUILT, undermarketed
+- OpenClaw provider plugin for ClawHub (one-click setup, no manual JSON) -- NOT BUILT (high-value)
+- Cost comparison calculator ("Your OpenClaw bill with OpenRouter vs Gonka") -- NOT BUILT
+- Flat-rate or agent-specific pricing plans -- NOT BUILT (pricing strategy decision)
+- GNK token payment with discount (20-30% off for paying in GNK) -- NOT BUILT (requires smart contracts; v2 candidate)
 
-**Defer (v2+):**
-- Tornado charts (complex to implement in openpyxl)
-- Impermanent loss modeling (high complexity, V3 concentrated liquidity math -- see Pitfalls)
-- Competitive benchmark overlays (requires additional research data)
-- Cross-model consistency checks (implement after models stabilize)
+**Defer to v2+:**
+- Vector-based memory (currently TF-IDF -- tech debt from v1.2; noticeable quality gap vs competitors)
+- Open model marketplace (competing with OpenRouter's 290+ models is an unwinnable race; focus on depth not breadth)
+- Privacy-preserving inference via TEE (requires confidential computing research)
+- Agent swarm network parallelization (K2.5 native capability exists; network-level execution is complex)
+- Earn-while-you-infer for OpenClaw developers with GPUs (requires full network integration)
 
-**Never build:**
-- Monte Carlo / stochastic simulation
-- Live API price feeds
-- VBA macros
-- Pivot tables
-- Interactive dashboards
-- Multiple fonts / decorative formatting
-- Embedded images / logos
+**Never build (anti-features for this GTM stage):**
+- Matching OpenRouter on model catalog breadth -- unwinnable race; position on depth instead
+- Free tier with rate-limited/degraded models -- attracts price-sensitive non-converting users
+- Web playground UI -- OpenClaw devs use CLI/API exclusively; curl quickstart is sufficient
+- Fine-tuning service -- different product entirely
+- Enterprise SSO/SAML -- wrong audience for early GTM
 
 ### Architecture Approach
 
-The architecture follows a clean layered model: Python writes formulas (never computed values) into Excel, so workbooks are self-calculating. A `parameters.py` module defines all constants from v1.0 research. A `workbook_base.py` builds the Assumptions tab and returns a `param_refs` dictionary mapping parameter names to cell addresses. Each model module (`emission.py`, `token_price.py`, etc.) receives `param_refs` and writes formulas referencing Assumptions cells. A `styles.py` module defines all NamedStyles once per workbook. Generators (`master.py`, `standalone.py`) orchestrate assembly.
+The GTM research architecture has six interlocking components with explicit dependencies: Competitive Analysis feeds Positioning & Messaging, which feeds Channel Strategy and Content Strategy; Developer Personas feed Positioning, Channel Strategy, and Partnership Strategy; all six components converge into a Product-Led Growth plan. The research execution order must respect this dependency graph -- competitive analysis first, personas second, positioning third, channel fourth, partnership fifth, PLG sixth.
 
-**Major components:**
-1. **parameters.py** -- single source of truth for all ~50 input parameters from v1.0 research
-2. **workbook_base.py** -- builds Assumptions tab, returns param_refs dict, registers styles
-3. **emission.py** -- emission decay schedule (Layer 1, no cross-tab dependencies)
-4. **token_price.py** -- multi-scenario price trajectories (Layer 1)
-5. **treasury.py** -- treasury depletion, POL, buyback simulation (Layer 1)
-6. **fee_transition.py** -- fee vs emission crossover (Layer 2, depends on emission + price)
-7. **host_profit.py** -- host ROI model (Layer 2, depends on emission + price)
-8. **charts.py + Dashboard builder** -- summary charts from all models (Layer 3)
-9. **master.py** -- orchestrates master workbook generation
-10. **standalone.py** -- generates 4 standalone workbooks as subsets of master logic
+The architecture-to-message mapping table is the critical bridge between Gonka's technical reality and its marketing. Each technical feature must translate to a developer-facing benefit statement: "X-Gonka-Session-ID" becomes "your agent remembers context without paying for it twice"; "X-Gonka-Tier header" becomes "classification on the cheap model, reasoning on the strong one -- automatically"; "Sprint Consensus = 98% productive compute" becomes "every GPU cycle serves your requests, not mining puzzles."
 
-**Tab structure (Master Workbook, 8 tabs):**
-Documentation (green) -> Assumptions (blue, editable) -> Emission Schedule (gray) -> Token Price (gray) -> Fee Transition (gray) -> Host Profitability (gray) -> Treasury & POL (gray) -> Dashboard (orange)
-
-**Key architectural decisions:**
-- All cross-sheet references use absolute cell addresses for assumptions (`Assumptions!$B$12`) and relative references within same-tab data
-- Named ranges used sparingly (top 10-15 most-referenced parameters only)
-- Standalones are subsets of master logic, not separate codebases
-- Sheet protection with no password (prevents accidental overwrites, not malicious edits)
-- Monthly or quarterly granularity for long horizons to keep file size under 5MB Google Sheets limit
+**Major GTM research components:**
+1. **Competitive Analysis** -- Market segmentation across four categories (centralized API, multi-provider routers, dedicated inference, decentralized GPU) and deep teardowns of OpenRouter (primary), Together AI, Groq, Akash
+2. **Developer Persona & Journey** -- Three personas (OpenClaw Builder, Agent Framework Developer, AI Startup) mapped through AAARRRP stages with objection handling per stage
+3. **Positioning & Messaging** -- Architecture-to-message table, USP ranking, vocabulary guidelines (crypto-free developer language), objection playbook
+4. **Channel Strategy** -- P0: OpenClaw provider directory, GitHub, Discord; P1: technical blog, Twitter/X, Reddit r/LocalLLaMA; P2-P3: video, HackerNews, conferences (70/30 split: AI/developer vs crypto channels)
+5. **Partnership Strategy** -- Four integration tiers: Listed Provider (immediate) -> Community Plugin (v1.4) -> Built-In Provider (medium-term) -> Preferred Partner (long-term)
+6. **Product-Led Growth** -- Time-to-first-inference under 5 minutes as north star, free tier design principles, copy-paste OpenClaw config snippet as atomic growth unit
 
 ### Critical Pitfalls
 
-**Top 5 pitfalls ranked by severity and likelihood:**
+1. **Leading with decentralization instead of developer experience** -- The OpenClaw audience is Web2-native. "Decentralized" alienates 99%+ of them before they see the value. Lead every piece of messaging with developer outcomes (cost savings, agent features, reliability); frame decentralization as the mechanism that delivers those outcomes, never the headline. The Gonka.ai website should look like Vercel or Supabase, not a DeFi protocol.
 
-1. **Reflexivity trap (CRITICAL)** -- GNK price is both input and output; model scenarios appear independent but are deeply coupled. **Prevention:** Single Assumptions tab drives all tabs; build a Scenario Consistency tab that cross-references price assumptions with growth/fee scenarios and flags contradictions. Label every price-dependent output with its price assumption.
+2. **Requiring crypto knowledge for basic usage** -- API key auth is already correct (v1.2). Accept Stripe/card payments alongside GNK discounts. Abstract all blockchain interactions behind the API gateway -- developers should never see a transaction hash unless they opt in. Target: under 5 minutes from email to first API response, no wallet required.
 
-2. **Exponential decay precision errors (CRITICAL)** -- Float representation of 0.000475 compounds over 3,650+ epochs, potentially shifting the crossover year by 1+ year. **Prevention:** Use `decimal.Decimal('0.000475')` for Python computation; use closed-form formula `E(t) = E0 * (1-r)^t` in Excel cells (not iterative); include a validation row comparing geometric series sum against cell-by-cell sum.
+3. **Unreliable inference damaging trust on first contact** -- Decentralized compute networks are inherently more variable than centralized ones. First impressions are permanent -- OpenRouter and OpenAI have set the bar at sub-1-second TTFT with 99.9%+ uptime. Curate a premium verified-node tier for first-time users. Over-provision capacity in early days even at a loss. Publish real-time uptime stats. Reliability reputation takes 3-6 months to rebuild once damaged.
 
-3. **openpyxl formulas not calculated (CRITICAL)** -- Generated files have no cached formula values. Google Sheets may show blanks or errors. **Prevention:** Restrict to common Excel/Sheets formula subset (no XLOOKUP, FILTER, LAMBDA); consider two-pass approach writing Python-computed values then overwriting with formulas; test every workbook in Google Sheets before delivery.
+4. **Missing the OpenClaw ecosystem formation window** -- OpenClaw hit 250K stars in ~60 days. Integration defaults are being set right now, and late entrants face entrenched defaults requiring 3-5x the effort to displace. Submit a Gonka provider listing to ClawHub immediately, in parallel with any other GTM work. This is the single most time-critical action in v1.3.
 
-4. **openpyxl chart rendering bugs (MODERATE)** -- Versions 3.1.4+ changed the Application XML string, breaking chart labels/legends in Excel. **Prevention:** Version pinning decision required (see Conflicts section); test all chart types in target Excel version; minimize chart styling to reduce rendering bug surface area.
+5. **Competing on price alone in a race to the bottom** -- Every DePIN network claims "60-80% cheaper than AWS." Price is not a differentiator when all decentralized networks share the same structural cost advantage. Build positioning around OpenClaw-specific agent features (sessions, tiering, memory, webhooks) that centralized providers don't have and other decentralized networks haven't built. Ensure unit economics are profitable without token emission subsidies within 12 months.
 
-5. **Hardcoded assumptions scattered across tabs (MODERATE)** -- Each model script defines its own constants, creating divergence. **Prevention:** Single `parameters.py` config dict; Assumptions tab generated from this dict; all formula cells reference Assumptions tab only; Wall Street color coding makes hardcoded values visually obvious.
+6. **Community theater instead of developer adoption** -- Web3 marketing playbooks optimize for Discord members and airdrop hunters; real developer adoption is slow and unglamorous. Success metrics must be API-active developers (>100 calls/month), not follower counts. Build developer community on GitHub where OpenClaw developers already live. Target ratio: >1 API-active developer per 10 Discord members.
 
-## Researcher Conflicts and Open Decisions
-
-### Conflict: openpyxl Version -- 3.1.5 vs 3.1.3
-
-**STACK.md recommends:** openpyxl 3.1.5 (latest stable, released 2024-06-28). Rationale: production-stable, no known API issues.
-
-**PITFALLS.md recommends:** openpyxl 3.1.3 (pinned). Rationale: versions 3.1.4+ have a documented bug where the `app.xml` Application element breaks chart rendering in Microsoft Excel (chart labels disappear, legends misposition, axis formatting fails). The bug is documented in openpyxl user group reports.
-
-**Recommendation:** Start with 3.1.5 and test chart rendering in the target Excel version during Phase 2 (first model with charts). If charts break, downgrade to 3.1.3 or apply the post-processing workaround (unzip .xlsx, fix Application string in `docProps/app.xml`, re-zip). The workaround is mechanical and can be automated in the generation script.
-
-**Decision needed from user:** Which version of Excel does leadership use? This determines whether the chart bug is triggered.
-
-### Conflict: Named Ranges -- Use vs Avoid
-
-**STACK.md and ARCHITECTURE.md recommend:** Use named ranges sparingly (top 10-15 parameters) via openpyxl `DefinedName`. Makes formulas readable (`=initial_daily_emission*EXP(-decay_rate*B3)` vs `=Assumptions!$B$11*EXP(-Assumptions!$B$12*B3)`).
-
-**FEATURES.md anti-features list says:** "Named ranges for cells" is an anti-feature -- "creates phantom references that are nearly impossible to debug. Industry anti-pattern confirmed by ICAEW and Wall Street Prep." Recommends standard cell references with clear labels instead.
-
-**PITFALLS.md warns:** openpyxl named ranges cannot reference other named ranges or use complex expressions; broken references show `#REF!` errors.
-
-**Recommendation:** Use direct cell references (`Assumptions!$B$12`) as the primary approach. Named ranges add debugging complexity and have openpyxl limitations. The formulas are generated by Python (not hand-typed), so readability in Excel is a secondary concern -- the Python code is the readable source. If named ranges are desired later for polish, they can be added in Phase 10 without changing formula logic.
-
-### Conflict: Impermanent Loss Scope
-
-**FEATURES.md** lists IL estimation as a table-stakes feature for Model 4 (Treasury & POL) but also defers it to post-first-release as high complexity.
-
-**PITFALLS.md** warns that using the V2 IL formula for V3 concentrated positions is a critical pitfall (underestimates IL by 4-10x).
-
-**Recommendation:** Defer IL modeling to v2. Getting the V3 concentrated liquidity IL formula right requires tick-range math that is complex and error-prone. Shipping a wrong IL estimate is worse than shipping none. For v1, show POL fee revenue projections with a clearly labeled caveat: "IL impact not modeled; see v2 for concentrated position risk analysis."
-
-### Open Question: Sensitivity Tables -- Static vs Dynamic
-
-**FEATURES.md** confirms that openpyxl cannot generate Excel's native Data Table (What-If Analysis) feature. Sensitivity tables must be pre-calculated in Python and written as static grids. This means if leadership changes an assumption, sensitivity tables do NOT update.
-
-**Recommendation:** Accept static sensitivity tables for v1. Document clearly on the tab: "These tables are pre-calculated for the default assumptions. Regenerate the workbook to update." This is a reasonable tradeoff -- the alternative is not having sensitivity tables at all.
+---
 
 ## Implications for Roadmap
 
-Based on research, suggested phase structure follows the architecture's dependency layers:
+The v1.3 GTM research should be structured as six sequential-but-overlapping phases. Earlier phases produce artifacts that later phases consume. All six phases together produce a prioritized engineering backlog that v1.4 executes.
 
-### Phase 1: Foundation and Shared Infrastructure
-**Rationale:** Everything depends on the shared parameter system, style definitions, and workbook base. Build the spine first.
-**Delivers:** `parameters.py` with all ~50 v1.0 research parameters, `styles.py` with NamedStyles (currency, percent, header, input, formula), `workbook_base.py` with Assumptions tab builder and param_refs return pattern, `generate.py` CLI entry point skeleton.
-**Addresses:** Table stakes universal features (assumptions tab, color coding, number formatting, cell protection)
-**Avoids:** Pitfall #5 (hardcoded assumptions) by establishing single source of truth from day one
+### Phase 1: Competitive Analysis & Market Mapping
+**Rationale:** Cannot position without knowing the field. All downstream GTM work references the feature comparison matrix and pricing analysis produced here. Must come first.
+**Delivers:** Market segmentation map (four-category), per-competitor teardowns (OpenRouter, Together AI, Groq, Akash), feature comparison matrix (Gonka vs field), competitive pricing workbook (openpyxl)
+**Addresses:** Feature gap identification (what to close before GTM vs what to defer); pricing strategy inputs (sustainable vs subsidy-dependent unit economics)
+**Avoids:** Pitfall 4 (price-only positioning) -- analysis reveals where feature differentiation wins; ensures competitive set is accurate (OpenRouter, not just other DePIN networks)
+**Research flag:** NEEDS RESEARCH -- pricing data moves weekly; competitor features change monthly; requires fresh data pull at execution time
 
-### Phase 2: Emission Schedule Model
-**Rationale:** Simplest model. Upstream dependency for Fee Transition and Host Profitability. Validates the core formula-writing pattern.
-**Delivers:** `emission.py`, first standalone workbook (`gonka_emission.xlsx`), inline emission decay chart
-**Addresses:** Emission decay curve feature, circulating supply schedule
-**Avoids:** Pitfall #2 (precision errors) by implementing closed-form formula and validation row from the start
+### Phase 2: Developer Persona & Journey Mapping
+**Rationale:** Cannot craft messages or select channels without knowing the audience. Persona definitions unblock all downstream messaging and channel work.
+**Delivers:** Three persona cards (OpenClaw Builder, Agent Framework Developer, AI Startup), AAARRRP journey maps per persona, decision driver ranking, objection map per stage
+**Addresses:** Developer decision criteria table from FEATURES.md -- personas explain the "why" behind each ranking; validates that the five messaging themes resonate with actual developer pain
+**Avoids:** Pitfall 1 (crypto-first messaging) -- persona research confirms Web2-native audience; Pitfall 6 (ignoring OpenClaw ecosystem dynamics) -- persona journey maps the full ecosystem decision flow
+**Research flag:** NEEDS RESEARCH -- developer decision criteria should be validated against live community signals (GitHub issues, Discord, Reddit r/LocalLLaMA) at execution time; confidence is currently MEDIUM
 
-### Phase 3: Token Price Scenarios Model
-**Rationale:** Independent model (Layer 1). Tests multi-scenario pattern with 3-5 price trajectories. Upstream dependency for models that need price data.
-**Delivers:** `token_price.py`, standalone workbook, price trajectory charts, market cap calculations, inflation rate
-**Addresses:** Token Price table stakes features
-**Avoids:** Pitfall #1 (reflexivity) by linking price scenarios to the shared Assumptions tab
+### Phase 3: Positioning & Messaging
+**Rationale:** Synthesizes competitive analysis and personas into a message house. Must precede any content creation or channel work -- messaging frames every downstream artifact.
+**Delivers:** Value proposition canvas, full architecture-to-message mapping table, USP ranking (5 ranked USPs), vocabulary guidelines (developer-facing vs internal crypto terminology), objection handling playbook, competitive differentiation statements per persona
+**Addresses:** Five messaging themes from FEATURES.md; anti-patterns from ARCHITECTURE.md (feature-led messaging, crypto-first positioning, comparing to everyone)
+**Avoids:** Pitfall 1 (leading with decentralization), Pitfall 7 (crypto jargon) -- vocabulary guidelines are a direct deliverable; all future content creation requires sign-off against these guidelines
+**Research flag:** STANDARD PATTERNS -- message house creation is well-documented B2D practice; architecture-to-message mapping is internal synthesis work, not external research
 
-### Phase 4: Fee Transition Crossover Model
-**Rationale:** First Layer 2 model with cross-tab dependencies. Tests the cross-sheet formula reference pattern. Contains the project's most critical analysis (when do fees exceed emissions?).
-**Delivers:** `fee_transition.py`, standalone workbook, crossover analysis with 2D sensitivity matrix (price x growth), revenue split waterfall, danger zone flagging
-**Addresses:** Fee Transition table stakes features, crossover sensitivity tables (differentiator)
-**Avoids:** Pitfall #7 (crossover depends on price) by showing crossover as a band/matrix, not a single point
+### Phase 4: Channel Strategy & Community Playbook
+**Rationale:** Uses personas and messaging to determine where and how to reach developers. Channel selection without persona clarity and message alignment is guesswork.
+**Delivers:** Channel matrix with priority tiers (P0/P1/P2/P3), content calendar framework with journey-stage mapping, community engagement playbook, success metrics definition (API-active developers as primary KPI, not followers)
+**Addresses:** ARCHITECTURE.md channel matrix and content strategy framework; FEATURES.md feature dependency tree (documentation and signup must exist before channel strategy can execute)
+**Avoids:** Pitfall 5 (community theater) -- explicit metric: API-active developers, not Discord members; 70/30 budget split: AI/developer channels vs crypto channels
+**Research flag:** STANDARD PATTERNS -- channel matrix and content frameworks are established B2D marketing patterns; channel priority is a judgment call informed by personas
 
-### Phase 5: Host Profitability Model
-**Rationale:** Most complex cross-tab dependencies (emission + price). High decision-making value for leadership (host economics is the network's competitive moat).
-**Delivers:** `host_profit.py`, standalone workbook, dual income breakdown, breakeven price analysis, traditional rental comparison, network size sensitivity
-**Addresses:** Host Profitability table stakes features
-**Avoids:** Pitfall #8 (time-value) by including optional discount rate on Assumptions tab
+### Phase 5: Partnership & Ecosystem Strategy
+**Rationale:** OpenClaw ecosystem integration window is time-critical. Partnership strategy must be defined before execution, and engineering priorities for v1.4 (MCP plugin, built-in provider PR) depend on this output. Note: ClawHub submission itself should run in PARALLEL with earlier phases due to time urgency.
+**Delivers:** Four-tier OpenClaw integration roadmap with prerequisites per tier, ClawHub submission plan and content, built-in provider PR strategy, technical partnership requirements checklist
+**Addresses:** STACK.md GTM engineering artifacts table (Gonka provider plugin, ClawHub skill, openclaw.json template, integration guide); ARCHITECTURE.md partnership tier definitions
+**Avoids:** Pitfall 6 (missing OpenClaw ecosystem formation window) -- ClawHub submission is a direct output; includes sequencing guidance (ship working integration first, then approach for official partnership)
+**Research flag:** NEEDS RESEARCH -- ClawHub submission requirements and current registry state need verification; OpenClaw maintainer PR acceptance process requires community intelligence
 
-### Phase 6: Treasury and POL Simulation
-**Rationale:** Relatively independent (Layer 1) but has the most parameters. Defers IL modeling to v2.
-**Delivers:** `treasury.py`, standalone workbook, Community Pool depletion schedule, POL fee revenue (without IL), buyback-burn cumulative, floor defense scenarios, net treasury value
-**Addresses:** Treasury & POL table stakes features (except IL estimation, deferred)
-**Avoids:** Pitfall #4 (wrong IL formula) by explicitly deferring IL to v2
-
-### Phase 7: Charts, Dashboard, and Master Workbook
-**Rationale:** All models must be complete before the Dashboard can pull from them. This phase assembles everything.
-**Delivers:** `charts.py` helpers, Dashboard tab with 4-6 summary charts, `master.py` orchestrator, master workbook (`gonka_master_model.xlsx`) with all 8 tabs linked
-**Addresses:** Master Unified table stakes (linked assumptions, dashboard, scenario comparison, navigation), chart differentiators (breakeven lines, direct labels)
-**Avoids:** Pitfall #3 (Google Sheets formula issues) via testing; Pitfall #9 (file size) via monthly granularity
-
-### Phase 8: Standalone Workbook Generation
-**Rationale:** Standalones are subsets of master logic. Build after master stabilizes.
-**Delivers:** `standalone.py`, 4 standalone workbooks with filtered Assumptions tabs, focused dashboards, Documentation tabs
-**Addresses:** Standalone delivery requirement
-**Avoids:** Pitfall #5 (assumption divergence) by generating from same config dict
-
-### Phase 9: Polish, Documentation, and Validation
-**Rationale:** Final pass for professional quality. Cross-model consistency checks, print optimization, Google Sheets validation.
-**Delivers:** Documentation tab content, print-friendly layout, cross-model consistency checks (hidden Checks tab), scenario consistency matrix, version/changelog on cover sheet
-**Addresses:** Remaining differentiators (consistency checks, print formatting, audit trail)
-**Avoids:** Pitfall #3 (Google Sheets) via comprehensive testing; Pitfall #10 (formatting inconsistency) via audit
+### Phase 6: Product-Led Growth Plan & v1.4 Engineering Backlog
+**Rationale:** Synthesizes all five preceding phases into an actionable growth model with metrics, plus a prioritized engineering backlog for v1.4. Capstone deliverable of the milestone.
+**Delivers:** PLG model with funnel stages and metrics (GitHub star -> docs -> API key -> first call -> 100th call -> paid), free tier design spec, time-to-first-inference optimization plan (5-minute target), developer onboarding flow, prioritized v1.4 engineering backlog ranked by GTM impact
+**Addresses:** FEATURES.md MVP recommendation (five must-haves before any marketing push); ARCHITECTURE.md PLG architecture (copy-paste config snippet as atomic growth unit, TTFI north star)
+**Avoids:** Pitfall 4 anti-pattern (building before positioning) -- engineering backlog is produced AFTER research identifies what actually matters; Pitfall 2 (crypto knowledge required) -- free tier design specs email-only signup
+**Research flag:** STANDARD PATTERNS -- PLG metrics and funnel design are established SaaS/B2D patterns; engineering backlog prioritization is internal decision informed by prior five phases
 
 ### Phase Ordering Rationale
 
-- **Phases 1-3 build the foundation and independent models.** No cross-tab complexity. Each phase validates a core pattern (parameter system, formula writing, scenario handling).
-- **Phases 4-5 introduce cross-tab dependencies.** By this point, the formula reference pattern is proven. Emission and Price data are available for downstream models.
-- **Phase 6 is independent but delayed** because it has the most parameters and benefits from the patterns established in earlier phases. IL is explicitly deferred.
-- **Phases 7-9 are integration and polish.** The master workbook and standalones are assembly tasks, not new logic. Polish comes last when the data model is stable.
-- **This order matches the architecture's dependency graph exactly:** Layer 0 (parameters) -> Layer 1 (emission, price, treasury) -> Layer 2 (fee transition, host profit) -> Layer 3 (dashboard, master, standalones).
+- Competitive analysis precedes positioning: cannot position against an unknown field
+- Personas precede channel strategy: cannot select channels without knowing audience location and decision behavior
+- Positioning precedes all content creation: messaging frames every downstream artifact; content created without a message house will need to be rewritten
+- Partnership strategy should begin in parallel with Phase 3-4 due to ecosystem window urgency: at minimum, ClawHub submission and basic OpenClaw config template can be prepared immediately since technical facts are known
+- PLG plan comes last because it synthesizes all inputs, but the copy-paste OpenClaw config snippet (the core PLG artifact) can be drafted as early as Phase 1 since it depends only on technical facts already verified
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
-- **Phase 4 (Fee Transition):** The crossover analysis is the project's centerpiece. The 2D sensitivity matrix (price x growth rate) needs careful formula design to avoid the reflexivity trap.
-- **Phase 6 (Treasury & POL):** POL fee revenue projections require Uniswap V3 LP math. Even without IL modeling, fee accrual estimates need validated formulas.
-- **Phase 7 (Charts & Dashboard):** Chart rendering compatibility between openpyxl, Excel, and Google Sheets needs hands-on testing. The openpyxl version decision will be resolved here.
+**Needs fresh research at execution time:**
+- Phase 1 (Competitive Analysis): Pricing data moves weekly; competitor feature sets change monthly
+- Phase 2 (Developer Personas): Community signal validation required against current Discord/GitHub/Reddit state
+- Phase 5 (Partnership Strategy): ClawHub registry state and OpenClaw maintainer PR process need current verification
 
-Phases with standard patterns (skip research-phase):
-- **Phase 1 (Foundation):** Well-documented openpyxl patterns for styles, parameters, workbook creation
-- **Phase 2 (Emission):** Straightforward exponential decay formula; closed-form solution is textbook math
-- **Phase 3 (Token Price):** Standard scenario modeling with line charts
-- **Phase 8 (Standalones):** Subset extraction from master; no new patterns
+**Standard patterns (research optional):**
+- Phase 3 (Positioning & Messaging): B2D message house is well-documented; work is internal synthesis
+- Phase 4 (Channel Strategy): Channel matrix frameworks established; priority ranking is judgment call
+- Phase 6 (PLG Plan): SaaS/B2D PLG patterns well-documented; backlog prioritization is internal
+
+---
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | openpyxl capabilities verified against official docs. Single dependency, well-maintained. Only uncertainty is version pinning (3.1.3 vs 3.1.5 for chart bugs). |
-| Features | HIGH | Feature list cross-referenced against industry financial modeling standards (ICAEW, Wall Street Prep, FMI) and tokenomics-specific templates (InnMind, Foresight). openpyxl feasibility confirmed for all must-have features. |
-| Architecture | HIGH | Layered dependency model, formula-writing pattern, and module structure all follow established financial modeling and software engineering best practices. Verified against openpyxl API docs. |
-| Pitfalls | HIGH | Critical pitfalls sourced from openpyxl bug trackers, IEEE 754 documentation, DeFi protocol documentation (Uniswap V3), and industry financial modeling error catalogs. Prevention strategies are concrete and actionable. |
+| Stack | HIGH (OpenClaw technical) / MEDIUM (GTM tooling) | OpenClaw architecture verified against official docs and GitHub source; GTM tooling is straightforward reuse of v1.1 stack; no new dependencies needed |
+| Features | HIGH (table stakes) / MEDIUM (differentiator impact) | Table stakes derived from OpenClaw official docs (provider config requirements); differentiator ranking from community pain points, not A/B tested with actual developers |
+| Architecture | MEDIUM | GTM document architecture is inherently hypothesis-driven; technical Gonka components verified against v1.2 codebase; competitive landscape verified against current sources |
+| Pitfalls | MEDIUM-HIGH | Multiple sources corroborate DePIN failure patterns; Akash/io.net/Render case studies provide strong evidence; OpenClaw-specific ecosystem dynamics are newer and less validated |
 
-**Overall confidence:** HIGH
+**Overall confidence:** MEDIUM
+
+The research is sufficient to produce the six GTM documents described above. The primary uncertainty is developer response to specific messaging angles and actual cost savings in production OpenClaw workloads -- both require real developer interactions to validate. The research identifies what hypotheses to test, not pre-validated conclusions.
 
 ### Gaps to Address
 
-- **openpyxl version decision:** Needs resolution via hands-on chart rendering test in target Excel version. Not a blocker for Phase 1-2 (no charts), becomes relevant in Phase 3+.
-- **Google Sheets formula compatibility:** Research identifies the risk but the exact set of formulas that fail needs testing with the actual generated workbook. Plan for a Google Sheets validation pass in Phase 7-9.
-- **Uniswap V3 LP fee estimation:** Even without IL modeling, POL fee revenue projections need a validated formula for concentrated liquidity fee accrual. This is deferred to Phase 6 planning.
-- **Target Excel version:** Research identifies version-specific chart rendering. Need to know what version leadership uses (Excel 365, Excel 2021, Google Sheets only, etc.).
-- **Time granularity decision:** Research recommends monthly for Year 1-2, annual for Year 3-10. Confirm with user whether daily granularity is needed for any period (impacts file size and Phase 2 row counts).
-- **Named ranges vs direct cell references:** Research is split. Recommendation is to use direct references and revisit named ranges as a polish item. User may have a preference.
+- **Gonka pricing not finalized:** STACK.md shows Kimi K2.5 target pricing as TBD. The "cut your bill 70%" messaging cannot be validated until actual per-token pricing is set and compared against OpenRouter. Pricing finalization is a Phase 1 output, not an input.
+- **Reliability metrics unproven at scale:** The "unreliable inference" pitfall cannot be fully addressed without published uptime data. GTM marketing push should be gated on demonstrated >99.5% uptime over a 30-day baseline.
+- **Developer messaging unvalidated:** All five messaging themes (cost, agent-native, censorship-free, K2.5 benchmarks, earn-while-you-infer) are hypotheses derived from community pain points -- none A/B tested. Phase 2 persona work should include structured outreach to 5-10 real OpenClaw builders before scaling content creation.
+- **OpenClaw version compatibility:** OpenClaw is evolving rapidly (250K stars in ~3 months). Integration guides must be pinned to a specific OpenClaw version and tested against new releases. PITFALLS.md flags silent breakage from version drift as a known failure mode.
+- **GNK token payments scope boundary:** GNK token payments (20-30% discount) are flagged as a Tier 2 differentiator requiring smart contracts and payment rails. v1.3 must define which future milestone introduces this feature and what the rollout sequence looks like.
+
+---
 
 ## Sources
 
-### Primary (HIGH confidence)
-- [openpyxl official documentation](https://openpyxl.readthedocs.io/en/stable/) -- API verification for charts, styles, named ranges, data validation, protection, formulas
-- [openpyxl PyPI](https://pypi.org/project/openpyxl/) -- version 3.1.5 release info
-- [Python decimal module](https://docs.python.org/3/library/decimal.html) -- precision arithmetic
-- [Python floating-point docs](https://docs.python.org/3/tutorial/floatingpoint.html) -- IEEE 754 limitations
+### Primary (HIGH confidence -- official documentation)
+- [OpenClaw Model Providers -- Official Docs](https://docs.openclaw.ai/concepts/model-providers) -- provider config two-step, API formats
+- [OpenClaw Plugin System -- Official Docs](https://docs.openclaw.ai/tools/plugin) -- plugin vs skill distinction, ClawHub
+- [OpenClaw GitHub Repository](https://github.com/openclaw/openclaw) -- 250K+ stars, built-in provider list, AGENTS.md
+- [OpenRouter Pricing](https://openrouter.ai/pricing) -- 5.5% credit markup, per-token pass-through, 290+ models
+- [Kimi K2.5 ArXiv](https://arxiv.org/html/2602.02276v1) -- 76.8% SWE-Bench Verified, technical benchmarks
+- Gonka v1.2 codebase (gateway, sessions, tiering, memory, webhooks) -- verified against source
 
-### Secondary (MEDIUM confidence)
-- [Wall Street Prep Financial Modeling](https://www.wallstreetprep.com/knowledge/financial-modeling/) -- tab structure, color conventions, sensitivity analysis
-- [CFI Excel Model Documentation](https://corporatefinanceinstitute.com/resources/excel/documenting-excel-models-best-practices/) -- assumptions tab patterns
-- [FMI Financial Modeling Best Practices](https://fminstitute.com/modeling-resources/financial-modeling-best-practices/) -- professional Excel standards
-- [ICAEW Financial Modelling Code](https://www.icaew.com/-/media/corporate/files/technical/technology/excel/financial-modelling-code.ashx) -- industry model governance
-- [InnMind Tokenomics Spreadsheet](https://innmind.com/downloads/tokenomics-spreadsheet/) -- tokenomics model feature reference
-- [Google Sheets import compatibility](https://support.google.com/docs/thread/219934507) -- formula and chart compatibility
-- [openpyxl chart rendering bugs](https://groups.google.com/g/openpyxl-users/c/khC6BTqaH3Y) -- version 3.1.4+ chart issues
+### Secondary (MEDIUM confidence -- multiple sources agree)
+- [OpenClaw 250K Stars Milestone Blog](https://openclaws.io/blog/openclaw-250k-stars-milestone)
+- [Kimi K2.5 Tech Blog](https://www.kimi.com/blog/kimi-k2-5) -- Agent Swarm, 200-300 sequential tool calls
+- [LangChain State of Agent Engineering](https://www.langchain.com/state-of-agent-engineering) -- 76% multi-model usage
+- [Haimaker Custom LLM Provider Setup](https://haimaker.ai/blog/integrating-custom-llm-providers-with-clawdbot/) -- two-step config walkthrough
+- [OpenRouter Free API Changes 2026](https://www.marketingscoop.com/developer/openrouter-free-api-explained-what-it-is-what-changed-in-2026-and-the-tradeoffs-before-you-build-on-it/) -- free tier degradation, 20 RPM/200 RPD limits
+- [Decentralized Compute Pricing](https://cryptonium.cloud/articles/decentralized-ai-compute-data-infrastructure-2026) -- 60-80% cheaper claim
+- [io.net vs Akash vs Render](https://io.net/blog/io-net-vs-akash-vs-render-network-which-decentralized-platform-actually-delivers) -- DePIN reliability case studies
+- [Akash 2025 Year in Review](https://akash.network/blog/akash-2025-year-in-review/) -- provider attrition lessons
+- [OpenClaw Pricing Guide](https://www.thecaio.ai/blog/openclaw-pricing-guide) -- $5-300+/month typical cost range
+- [Brian Gershon: Avoiding Runaway OpenClaw Costs](https://www.briangershon.com/blog/openclaw-avoid-runaway-api-costs) -- heartbeat cost pattern
+- [developerrelations.com AAARRRP Framework](https://developerrelations.com/guides/mapping-the-developer-journey/)
+- [Web3 Startup Failure Patterns](https://hackernoon.com/why-web3-projects-fail-with-growth-marketing-3-fundamental-mistakes) -- crypto-first messaging failure mode
 
-### Tertiary (LOW confidence)
-- Google Sheets icon set / data bar rendering (community reports, not official docs)
-- openpyxl Application string chart bug (user group reports, not official changelog)
-- Uniswap V3 concentrated IL amplification factor (ranges cited as 4-10x; exact multiplier depends on position parameters)
+### Tertiary (LOW confidence -- single source or inference)
+- Gonka compute cost advantage of 50-70% (Gonka's own marketing claims; not independently verified)
+- OpenClaw Discord server size and activity levels (inferred from documentation; not directly measured)
+- Developer response to specific Gonka messaging themes (hypothesis from community pain points; not A/B tested)
 
 ---
-*Research completed: 2026-02-05*
+*Research completed: 2026-04-01*
 *Ready for roadmap: yes*

@@ -1,798 +1,586 @@
-# Architecture Patterns: Python-Generated Excel Financial Models
+# Architecture: Go-To-Market Research Structure for Gonka v1.3
 
-**Domain:** Tokenomics economic modeling workbooks
-**Researched:** 2026-02-05
-**Overall Confidence:** HIGH (openpyxl API verified against official docs; financial modeling patterns from industry best practices)
-
----
-
-## Recommended Architecture
-
-### High-Level System Design
-
-```
-Python Codebase (generates)           Excel Output (consumed by leadership)
-===========================           =====================================
-
-models/                               Master Workbook (.xlsx)
-  parameters.py    ------>            [Assumptions] tab (editable inputs)
-  emission.py      ------>            [Emission Schedule] tab
-  fee_transition.py ------>           [Fee Transition] tab
-  host_profit.py   ------>            [Host Profitability] tab
-  treasury.py      ------>            [Treasury & POL] tab
-  token_price.py   ------>            [Token Price Scenarios] tab
-                                      [Dashboard] tab (summary charts)
-                                      [Documentation] tab
-
-generators/                           Standalone Workbooks (4x)
-  master.py        ------>            gonka_master_model.xlsx
-  standalone.py    ------>            gonka_token_price.xlsx
-                                      gonka_fee_transition.xlsx
-                                      gonka_host_profitability.xlsx
-                                      gonka_treasury_pol.xlsx
-```
-
-**Core principle:** Python computes nothing at runtime. Python writes Excel formulas into cells so the workbook is self-calculating. Leadership changes an assumption cell and all downstream formulas recalculate automatically in Excel.
+**Domain:** B2D go-to-market strategy for decentralized AI inference targeting OpenClaw developers
+**Researched:** 2026-04-01
+**Overall Confidence:** MEDIUM (GTM strategy is inherently hypothesis-driven; competitive landscape verified against current sources; OpenClaw integration patterns verified against v1.2 codebase)
 
 ---
 
-## Python Project Structure
+## Recommended GTM Research Architecture
 
-### Recommended Directory Layout
+The v1.3 milestone produces research documents, not software. The architecture here defines how the research deliverables should be structured, what components they contain, how they relate to each other, and how Gonka's technical architecture maps to marketing advantages.
 
-```
-gonka-tokenomics/
-  models/
-    __init__.py
-    parameters.py          # All input parameters from v1.0 research
-    emission.py            # Emission decay schedule calculations
-    fee_transition.py      # Fee vs emission crossover model
-    host_profit.py         # Host ROI under varying conditions
-    treasury.py            # Treasury, POL, buyback simulation
-    token_price.py         # Token price scenario trajectories
-  generators/
-    __init__.py
-    workbook_base.py       # Shared workbook creation utilities
-    styles.py              # All cell styles, number formats, colors
-    charts.py              # Chart creation helpers
-    master.py              # Master workbook generator
-    standalone.py          # Standalone workbook generators
-  output/                  # Generated .xlsx files (gitignored)
-  tests/
-    __init__.py
-    test_parameters.py     # Verify parameter values match research
-    test_formulas.py       # Verify formula strings are valid
-    test_generation.py     # Verify workbooks generate without error
-    test_calculations.py   # Spot-check formula results in generated files
-  generate.py              # CLI entry point: python generate.py [--all|--master|--standalone]
-  requirements.txt         # openpyxl>=3.1.5
-```
-
-### Module Responsibilities
-
-| Module | Responsibility | Depends On |
-|--------|---------------|------------|
-| `parameters.py` | Define all input constants from v1.0 research; map parameters to assumption sheet cells | None |
-| `emission.py` | Build emission schedule rows and formulas for 10-year projection | `parameters.py` |
-| `fee_transition.py` | Build fee revenue vs emission value crossover model | `parameters.py`, `emission.py` |
-| `host_profit.py` | Build host ROI model under varying GNK prices and network sizes | `parameters.py`, `emission.py` |
-| `treasury.py` | Build treasury depletion, POL returns, buyback impact model | `parameters.py` |
-| `token_price.py` | Build multi-scenario price trajectories | `parameters.py` |
-| `workbook_base.py` | Create workbooks, apply standard formatting, build assumptions tab | `parameters.py`, `styles.py` |
-| `styles.py` | Define all NamedStyles, number formats, color constants | None |
-| `charts.py` | Create standardized chart objects (line, area, combo) | None |
-| `master.py` | Orchestrate full master workbook generation | All model modules |
-| `standalone.py` | Generate 4 focused standalone workbooks | Individual model modules |
-
-### Design Principle: Models Write Formulas, Not Values
-
-Each model module exposes a function like `build_emission_tab(ws, params_row_map)` that:
-
-1. Receives a worksheet and a mapping of parameter names to Assumptions tab cell references
-2. Writes headers and row labels
-3. Writes Excel formulas (as strings) that reference the Assumptions tab
-4. Returns metadata about what it wrote (row/column ranges) for chart creation
-
-**Example pattern:**
-
-```python
-# In emission.py
-def build_emission_tab(ws, assumptions_refs):
-    """
-    assumptions_refs = {
-        'initial_emission': 'Assumptions!$C$5',
-        'decay_rate': 'Assumptions!$C$6',
-        'epochs_per_day': 'Assumptions!$C$7',
-    }
-    """
-    # Row 1: Headers
-    ws['A1'] = 'Year'
-    ws['B1'] = 'Epoch'
-    ws['C1'] = 'Daily Emission (GNK)'
-    ws['D1'] = 'Cumulative Mined'
-
-    # Row 2: Year 0
-    ws['A2'] = 0
-    ws['B2'] = 0
-    init_ref = assumptions_refs['initial_emission']
-    ws['C2'] = f'={init_ref}'
-
-    # Row 3+: Formula-driven
-    decay_ref = assumptions_refs['decay_rate']
-    for row in range(3, 12):  # Years 1-9
-        yr = row - 2
-        ws[f'A{row}'] = yr
-        ws[f'B{row}'] = f'={yr}*365*{assumptions_refs["epochs_per_day"]}'
-        ws[f'C{row}'] = f'={init_ref}*EXP(-{decay_ref}*B{row})'
-        ws[f'D{row}'] = f'=D{row-1}+C{row}*365'
-```
-
-This ensures the generated workbook is fully self-contained. Leadership never needs Python again after generation.
-
----
-
-## Excel Workbook Tab Architecture
-
-### Master Workbook Tab Structure
-
-The master workbook contains 8 tabs in this order:
-
-| Tab # | Tab Name | Type | Purpose |
-|-------|----------|------|---------|
-| 1 | **Documentation** | Info | Model overview, methodology, parameter sources |
-| 2 | **Assumptions** | Input | All adjustable parameters (ONLY editable tab) |
-| 3 | **Emission Schedule** | Calc | 10-year emission decay, daily/annual GNK output |
-| 4 | **Token Price** | Calc | 3-5 price scenario trajectories over 10 years |
-| 5 | **Fee Transition** | Calc | Fee revenue vs emission value crossover analysis |
-| 6 | **Host Profitability** | Calc | Host ROI under varying conditions |
-| 7 | **Treasury & POL** | Calc | Community Pool depletion, POL returns, buyback |
-| 8 | **Dashboard** | Output | Summary charts from all models, key metrics |
-
-**Tab ordering rationale:**
-- Documentation first so the user understands the model before interacting
-- Assumptions second because it is the primary interaction point
-- Calculation tabs ordered by dependency (emission feeds into fee transition and host profit)
-- Dashboard last as the synthesis/output view
-
-### Tab Color Coding
-
-| Color | Meaning | Tabs |
-|-------|---------|------|
-| Blue (tab color) | Input / editable | Assumptions |
-| Green (tab color) | Information / read-only docs | Documentation |
-| Gray (tab color) | Calculation / do not edit | Emission, Token Price, Fee Transition, Host Profitability, Treasury |
-| Orange (tab color) | Dashboard / output | Dashboard |
-
-### Assumptions Tab Layout
-
-The Assumptions tab is the single point of control for the entire model. Structure it with clear sections:
+### High-Level Deliverable Structure
 
 ```
-Row 1:  [GONKA TOKENOMICS MODEL - ASSUMPTIONS]  (merged header)
-Row 2:  [All blue-shaded cells below are adjustable inputs]
-Row 3:  (blank separator)
+GTM Research Deliverables
+=========================
 
---- Section: Token Supply ---
-Row 4:  [Section Header: TOKEN SUPPLY]
-Row 5:  Total Supply           | 1,000,000,000 | GNK    | Fixed
-Row 6:  Mining Rewards Pool    | 680,000,000   | GNK    | 68% of total
-Row 7:  Community Pool         | 120,000,000   | GNK    | 12% of total
-Row 8:  Founder Allocation     | 200,000,000   | GNK    | 20% of total
-Row 9:  (blank separator)
-
---- Section: Emission Parameters ---
-Row 10: [Section Header: EMISSION PARAMETERS]
-Row 11: Initial Daily Emission | 323,000       | GNK/day| v1.0 research
-Row 12: Decay Rate             | 0.000475      | /epoch | Halving ~4 years
-Row 13: Epochs Per Day         | 1             |        | Assumption
-Row 14: (blank separator)
-
---- Section: Revenue Parameters ---
-Row 15: [Section Header: REVENUE PARAMETERS]
-Row 16: Host Share             | 70%           |        | Current allocation
-Row 17: AI Training Fund       | 20%           |        | Current allocation
-Row 18: Buyback-Burn           | 5%            |        | Proposed (Rec #3)
-Row 19: veGNK Yield            | 5%            |        | Proposed (Rec #3)
-Row 20: (blank separator)
-
---- Section: Growth Scenarios ---
-Row 21: [Section Header: GROWTH SCENARIOS]
-Row 22: Conservative Dev Growth| 10%           | annual | Low scenario
-Row 23: Moderate Dev Growth    | 25%           | annual | Target scenario
-Row 24: Aggressive Dev Growth  | 40%           | annual | High scenario
-Row 25: Base Active Developers | 2,200         |        | Current state
-...etc for each parameter category
+1. COMPETITIVE ANALYSIS          (Where Gonka fits)
+   |
+   +-- Market map: centralized vs decentralized vs hybrid
+   +-- Per-competitor teardown: OpenRouter, Together AI, Groq, Akash, Render
+   +-- Feature matrix: Gonka vs field
+   +-- Pricing analysis: per-token vs GPU-hour vs hybrid
+   |
+2. DEVELOPER PERSONA & JOURNEY   (Who we're targeting, how they decide)
+   |
+   +-- Persona definitions: OpenClaw builders, agent framework devs, AI startups
+   +-- Journey stages: Discovery -> Evaluation -> Adoption -> Expansion -> Advocacy
+   +-- Decision drivers per stage
+   +-- Objection map per persona
+   |
+3. POSITIONING & MESSAGING       (What we say)
+   |
+   +-- Value proposition canvas
+   +-- Architecture-to-message mapping (tech advantage -> business value)
+   +-- Objection handling playbook
+   +-- Competitive differentiation statements
+   |
+4. CHANNEL STRATEGY              (Where we say it)
+   |
+   +-- Channel matrix: community, content, events, partnerships, paid
+   +-- OpenClaw-specific channels: GitHub, Discord, plugin marketplace
+   +-- Content calendar framework
+   +-- Community engagement playbook
+   |
+5. PARTNERSHIP STRATEGY           (OpenClaw integration depth)
+   |
+   +-- Integration tiers: listed provider -> preferred partner -> native integration
+   +-- SDK/plugin development plan
+   +-- Co-marketing opportunities
+   +-- Technical partnership requirements
+   |
+6. PRODUCT-LED GROWTH PLAN       (How the product sells itself)
+   |
+   +-- Free tier design
+   +-- Time-to-first-inference optimization
+   +-- Developer onboarding flow
+   +-- Usage expansion triggers
 ```
 
-**Column layout for Assumptions:**
-
-| Column A | Column B | Column C | Column D | Column E |
-|----------|----------|----------|----------|----------|
-| Parameter name | Value (EDITABLE) | Unit | Source/Note | Validation |
-
-- Column B cells are blue-filled, unlocked (editable when sheet is protected)
-- All other cells are locked (protected from editing)
-- Column E contains data validation (dropdowns for scenario selectors, min/max for numeric inputs)
-
-### Assumptions Parameter Groups
-
-Based on v1.0 research, organize into these groups:
-
-| Group | Parameters | Source |
-|-------|-----------|--------|
-| **Token Supply** | Total supply, mining pool, community pool, founder allocation | Whitepaper |
-| **Emission** | Initial daily emission, decay rate, epochs/day | Whitepaper + v1.0 |
-| **Revenue Split** | Host %, AI Fund %, Buyback %, Yield % | Rec #3 |
-| **Price Scenarios** | Conservative/Moderate/Aggressive GNK price trajectories | v1.0 research |
-| **Developer Growth** | Conservative/Moderate/Aggressive annual growth rates | Rec #4 |
-| **GPU Economics** | H100 $/hr (current), annual deflation rate, Gonka target $/hr | Rec #9 |
-| **POL** | GNK allocation, USDC pair %, ETH pair %, LP fee tier | Rec #2 |
-| **Fee Transition** | Year 1-10 inference revenue under each scenario | Rec #1 stress test |
-| **Host Costs** | Electricity $/kWh, GPU hardware cost, maintenance % | v1.0 GPU economics |
-| **Buyback** | TWAP interval, max slippage, dip acceleration factor | Rec #3 |
-| **Floor Defense** | Tier thresholds, daily buyback rates, treasury allocation | Rec #7 |
-| **veGNK** | Min/max lock, voting power formula constants | Rec #6 |
-
----
-
-## Formula Linking Patterns
-
-### Pattern 1: Assumptions-to-Calculation (Primary)
-
-All calculation tabs reference the Assumptions tab via absolute cell references.
+### Deliverable Dependencies
 
 ```
-Assumptions!$B$12  (decay rate = 0.000475)
+COMPETITIVE ANALYSIS
     |
-    +--> 'Emission Schedule'!C3  =  =$B$11*EXP(-Assumptions!$B$12*B3)
-    +--> 'Fee Transition'!D5     =  references Emission Schedule output
-    +--> 'Host Profitability'!E4 =  references Emission Schedule output
-```
-
-**Implementation in openpyxl:**
-
-```python
-# Cross-sheet formula reference
-ws['C3'] = "=Assumptions!$B$11*EXP(-Assumptions!$B$12*B3)"
-
-# When sheet names contain spaces, use single quotes
-ws['C3'] = "='Emission Schedule'!C3*'Token Price'!B5"
-```
-
-**Why absolute references ($B$12) for assumptions:** Assumptions cells are fixed positions. When a user copies formulas within a calculation tab, the assumption references must not shift.
-
-**Why relative references for same-tab data:** Within a calculation tab, row-relative references (like `B3`) allow formulas to be written in a loop without manual cell address computation.
-
-### Pattern 2: Cross-Tab Calculation References
-
-Some calculation tabs depend on others:
-
-```
-Emission Schedule (upstream)
+    +--> POSITIONING & MESSAGING (need to know field before positioning against it)
+    |         |
+    |         +--> CHANNEL STRATEGY (messaging informs channel selection)
+    |         +--> CONTENT STRATEGY (messaging informs what content to create)
     |
-    +--> Fee Transition (reads daily emission values)
-    +--> Host Profitability (reads daily emission values)
-    +--> Treasury & POL (reads cumulative supply for buyback impact)
+    +--> PRODUCT-LED GROWTH (competitive gaps reveal product opportunities)
 
-Token Price (upstream)
+DEVELOPER PERSONA & JOURNEY
     |
-    +--> Fee Transition (GNK price converts emission to USD value)
-    +--> Host Profitability (GNK price determines host revenue in USD)
-    +--> Treasury & POL (GNK price affects POL valuation)
-```
-
-**Implementation:** Use explicit sheet references in formulas:
-
-```python
-# In fee_transition.py, referencing emission schedule output
-ws['D3'] = "='Emission Schedule'!$C3*'Token Price'!B3"
-# Daily emission GNK * GNK price = emission USD value
-```
-
-### Pattern 3: Named Ranges for Key Parameters
-
-Use openpyxl DefinedName for the most frequently referenced parameters. This makes formulas more readable when users inspect them in Excel.
-
-```python
-from openpyxl.workbook.defined_name import DefinedName
-from openpyxl.utils import quote_sheetname, absolute_coordinate
-
-# Define a named range for decay rate
-ref = f"{quote_sheetname('Assumptions')}!{absolute_coordinate('B12')}"
-defn = DefinedName("decay_rate", attr_text=ref)
-wb.defined_names["decay_rate"] = defn
-
-# Then use in formulas:
-ws['C3'] = "=initial_daily_emission*EXP(-decay_rate*B3)"
-```
-
-**Recommended named ranges (most referenced parameters):**
-
-| Named Range | Cell | Value |
-|-------------|------|-------|
-| `total_supply` | Assumptions!$B$5 | 1,000,000,000 |
-| `initial_daily_emission` | Assumptions!$B$11 | 323,000 |
-| `decay_rate` | Assumptions!$B$12 | 0.000475 |
-| `host_share` | Assumptions!$B$16 | 0.70 |
-| `buyback_share` | Assumptions!$B$18 | 0.05 |
-| `base_developers` | Assumptions!$B$25 | 2,200 |
-| `gnk_price_conservative` | Assumptions!$B$30 | (price trajectory) |
-| `gnk_price_moderate` | Assumptions!$B$31 | (price trajectory) |
-| `gnk_price_aggressive` | Assumptions!$B$32 | (price trajectory) |
-
-**Use named ranges sparingly.** Only for the top 10-15 most-referenced parameters. Too many named ranges make the workbook harder to audit. For less common parameters, direct cell references (Assumptions!$B$xx) are clearer.
-
-### Pattern 4: Scenario Selection via Data Validation
-
-For models that need scenario switching (e.g., conservative vs moderate vs aggressive):
-
-```python
-from openpyxl.worksheet.datavalidation import DataValidation
-
-# On Assumptions tab, create a scenario selector dropdown
-dv = DataValidation(
-    type="list",
-    formula1='"Conservative,Moderate,Aggressive"',
-    allow_blank=False
-)
-dv.prompt = "Select growth scenario"
-dv.promptTitle = "Scenario Selection"
-assumptions_ws.add_data_validation(dv)
-dv.add(assumptions_ws['B22'])  # Scenario selector cell
-
-# In calculation tabs, use IF/CHOOSE to pick the right parameters
-ws['C3'] = ('=IF(Assumptions!$B$22="Conservative",Assumptions!$B$23,'
-            'IF(Assumptions!$B$22="Moderate",Assumptions!$B$24,'
-            'Assumptions!$B$25))')
+    +--> POSITIONING & MESSAGING (personas drive message tailoring)
+    +--> CHANNEL STRATEGY (personas determine channel priority)
+    +--> PARTNERSHIP STRATEGY (persona needs drive integration depth)
 ```
 
 ---
 
-## Standalone vs Master Workbook Relationship
+## Component 1: Competitive Analysis Framework
 
-### Strategy: Extract, Don't Duplicate
+### Market Segmentation
 
-Each standalone workbook is a subset of the master. The Python code should NOT have separate generation logic for standalones. Instead:
+The AI inference market relevant to OpenClaw developers segments into four categories. Gonka must position against all four, not just one.
 
-1. Each model module builds its tab identically whether in master or standalone
-2. The standalone generator creates a workbook with only: Documentation + Assumptions (filtered) + one model tab + Dashboard (filtered)
-3. The Assumptions tab in standalones contains only the parameters relevant to that model
+| Segment | Players | How They Compete | Gonka's Angle |
+|---------|---------|------------------|---------------|
+| **Centralized API Providers** | OpenAI, Anthropic, Google | Proprietary models, managed infrastructure, brand trust | Gonka offers open-source models at lower cost with no vendor lock-in |
+| **Multi-Provider Routers** | OpenRouter, LiteLLM, Portkey | Model aggregation, single API for many providers | Gonka is a provider OpenRouter routes TO, but also a direct alternative with lower cost (no 5.5% markup) and agent-native features |
+| **Dedicated Inference** | Together AI, Groq, DeepInfra, Fireworks | Own GPU clusters, per-token pricing, speed optimization | Gonka matches on API compatibility but differentiates on decentralization, censorship resistance, and network economics |
+| **Decentralized GPU Networks** | Akash, Render, io.net | GPU marketplace, DePIN tokenomics, distributed compute | Gonka competes directly but differentiates with agent-aware API (not raw GPU rental) and OpenAI compatibility (not custom SDKs) |
 
-```python
-# In standalone.py
-def generate_standalone(model_name, model_builder, relevant_params):
-    wb = Workbook()
+### Per-Competitor Teardown Template
 
-    # 1. Build filtered assumptions tab (only relevant parameters)
-    assumptions_ws = wb.active
-    assumptions_ws.title = "Assumptions"
-    param_refs = build_assumptions_tab(assumptions_ws, relevant_params)
+Each competitor analysis should cover:
 
-    # 2. Build the model tab
-    model_ws = wb.create_sheet(model_name)
-    model_builder(model_ws, param_refs)
+```
+## [Competitor Name]
 
-    # 3. Build focused dashboard
-    dashboard_ws = wb.create_sheet("Dashboard")
-    build_dashboard(dashboard_ws, model_ws, model_name)
+### What They Offer
+- Core product/service
+- Model availability
+- API compatibility (OpenAI-compatible? Custom?)
 
-    # 4. Build documentation
-    doc_ws = wb.create_sheet("Documentation", 0)  # Insert at position 0
-    build_doc_tab(doc_ws, model_name)
+### Pricing Model
+- Per-token pricing for key models
+- Markup/fees structure
+- Free tier details
 
-    return wb
+### Developer Experience
+- Time to first API call
+- SDK/library support
+- Documentation quality
+- OpenClaw integration status (built-in? custom? none?)
+
+### Strengths (What We Cannot Match)
+- [honest assessment]
+
+### Weaknesses (Where Gonka Wins)
+- [opportunity areas]
+
+### OpenClaw Integration Depth
+- Is this provider built-in to OpenClaw?
+- Configuration complexity
+- Community adoption signals
+
+### Sources
+- [URLs with dates]
 ```
 
-### Standalone Workbook Contents
+### Priority Competitors for Deep Analysis
 
-| Standalone | Tabs | Assumptions Subset |
-|-----------|------|-------------------|
-| **Token Price** | Doc, Assumptions, Token Price, Dashboard | Supply, emission, price trajectories |
-| **Fee Transition** | Doc, Assumptions, Emission (support), Fee Transition, Dashboard | Emission params, revenue params, growth scenarios, GPU economics |
-| **Host Profitability** | Doc, Assumptions, Emission (support), Host Profitability, Dashboard | Emission params, price scenarios, GPU costs, host costs |
-| **Treasury & POL** | Doc, Assumptions, Treasury & POL, Dashboard | Supply, POL params, buyback params, floor defense, revenue scenarios |
+1. **OpenRouter** — The primary competitor. Already has built-in OpenClaw integration. 500+ models, 5.5% credit markup, acts as routing layer. Gonka must either become a provider ON OpenRouter or position as a direct replacement for developers who want lower cost and decentralized infrastructure.
 
-**Note:** Fee Transition and Host Profitability standalones need a simplified Emission Schedule support tab because their formulas reference emission data. The standalone generator should include this dependency automatically.
+2. **Together AI** — Strongest dedicated inference competitor. Runs own H100/H200/B200 clusters. Competitive per-token pricing. No middleman. Gonka must match on DX and beat on price/philosophy.
+
+3. **Groq** — Speed-focused with custom LPU chips. 0.13s first-token latency. Gonka cannot match on latency initially but can compete on model selection (K2.5 specifically) and cost.
+
+4. **Akash Network** — Closest decentralized competitor. Kubernetes-as-a-Service, reverse auction GPU pricing, 60-80% cheaper than AWS. But Akash is raw compute -- no OpenAI-compatible API, no agent extensions. Gonka's API layer is the differentiator.
+
+### Feature Comparison Matrix Structure
+
+| Feature | Gonka | OpenRouter | Together AI | Groq | Akash |
+|---------|-------|------------|-------------|------|-------|
+| OpenAI-compatible API | Yes | Yes | Yes | Yes | No (raw compute) |
+| OpenClaw built-in | No (custom provider) | Yes | No | No | No |
+| Agent session persistence | Yes (X-Gonka-Session-ID) | No | No | No | No |
+| Model tiering/auto-routing | Yes (X-Gonka-Tier) | Partial (model selection) | No | No | No |
+| Memory API | Yes (/v1/memory/) | No | No | No | No |
+| Webhook notifications | Yes | No | No | No | No |
+| Multi-model routing | Yes | Yes (core product) | Limited | No | N/A |
+| Decentralized infrastructure | Yes (Gonka Network) | No (centralized proxy) | No (own clusters) | No (own chips) | Yes |
+| Token incentives for hosts | Yes (GNK mining) | No | No | No | Yes (AKT staking) |
+| Censorship resistance | Yes | No | No | No | Partial |
+| Kimi K2.5 serving | Yes (flagship) | Via providers | Yes | No | Manual setup |
 
 ---
 
-## Component Boundaries
+## Component 2: Developer Persona & Journey Architecture
 
-### Data Flow Between Components
+### Persona Definitions
+
+Three primary personas for Gonka's OpenClaw GTM. Each has different decision drivers.
+
+**Persona 1: The OpenClaw Builder**
+- **Who:** Individual developer or small team building personal/team AI agents with OpenClaw
+- **Current stack:** OpenClaw + OpenRouter or direct Anthropic/OpenAI API
+- **Pain points:** Cost per inference (agents make many calls), model lock-in, rate limits on free tiers
+- **Decision drivers:** Price, ease of setup, model quality for agent tasks (tool calling, code generation)
+- **Gonka hook:** 50-80% cost reduction on K2.5 (comparable to Claude for agentic tasks at $0.60/M input tokens vs $3.00), zero-config OpenClaw custom provider setup
+
+**Persona 2: The Agent Framework Developer**
+- **Who:** Developer building agent systems with CrewAI, LangGraph, AutoGen, or custom frameworks
+- **Current stack:** OpenAI/Anthropic API directly, or OpenRouter for model flexibility
+- **Pain points:** Need session persistence, multi-model routing for different task types, high token costs at scale
+- **Decision drivers:** API reliability, feature set (tool calling, streaming, sessions), documentation quality
+- **Gonka hook:** Agent-native extensions (sessions, memory, tiering) that no other provider offers, plus decentralized reliability
+
+**Persona 3: The AI Startup**
+- **Who:** Early-stage company building AI-powered products that need inference at scale
+- **Current stack:** Together AI or direct cloud GPU (AWS/GCP) with vLLM
+- **Pain points:** Inference costs eating runway, vendor lock-in, need for multi-model support
+- **Decision drivers:** Cost at scale, SLA/reliability, scalability, compliance/data residency
+- **Gonka hook:** Decentralized cost structure (no single point of margin extraction), GNK staking for guaranteed capacity, open infrastructure
+
+### Developer Journey Architecture
+
+Use the AAARRRP framework (Phil Leggetter) adapted for Gonka's context. This is more accurate than a simple funnel because developers iterate and backtrack.
 
 ```
-parameters.py
-    |
-    +-- defines PARAM_GROUPS dict: { group_name: [{ name, value, unit, source, validation }] }
-    |
-    v
-workbook_base.py::build_assumptions_tab()
-    |
-    +-- writes parameters to Assumptions sheet
-    +-- returns param_refs: { param_name: "Assumptions!$B$XX" }
-    |
-    v
-emission.py::build_emission_tab(ws, param_refs)
-    +-- returns emission_meta: { daily_emission_col, cumulative_col, year_col, row_range }
-    |
-    v
-fee_transition.py::build_fee_transition_tab(ws, param_refs, emission_meta)
-    |
-token_price.py::build_token_price_tab(ws, param_refs)
-    +-- returns price_meta: { scenario_cols, year_col, row_range }
-    |
-    v
-host_profit.py::build_host_profit_tab(ws, param_refs, emission_meta, price_meta)
-    |
-treasury.py::build_treasury_tab(ws, param_refs)
-    |
-    v
-charts.py + generators::build_dashboard(ws, all_metas)
+Stage 1: AWARENESS
+  How they find Gonka:
+  - OpenClaw provider directory / documentation
+  - GitHub trending (gonka-ai-infrastructure repo)
+  - Crypto-AI Twitter/X discourse
+  - Developer community posts (Reddit r/LocalLLaMA, HackerNews)
+  - Conference talks (agent infrastructure track)
+  
+  Key metric: Unique visitors to docs.gonka.ai
+  Content needed: "What is Gonka?" explainer, comparison posts
+
+Stage 2: ACQUISITION
+  First meaningful interaction:
+  - Visit docs.gonka.ai
+  - Read "5-minute quickstart" guide
+  - Get API key (self-service, no credit card)
+  
+  Key metric: API key signups
+  Content needed: Quickstart guide, OpenClaw config snippet
+
+Stage 3: ACTIVATION ("Aha moment")
+  First successful inference through Gonka:
+  - Copy-paste OpenClaw provider config (3 lines of YAML)
+  - Make first chat completion call
+  - See response from K2.5 through decentralized network
+  - Time target: under 5 minutes from signup to first response
+  
+  Key metric: First API call within 24 hours of signup
+  Content needed: Instant-start config, working code examples
+
+Stage 4: RETENTION
+  Sustained usage beyond first day:
+  - Use agent sessions (X-Gonka-Session-ID)
+  - Try model tiering for cost optimization
+  - Integrate memory API for persistent agent context
+  - Compare cost/quality to previous provider
+  
+  Key metric: API calls in week 2+ after signup
+  Content needed: Agent extensions guide, cost comparison calculator
+
+Stage 5: REVENUE
+  Conversion from free to paid:
+  - Exceed free tier limits
+  - Need higher rate limits or SLA
+  - Want dedicated capacity (GNK staking)
+  
+  Key metric: Paid tier conversion rate
+  Content needed: Pricing page, ROI calculator
+
+Stage 6: REFERRAL
+  Developer recommends Gonka:
+  - Writes blog post or tweet about experience
+  - Contributes to Gonka open source
+  - Answers questions in OpenClaw Discord about Gonka setup
+  - Publishes OpenClaw config template with Gonka
+  
+  Key metric: Organic mentions, referral signups
+  Content needed: Referral program, community recognition
+
+Stage 7: PRODUCT EXPANSION
+  Deepened usage:
+  - Uses multiple models through Gonka
+  - Becomes a GPU host on Gonka Network (supply side)
+  - Builds plugins/tools that depend on Gonka
+  - Enterprise account for team
+  
+  Key metric: Multi-model usage, host signups
+  Content needed: Advanced guides, host onboarding
 ```
 
-### Interface Contract
+### Objection Map
 
-Each model builder function follows this contract:
-
-```python
-def build_<model>_tab(
-    ws: Worksheet,
-    param_refs: dict[str, str],       # { "decay_rate": "Assumptions!$B$12", ... }
-    **upstream_meta                     # Optional metadata from upstream tabs
-) -> dict:
-    """
-    Writes headers, labels, formulas, and formatting to the worksheet.
-    Returns metadata dict describing what was written (column/row ranges)
-    for downstream consumers and chart creation.
-    """
-```
-
-This clean interface means:
-- Models can be tested in isolation (pass mock param_refs)
-- Build order is explicit via dependency graph
-- Standalones need only pass the right param_refs subset
+| Objection | Persona | Response | Evidence Needed |
+|-----------|---------|----------|-----------------|
+| "I've never heard of Gonka" | All | Lead with K2.5 model quality, then introduce infrastructure | Benchmark comparisons, demo |
+| "OpenRouter already works" | Builder | Gonka is 5.5% cheaper (no OpenRouter markup) + agent extensions | Price comparison table |
+| "Decentralized = unreliable" | Startup | Gonka Network has 98% productive compute; redundant nodes | Uptime stats, SLA terms |
+| "K2.5 isn't Claude/GPT" | Builder | K2.5 scores 76.8% on SWE-Bench (competitive), 10x cheaper | Benchmark table |
+| "I don't want crypto complexity" | Developer | API key auth, USD pricing, no tokens required to use | Show standard API workflow |
+| "Can it handle production scale?" | Startup | vLLM backend, tested with OpenClaw/CrewAI/LangGraph | Integration test results from v1.2 |
 
 ---
 
-## Formatting and Style Architecture
+## Component 3: Architecture-to-Message Mapping
 
-### NamedStyle Definitions (in styles.py)
+This is the critical bridge between Gonka's technical reality and its marketing. Each technical capability must be translated into a business value statement that a developer understands in the context of their workflow.
 
-Define all styles once in `styles.py` and register them with each workbook:
+### Mapping Table
 
-```python
-from openpyxl.styles import NamedStyle, Font, Border, Side, Alignment, PatternFill, numbers
+| Technical Feature | What It Does | Business Value | Marketing Message | Target Persona |
+|-------------------|--------------|----------------|-------------------|----------------|
+| **Decentralized GPU network** | Inference runs on distributed GPU hosts, not centralized data centers | No single point of failure, censorship-resistant, geographically distributed | "Your agents run on an unstoppable network" | Startup, Framework Dev |
+| **GNK mining rewards** | GPU hosts earn GNK tokens for serving inference | Hosts compete on price (subsidized by mining), driving costs down | "Inference costs decrease as the network grows" | All |
+| **98% productive compute** | Sprint Consensus uses 98% of GPU power for useful inference, 2% for consensus | Near-zero waste vs PoW chains that waste 100% on hashing | "Every GPU cycle serves your requests, not mining puzzles" | Framework Dev, Startup |
+| **OpenAI-compatible API** | Drop-in replacement for OpenAI endpoints (/v1/chat/completions) | Zero code changes to switch from OpenAI/OpenRouter | "Change one URL. Everything else just works." | All |
+| **X-Gonka-Session-ID** | Server-side conversation persistence across requests | Agents don't re-send full conversation history each turn; lower token costs | "Your agent remembers context without paying for it twice" | Builder, Framework Dev |
+| **X-Gonka-Tier header** | Auto-routes to cheap/strong model based on task type | Agents use the right model for each subtask automatically | "Classification on the cheap model, reasoning on the strong one -- automatically" | Framework Dev |
+| **Memory API** | Persistent key-value memory store accessible via API | Agents maintain long-term knowledge across sessions | "Give your agent a permanent memory" | Builder, Framework Dev |
+| **Webhook notifications** | Push notifications for async task completion | Agents can fire-and-forget long tasks, get notified on completion | "Don't poll. Get notified." | Framework Dev, Startup |
+| **Multi-model routing** | Route to different vLLM backends based on model parameter | One API key, multiple models, best-for-task selection | "One key. Every model. Pick the right one per task." | All |
+| **Kimi K2.5 flagship** | 1T parameter MoE, 76.8% SWE-Bench, native agentic capabilities, Agent Swarm | State-of-the-art open model for agent workloads at 10x lower cost than Claude | "The best open-source agent model, served on an unstoppable network" | All |
+| **vLLM serving** | Industry-standard serving framework, continuous batching, PagedAttention | Optimized throughput, low latency, proven at scale | "Production-grade inference, not a hobby project" | Startup |
 
-# Input cell style (blue background, editable)
-INPUT_STYLE = NamedStyle(name="input_cell")
-INPUT_STYLE.font = Font(color="000080", bold=False, size=11)
-INPUT_STYLE.fill = PatternFill(start_color="DAEEF3", end_color="DAEEF3", fill_type="solid")
-INPUT_STYLE.number_format = '#,##0.00'
+### Unique Selling Propositions (Ranked)
 
-# Header style
-HEADER_STYLE = NamedStyle(name="header")
-HEADER_STYLE.font = Font(bold=True, size=11, color="FFFFFF")
-HEADER_STYLE.fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-HEADER_STYLE.alignment = Alignment(horizontal="center")
+Based on the competitive analysis, Gonka's USPs in order of differentiation strength:
 
-# Section header style
-SECTION_HEADER = NamedStyle(name="section_header")
-SECTION_HEADER.font = Font(bold=True, size=12, color="2F5496")
-SECTION_HEADER.border = Border(bottom=Side(style="medium", color="2F5496"))
+1. **Agent-native extensions on decentralized infrastructure** — No other decentralized network offers sessions, memory, tiering, webhooks. No centralized provider offers decentralization. Gonka is the only player in both categories simultaneously. This is the primary differentiator.
 
-# Currency format
-CURRENCY_STYLE = NamedStyle(name="currency")
-CURRENCY_STYLE.number_format = '$#,##0'
+2. **K2.5 as flagship open model for agents** — K2.5's 76.8% SWE-Bench at $0.60/M input tokens is the best price-performance for agentic tasks in the open-source model space. Serving it on Gonka's network (where mining rewards subsidize GPU costs) makes it even cheaper than Together AI's pricing.
 
-# Large number format (millions)
-MILLIONS_STYLE = NamedStyle(name="millions")
-MILLIONS_STYLE.number_format = '#,##0'
+3. **Sprint Consensus = 98% productive compute** — Every other PoW chain wastes computation on hash puzzles. Gonka's consensus mechanism IS the inference. This is a genuine technical innovation that translates directly to lower costs and environmental efficiency.
 
-# Percentage format
-PERCENT_STYLE = NamedStyle(name="percent")
-PERCENT_STYLE.number_format = '0.0%'
+4. **OpenClaw drop-in compatibility** — 3 lines of YAML to add Gonka as a custom provider. No SDK changes, no code modifications. OpenClaw's `api: "openai-completions"` config pattern means Gonka slots in immediately.
 
-# Formula cell (black text, no background -- standard financial model convention)
-FORMULA_STYLE = NamedStyle(name="formula_cell")
-FORMULA_STYLE.font = Font(color="000000", size=11)
-
-def register_styles(wb):
-    """Register all named styles with a workbook. Call once per workbook."""
-    for style in [INPUT_STYLE, HEADER_STYLE, SECTION_HEADER,
-                  CURRENCY_STYLE, MILLIONS_STYLE, PERCENT_STYLE, FORMULA_STYLE]:
-        wb.add_named_style(style)
-```
-
-### Color Conventions (Financial Modeling Standard)
-
-| Cell Type | Font Color | Background | Convention |
-|-----------|-----------|------------|------------|
-| Hard-coded input (adjustable) | Dark Blue | Light Blue | Industry standard: blue = input |
-| Formula (same-tab) | Black | None | Standard |
-| Cross-tab reference | Green | None | Standard: green = external link |
-| Section header | Dark Blue | None | Bold, underlined |
-| Warning/threshold | Red | Light Red | Draws attention to critical values |
-
-### Number Formats by Data Type
-
-| Data Type | Format String | Example Output |
-|-----------|--------------|----------------|
-| GNK token amounts | `#,##0` | 323,000 |
-| GNK large amounts | `#,##0,,` + " M" suffix | 680 M |
-| USD currency | `$#,##0` | $25,000,000 |
-| USD large | `$#,##0,,` + " M" suffix | $25 M |
-| Percentage | `0.0%` | 70.0% |
-| Decay rate | `0.000000` | 0.000475 |
-| Year | `0` | 4 |
-| Price per hour | `$#,##0.00` | $2.50 |
-| ROI multiple | `0.0x` | 2.5x |
+5. **Network economics favor users over time** — As more GPU hosts join (attracted by GNK mining rewards), inference costs decrease through competition. Traditional providers have no mechanism for costs to decrease -- they increase margins as they scale. Gonka's tokenomics create deflationary inference pricing.
 
 ---
 
-## Sheet Protection Pattern
+## Component 4: Channel Strategy Architecture
 
-Protect calculation tabs from accidental editing while keeping Assumptions editable:
+### Channel Matrix
 
-```python
-from openpyxl.styles import Protection
+Channels prioritized by reach-to-OpenClaw-developers and cost-effectiveness.
 
-def protect_calculation_tab(ws):
-    """Lock all cells in a calculation tab."""
-    ws.protection.sheet = True
-    ws.protection.password = ''  # No password -- prevents accidental edits only
-    # All cells default to locked=True when sheet is protected
+| Channel | Priority | Reach | Cost | Content Type | Metric |
+|---------|----------|-------|------|-------------|--------|
+| **OpenClaw Provider Directory** | P0 (critical) | Direct to target | Free (open source) | Provider listing, docs page | Listed provider status |
+| **OpenClaw GitHub** | P0 | Direct to target | Engineering time | PR for built-in support, issues, discussions | GitHub stars, PR merged |
+| **OpenClaw Discord** | P0 | Direct to target | Community time | Help answers, config snippets, presence | Community mentions |
+| **Technical blog (docs.gonka.ai/blog)** | P1 | SEO + sharing | Content creation | Tutorials, benchmarks, comparisons | Organic traffic |
+| **Twitter/X AI community** | P1 | Broad AI dev audience | Content creation | Benchmark results, launch announcements | Impressions, follows |
+| **Reddit (r/LocalLLaMA, r/OpenClaw)** | P1 | Engaged AI dev community | Community time | Launch posts, comparison threads | Upvotes, comments |
+| **YouTube/video tutorials** | P2 | Medium (tutorial seekers) | Production cost | "OpenClaw + Gonka in 5 minutes" | Views, conversions |
+| **HackerNews** | P2 | Tech-savvy early adopters | Content creation | Launch, Show HN posts | Upvotes, traffic |
+| **AI/Web3 conferences** | P3 | Targeted but expensive | Travel + sponsorship | Talks, demos, booths | Leads, partnerships |
+| **Paid developer ads** | P3 | Broad but noisy | Ad spend | Targeted to AI infra keywords | CAC, conversions |
 
-def setup_assumptions_tab(ws, input_cells):
-    """Protect assumptions tab but unlock input cells."""
-    # First, set all cells as locked (default)
-    ws.protection.sheet = True
+### Content Strategy Framework
 
-    # Unlock specific input cells
-    for cell_ref in input_cells:
-        ws[cell_ref].protection = Protection(locked=False)
-```
+Content mapped to developer journey stages:
 
-**No password on protection.** The audience is leadership, not adversaries. Protection prevents accidental formula overwrites, not malicious edits. A password would create friction without security benefit.
-
----
-
-## Chart Architecture
-
-### Dashboard Tab Design
-
-The Dashboard tab contains 4-6 summary charts, one per model area:
-
-| Chart # | Type | Title | Data Source |
-|---------|------|-------|-------------|
-| 1 | Line (multi-series) | GNK Emission Schedule (10-Year) | Emission Schedule tab |
-| 2 | Line (multi-series) | Token Price Scenarios | Token Price tab |
-| 3 | Stacked Area | Fee Revenue vs Emission Value | Fee Transition tab |
-| 4 | Grouped Bar | Host ROI by Scenario | Host Profitability tab |
-| 5 | Line (dual-axis) | Treasury Balance & Buyback Pressure | Treasury & POL tab |
-| 6 | Combo (line + area) | Fee Transition Crossover Point | Fee Transition tab |
-
-### Chart Creation Pattern
-
-```python
-from openpyxl.chart import LineChart, Reference
-
-def create_emission_chart(dashboard_ws, source_ws, meta):
-    """Create emission schedule chart on dashboard."""
-    chart = LineChart()
-    chart.title = "GNK Daily Emission (10-Year Projection)"
-    chart.y_axis.title = "GNK per Day"
-    chart.x_axis.title = "Year"
-    chart.style = 13
-    chart.width = 20
-    chart.height = 12
-
-    # Reference data from source worksheet
-    data = Reference(
-        source_ws,
-        min_col=meta['daily_emission_col'],
-        min_row=meta['header_row'],
-        max_row=meta['last_row']
-    )
-    cats = Reference(
-        source_ws,
-        min_col=meta['year_col'],
-        min_row=meta['header_row'] + 1,
-        max_row=meta['last_row']
-    )
-    chart.add_data(data, titles_from_data=True)
-    chart.set_categories(cats)
-
-    dashboard_ws.add_chart(chart, "A1")
-```
-
-### Charts Within Calculation Tabs
-
-Each calculation tab should also have a small inline chart positioned to the right of the data table (starting around column H or I). This gives context without requiring the user to flip to the Dashboard tab.
+| Journey Stage | Content Type | Example | Channel |
+|---------------|-------------|---------|---------|
+| Awareness | Comparison post | "Gonka vs OpenRouter: A Developer's Honest Comparison" | Blog, Reddit, HN |
+| Awareness | Benchmark results | "K2.5 Agent Performance: SWE-Bench, BrowseComp, HLE" | Twitter, Blog |
+| Acquisition | Quickstart guide | "Add Gonka to OpenClaw in 3 Lines of YAML" | Docs, OpenClaw Discord |
+| Acquisition | Video tutorial | "OpenClaw + Gonka: First Agent in 5 Minutes" | YouTube, Twitter |
+| Activation | Code examples | Working OpenClaw config + agent template | GitHub, Docs |
+| Activation | Interactive demo | Live API playground at docs.gonka.ai/playground | Docs site |
+| Retention | Deep dive guide | "Using Gonka Sessions and Memory for Persistent Agents" | Blog, Docs |
+| Retention | Cost calculator | Interactive tool showing savings vs OpenRouter/OpenAI | Docs site |
+| Referral | Case study | "How [Developer] Cut Agent Costs 70% with Gonka" | Blog, Twitter |
+| Expansion | Advanced guide | "Multi-Model Tiering: Right Model for Every Agent Task" | Blog, Docs |
 
 ---
 
-## Dependency Graph and Build Order
+## Component 5: Partnership Strategy Architecture
 
-### Model Dependencies
+### OpenClaw Integration Tiers
+
+Gonka should pursue integration with OpenClaw through a progressive partnership strategy.
 
 ```
-Layer 0 (no dependencies):
-  parameters.py          -- all constants from v1.0 research
-
-Layer 1 (depends on parameters only):
-  token_price.py         -- price scenarios are input-driven
-  emission.py            -- emission schedule is input-driven
-  treasury.py            -- treasury model is mostly input-driven
-
-Layer 2 (depends on Layer 1 outputs):
-  fee_transition.py      -- needs emission + price data
-  host_profit.py         -- needs emission + price data
-
-Layer 3 (depends on all models):
-  Dashboard              -- summarizes all model outputs
+Tier 1: LISTED PROVIDER (immediate, v1.3 deliverable)
+  - Gonka appears in OpenClaw's custom provider docs
+  - Published configuration template (YAML snippet)
+  - Works today with api: "openai-completions" + baseUrl
+  - No OpenClaw codebase changes required
+  - Effort: Documentation + community posts
+  
+Tier 2: COMMUNITY PLUGIN (near-term, v1.4 candidate)
+  - OpenClaw MCP server for Gonka-specific features
+  - Exposes sessions, memory, tiering as MCP tools
+  - Published to OpenClaw's plugin ecosystem
+  - Effort: Build MCP server, ~500 LOC TypeScript
+  
+Tier 3: BUILT-IN PROVIDER (medium-term goal)
+  - Gonka added to OpenClaw's built-in provider list
+  - No models.providers config needed, just API key
+  - Requires PR to openclaw/openclaw repo
+  - Effort: PR contribution + OpenClaw team approval
+  
+Tier 4: PREFERRED PARTNER (long-term aspiration)
+  - Co-developed agent features
+  - Gonka-specific optimizations in OpenClaw
+  - Joint marketing and developer events
+  - Effort: Relationship building + demonstrated value
 ```
 
-### Recommended Build Order for Master Workbook
+### Technical Partnership Requirements
 
-```python
-def generate_master():
-    wb = Workbook()
+For each tier, the technical prerequisites:
 
-    # 1. Register styles
-    register_styles(wb)
+| Tier | Prerequisite | Status |
+|------|-------------|--------|
+| 1 | OpenAI-compatible API | DONE (v1.2) |
+| 1 | Publicly accessible endpoint | NEEDED (deployment) |
+| 1 | Published API documentation | NEEDED |
+| 1 | Self-service API key signup | NEEDED |
+| 2 | MCP server implementation | NEEDED |
+| 2 | Gonka-specific MCP tools (sessions, memory) | NEEDED |
+| 3 | Reliability track record (uptime stats) | NEEDED |
+| 3 | Community adoption signals (users, stars) | NEEDED |
+| 3 | OpenClaw maintainer relationship | NEEDED |
+| 4 | Significant OpenClaw user base on Gonka | NEEDED |
 
-    # 2. Build Assumptions tab (always first)
-    assumptions_ws = wb.active
-    assumptions_ws.title = "Assumptions"
-    param_refs = build_assumptions_tab(assumptions_ws, ALL_PARAMS)
+---
 
-    # 3. Build Layer 1 models (no cross-tab dependencies)
-    emission_ws = wb.create_sheet("Emission Schedule")
-    emission_meta = build_emission_tab(emission_ws, param_refs)
+## Component 6: Product-Led Growth Architecture
 
-    price_ws = wb.create_sheet("Token Price")
-    price_meta = build_token_price_tab(price_ws, param_refs)
+### The OpenClaw Configuration Pattern
 
-    treasury_ws = wb.create_sheet("Treasury & POL")
-    treasury_meta = build_treasury_tab(treasury_ws, param_refs)
+The single most important growth lever: making Gonka trivially easy to add to OpenClaw. The configuration must be copy-paste ready.
 
-    # 4. Build Layer 2 models (cross-tab references)
-    fee_ws = wb.create_sheet("Fee Transition")
-    fee_meta = build_fee_transition_tab(fee_ws, param_refs, emission_meta, price_meta)
+```yaml
+# .openclaw/config.yaml - Add Gonka as a provider
+models:
+  providers:
+    - name: gonka
+      baseUrl: "https://api.gonka.ai/v1"
+      apiKey: "${GONKA_API_KEY}"
+      api: "openai-completions"
+      models:
+        - id: kimi-k2.5
+          name: "Kimi K2.5 (Gonka Network)"
+          reasoning: true
+          contextWindow: 131072
+          input:
+            cost: 0.60    # per 1M tokens
+          output:
+            cost: 2.40    # per 1M tokens
 
-    host_ws = wb.create_sheet("Host Profitability")
-    host_meta = build_host_profit_tab(host_ws, param_refs, emission_meta, price_meta)
-
-    # 5. Build Dashboard (references all tabs)
-    dashboard_ws = wb.create_sheet("Dashboard")
-    build_dashboard(dashboard_ws, emission_meta, price_meta, treasury_meta, fee_meta, host_meta)
-
-    # 6. Build Documentation tab and move to front
-    doc_ws = wb.create_sheet("Documentation", 0)
-    build_doc_tab(doc_ws)
-
-    # 7. Protect calculation tabs
-    for ws in [emission_ws, price_ws, treasury_ws, fee_ws, host_ws, dashboard_ws]:
-        protect_calculation_tab(ws)
-
-    # 8. Set Assumptions as active sheet (what user sees on open)
-    wb.active = wb.sheetnames.index("Assumptions")
-
-    wb.save("output/gonka_master_model.xlsx")
+# Add to agent defaults
+agents:
+  defaults:
+    models:
+      - gonka/kimi-k2.5
 ```
 
-### Build Order for Development Phases
+This configuration pattern is the "product" in product-led growth. Every piece of content should link back to this snippet.
 
-This is the recommended order for implementing the Python codebase:
+### Free Tier Design Principles
 
-| Phase | What to Build | Rationale |
-|-------|--------------|-----------|
-| **1. Foundation** | `styles.py`, `parameters.py`, `workbook_base.py` | Shared infrastructure used by everything |
-| **2. Emission Model** | `emission.py` + Assumptions tab | Simplest model; upstream of others; validates the formula-writing pattern |
-| **3. Token Price Model** | `token_price.py` | Independent model; tests multi-scenario pattern |
-| **4. Fee Transition Model** | `fee_transition.py` | First cross-tab dependency; validates linking pattern |
-| **5. Host Profitability** | `host_profit.py` | Most complex cross-tab dependencies |
-| **6. Treasury & POL** | `treasury.py` | Relatively independent but has many parameters |
-| **7. Charts & Dashboard** | `charts.py`, dashboard builder | Depends on all models being complete |
-| **8. Master Orchestration** | `master.py` | Puts it all together |
-| **9. Standalones** | `standalone.py` | Extracts subsets from master logic |
-| **10. Polish & Docs** | Documentation tab, cell protection, data validation | Final pass |
+1. **Generous enough to build a real agent** — At least 1M tokens/day free. An OpenClaw agent doing 50 requests/day at 2K tokens each = 100K tokens. Free tier should handle 10x that for experimentation.
+2. **No credit card required** — Developers abandon signups that require payment info for a free tier. Email + GitHub auth only.
+3. **Same features at every tier** — Sessions, memory, tiering, webhooks available on free tier. Only limits are rate (RPM) and volume (TPM).
+4. **Clear upgrade path** — Dashboard shows usage approaching limits with one-click upgrade.
+
+### Time-to-First-Inference Target
+
+The north star developer experience metric: **under 5 minutes from "I want to try Gonka" to seeing a response from K2.5 through the Gonka network.**
+
+```
+Step 1: Visit docs.gonka.ai (0:00)
+Step 2: Click "Get API Key" -> GitHub OAuth (0:30)
+Step 3: Copy OpenClaw config snippet from docs (1:00)
+Step 4: Paste into .openclaw/config.yaml (1:30)
+Step 5: Set GONKA_API_KEY env var (2:00)
+Step 6: Run existing OpenClaw agent (2:30)
+Step 7: See K2.5 response (3:00 + network latency)
+```
+
+Total: ~3 minutes. Budget 5 minutes for reading/understanding.
+
+---
+
+## Research Document Relationships
+
+### How These Components Feed the Roadmap
+
+```
+COMPETITIVE ANALYSIS
+  -> Informs: Phase ordering (which competitors to address first)
+  -> Informs: Feature prioritization (gaps to close vs features to build)
+  -> Produces: Feature comparison matrix for marketing materials
+
+DEVELOPER PERSONA & JOURNEY
+  -> Informs: Phase structure (each phase should move developers through a stage)
+  -> Informs: Content priorities (what to create first)
+  -> Produces: Persona cards for all future marketing decisions
+
+POSITIONING & MESSAGING
+  -> Informs: All written deliverables (website copy, docs, blog posts)
+  -> Produces: Message house document (approved language for each audience)
+
+CHANNEL STRATEGY
+  -> Informs: Resource allocation (where to spend time/money)
+  -> Produces: Channel playbook with specific actions per channel
+
+PARTNERSHIP STRATEGY
+  -> Informs: Engineering priorities (MCP server, built-in provider PR)
+  -> Produces: Partnership roadmap with milestones and requirements
+
+PRODUCT-LED GROWTH
+  -> Informs: Product development (free tier, onboarding, docs)
+  -> Produces: Growth model with metrics and targets
+```
+
+### Recommended Research Execution Order
+
+1. **Competitive Analysis first** — Cannot position without knowing the field. Produces the feature matrix that all other components reference.
+2. **Developer Personas second** — Cannot craft messages without knowing the audience. Produces persona cards that inform all downstream work.
+3. **Positioning & Messaging third** — Synthesizes competitive positioning with persona needs. Produces the core message house.
+4. **Channel Strategy fourth** — Uses personas and messages to determine where and how to reach developers.
+5. **Partnership Strategy fifth** — Requires understanding of competitive landscape and developer needs to define integration tiers.
+6. **Product-Led Growth sixth** — Synthesizes everything into an actionable growth plan with metrics.
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Computing Values in Python
+### Anti-Pattern 1: Feature-Led Messaging
+**What:** Leading with "we have sessions, memory, tiering, webhooks" as the pitch.
+**Why bad:** Developers care about what they can build, not your feature list. Feature lists are commoditized the moment a competitor ships the same feature.
+**Instead:** Lead with outcomes: "Your agent remembers context without paying for it twice" (sessions). "Classification on the cheap model, reasoning on the strong one -- automatically" (tiering).
 
-**What:** Calculate results in Python and write static values to cells.
-**Why bad:** The workbook becomes a dead snapshot. Change an assumption and nothing recalculates. Defeats the entire purpose.
-**Instead:** Write Excel formulas as strings. Let Excel do all computation.
+### Anti-Pattern 2: Crypto-First Positioning
+**What:** Leading with GNK tokens, mining rewards, DePIN, decentralization in developer-facing content.
+**Why bad:** Most developers building with OpenClaw do not care about crypto infrastructure. "Decentralized" is a feature, not a benefit. Leading with crypto alienates the 90% of developers who just want cheap, reliable inference.
+**Instead:** Lead with developer experience (cost, speed, features). Mention decentralization as the "how" that enables the "what" (lower costs, no single point of failure, censorship resistance) only after establishing developer value.
 
-### Anti-Pattern 2: One Giant Module
+### Anti-Pattern 3: Comparing to Everyone
+**What:** Building a 20-provider comparison matrix and trying to position against all of them.
+**Why bad:** Dilutes the message. Developers compare 2-3 options, not 20.
+**Instead:** Focus competitive positioning on the 2-3 providers most relevant to each persona. For OpenClaw builders: Gonka vs OpenRouter (the default). For agent framework devs: Gonka vs Together AI (the performance pick). For AI startups: Gonka vs direct GPU cloud (the scale play).
 
-**What:** Put all generation logic in a single `generate.py` file.
-**Why bad:** Untestable, impossible to generate standalones, difficult to modify individual models.
-**Instead:** One module per model, clean interfaces, composition in generators.
+### Anti-Pattern 4: Building Before Positioning
+**What:** Starting with MCP server development, SDK work, or feature engineering before the GTM research identifies what actually matters to developers.
+**Why bad:** Engineering effort wasted on features developers don't prioritize. The competitive analysis may reveal that developers care more about reliability metrics than memory APIs.
+**Instead:** Research first (v1.3), build second (v1.4+). The research should explicitly output a prioritized engineering backlog.
 
-### Anti-Pattern 3: Hardcoded Cell Addresses Everywhere
-
-**What:** Scatter literal cell references like `"B12"` throughout model code.
-**Why bad:** Adding a row to the Assumptions tab breaks every downstream formula.
-**Instead:** `build_assumptions_tab()` returns a `param_refs` dictionary. All downstream code uses the dictionary, not literal addresses.
-
-### Anti-Pattern 4: Sheet Name Strings Without Quoting
-
-**What:** Writing `="Emission Schedule!C3"` in formulas.
-**Why bad:** Sheet names with spaces must be single-quoted in Excel formulas. Missing quotes cause #REF! errors.
-**Instead:** Always use `f"='{sheet_name}'!{cell_ref}"` for cross-sheet references. Or use openpyxl's `quote_sheetname()` utility.
-
-### Anti-Pattern 5: Styling Cell-by-Cell in Loops
-
-**What:** Creating new Font/Fill objects for every cell in a data range.
-**Why bad:** Massive performance hit. openpyxl style creation is expensive.
-**Instead:** Use NamedStyles registered once per workbook. Apply by name: `cell.style = 'currency'`.
-
-### Anti-Pattern 6: Circular Cross-Tab References
-
-**What:** Tab A references Tab B which references Tab A.
-**Why bad:** Excel handles circular references poorly. Iterative calculation mode is unreliable and confusing for non-technical users.
-**Instead:** Maintain strict dependency layering. If circularity seems needed, restructure the model to break the cycle (usually by duplicating the needed calculation inline).
+### Anti-Pattern 5: Ignoring the Agent-as-Customer
+**What:** Treating only human developers as the customer.
+**Why bad:** OpenClaw agents themselves make inference routing decisions. An agent that evaluates providers programmatically (cost, latency, capability) is a "buyer" too. Agent Swarm in K2.5 means multiple sub-agents making independent provider selections.
+**Instead:** Consider two customer types: the developer who configures the provider, and the agent that selects the model at runtime. Gonka's tiering header (X-Gonka-Tier) is an agent-facing feature, not a developer-facing one.
 
 ---
 
 ## Scalability Considerations
 
-| Concern | Current Scope | Future Scale | Approach |
-|---------|--------------|--------------|----------|
-| Number of parameters | ~50 assumptions | 100+ with advanced models | Group parameters into collapsible sections; add Assumptions sub-tabs if needed |
-| Time horizon | 10 years annual | Monthly granularity | Increase rows but keep formula pattern identical |
-| Scenario count | 3 (Cons/Mod/Agg) | 5-10 custom scenarios | Use CHOOSE() formula with scenario index; add scenario builder tab |
-| Model count | 4 core models | 6-8 with advanced models | Same module pattern; add to Layer 1 or 2 |
-| File size | <5 MB | Could grow with monthly data | Not a concern for this scale |
-
----
-
-## Google Sheets Compatibility
-
-The PROJECT.md specifies output must work in both Excel and Google Sheets. Key constraints:
-
-| Feature | Excel | Google Sheets | Recommendation |
-|---------|-------|---------------|----------------|
-| Formulas | Full support | Full support | Standard Excel formulas work in both |
-| Named ranges | Full support | Full support | Use standard DefinedName API |
-| Data validation | Full support | Full support | Standard dropdowns work in both |
-| Charts | Full support | Partial (may rerender) | Keep charts simple; avoid 3D or combo charts |
-| Conditional formatting | Full support | Full support | Use standard rules |
-| Sheet protection | Full support | Limited | Protection works for preventing edits |
-| Named styles | Full support | Ignored | Styles are applied but names not preserved |
-| Tab colors | Full support | Full support | Works in both |
-
-**Recommendation:** Stick to standard formulas, avoid VBA macros (which Google Sheets cannot run), avoid 3D charts, and test generated files in Google Sheets during development.
+| Concern | At Launch (100 devs) | At Growth (10K devs) | At Scale (100K+ devs) |
+|---------|---------------------|---------------------|----------------------|
+| Content volume | 5-10 blog posts, quickstart guide | Weekly content, video series, case studies | Content team, developer advocates |
+| Community management | Founder responds in Discord | Part-time community manager | DevRel team, community moderators |
+| OpenClaw integration | Custom provider config | MCP plugin, community presence | Built-in provider, co-development |
+| Competitive monitoring | Manual quarterly review | Automated pricing/feature tracking | Competitive intelligence function |
+| Developer support | GitHub issues, Discord | Help desk, community forum | Tiered support, enterprise accounts |
 
 ---
 
 ## Sources
 
-### Official Documentation (HIGH confidence)
-- [openpyxl Defined Names](https://openpyxl.readthedocs.io/en/stable/defined_names.html) -- cross-sheet references, named ranges API
-- [openpyxl Styles](https://openpyxl.readthedocs.io/en/stable/styles.html) -- NamedStyles, number formats, font/fill/border
-- [openpyxl Data Validation](https://openpyxl.readthedocs.io/en/stable/validation.html) -- dropdown lists, input validation
-- [openpyxl Line Charts](https://openpyxl.readthedocs.io/en/stable/charts/line.html) -- chart creation API
-- [openpyxl Protection](https://openpyxl.readthedocs.io/en/stable/protection.html) -- sheet/cell protection
-- [openpyxl Optimised Modes](https://openpyxl.readthedocs.io/en/3.1/optimized.html) -- performance for large files
-- [openpyxl PyPI](https://pypi.org/project/openpyxl/) -- current version 3.1.5
+### OpenClaw Ecosystem (MEDIUM confidence)
+- [OpenClaw Provider Directory](https://docs.openclaw.ai/providers) -- built-in provider list, custom provider configuration
+- [OpenClaw Model Providers](https://docs.openclaw.ai/providers/openai) -- OpenAI-compatible API integration pattern
+- [OpenClaw MCP Integration](https://docs.openclaw.ai/cli/mcp) -- Model Context Protocol architecture
+- [OpenClaw GitHub Issues #3307](https://github.com/openclaw/openclaw/issues/3307) -- OpenAI-compatible custom base URL support
+- [OpenRouter OpenClaw Integration](https://openrouter.ai/docs/guides/coding-agents/openclaw-integration) -- OpenRouter's built-in OpenClaw integration docs
+- [haimaker.ai Custom Provider Guide](https://haimaker.ai/blog/integrating-custom-llm-providers-with-clawdbot/) -- detailed custom provider configuration walkthrough
 
-### Financial Modeling Best Practices (MEDIUM confidence)
-- [Wall Street Prep Financial Modeling Guide](https://www.wallstreetprep.com/knowledge/financial-modeling/) -- tab structure, color conventions
-- [CFI Documenting Excel Models](https://corporatefinanceinstitute.com/resources/excel/documenting-excel-models-best-practices/) -- assumptions tab patterns
-- [Toptal Financial Modeling Best Practices](https://www.toptal.com/finance/financial-modeling/financial-modeling-best-practices) -- formula linking
-- [Gridlines Financial Modelling Tips](https://www.gridlines.com/blog/financial-modelling-tips/) -- centralized assumptions
-- [Finzer Financial Modeling Best Practices 2025](https://finzer.io/en/blog/financial-modeling-best-practices) -- input/output separation
+### Competitive Landscape (MEDIUM confidence)
+- [ShareAI OpenRouter Alternatives](https://shareai.now/blog/alternatives/openrouter-alternatives/) -- 7 alternatives with feature comparison
+- [Infrabase AI Inference API Providers](https://infrabase.ai/blog/ai-inference-api-providers-compared) -- 2026 provider comparison
+- [io.net vs Akash vs Render](https://io.net/blog/io-net-vs-akash-vs-render-network-which-decentralized-platform-actually-delivers) -- decentralized GPU network comparison
+- [BlockEden Decentralized GPU Networks 2026](https://blockeden.xyz/blog/2026/02/07/decentralized-gpu-networks-2026/) -- DePIN market analysis
+- [OpenRouter Pricing](https://openrouter.ai/pricing) -- 5.5% credit markup, per-token pass-through pricing
+- [SDxCentral AI Inferencing 2026](https://www.sdxcentral.com/analysis/ai-inferencing-will-define-2026-and-the-markets-wide-open/) -- market opportunity analysis
 
-### Tokenomics Domain (MEDIUM confidence)
-- [InnMind Tokenomics Spreadsheet Template](https://innmind.com/downloads/tokenomics-spreadsheet/) -- token model tab patterns
-- [Koinly Crypto Emissions Schedule Template](https://koinly.io/blog/crypto-emissions-schedule-template/) -- emission schedule structure
+### Kimi K2.5 (MEDIUM-HIGH confidence)
+- [Kimi K2.5 Hugging Face](https://huggingface.co/moonshotai/Kimi-K2.5) -- model card, benchmarks
+- [Kimi K2.5 Tech Blog](https://www.kimi.com/blog/kimi-k2-5) -- Agent Swarm, visual agentic intelligence
+- [Kimi K2.5 ArXiv](https://arxiv.org/html/2602.02276v1) -- technical paper, benchmark results
+
+### Developer Marketing (MEDIUM confidence)
+- [developerrelations.com Developer Journey](https://developerrelations.com/guides/mapping-the-developer-journey/) -- AAARRRP framework
+- [Strategic Nerds Developer Marketing Guide 2026](https://www.strategicnerds.com/blog/the-complete-developer-marketing-guide-2026) -- B2D marketing strategies
+- [Tom Tunguz B2D GTM](https://tomtunguz.com/b2d-go-to-market/) -- GTM challenges for developer-focused companies
+- [PMM Hive Open Source GTM](https://www.productmarketinghive.com/go-to-market-strategy-for-open-source-products/) -- open source product marketing
+- [Common Room B2D Strategies](https://www.commonroom.io/blog/b2d-best-business-to-developer-strategies/) -- developer engagement strategies
+
+### Gonka Infrastructure (HIGH confidence -- verified against codebase)
+- `infrastructure/gateway/main.py` -- FastAPI gateway with auth, rate limiting, metering, sessions, tiering
+- `infrastructure/gateway/router.py` -- Multi-model routing with YAML config
+- `infrastructure/agent/sessions.py` -- Server-side session persistence with TTL
+- `infrastructure/agent/tiering.py` -- Auto-routing based on content patterns and X-Gonka-Tier header
+- `infrastructure/agent/memory.py` -- Persistent key-value memory store
+- `infrastructure/agent/webhooks.py` -- Push notification system
+- `infrastructure/tests/test_openclaw.py` -- OpenClaw integration test suite (classify -> plan -> execute -> respond)
 
 ---
 
-*Architecture research: 2026-02-05*
+*Architecture research: 2026-04-01*
