@@ -63,4 +63,10 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   Plans:
   - [x] 19-01-PLAN.md — Partnership playbook: four-tier integration roadmap, ClawHub submission, built-in provider PR strategy, technical requirements (GTM-02) -- completed 2026-04-01
 
+- [ ] Phase 20: Product-Led Growth & v1.4 Backlog
+  **Plans:** 2 plans
+  Plans:
+  - [ ] 20-01-PLAN.md — PLG funnel model, free tier design spec, time-to-first-inference plan (GTM-03)
+  - [ ] 20-02-PLAN.md — Prioritized v1.4 engineering backlog with must-ship vs nice-to-have (GTM-03)
+
 </details>
