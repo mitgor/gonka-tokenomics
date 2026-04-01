@@ -52,21 +52,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| COMP-01 | — | Pending |
-| COMP-02 | — | Pending |
-| COMP-03 | — | Pending |
-| MSG-01 | — | Pending |
-| MSG-02 | — | Pending |
-| MSG-03 | — | Pending |
-| GTM-01 | — | Pending |
-| GTM-02 | — | Pending |
-| GTM-03 | — | Pending |
+| COMP-01 | Phase 15 | Pending |
+| COMP-02 | Phase 15 | Pending |
+| COMP-03 | Phase 15 | Pending |
+| MSG-01 | Phase 16 | Pending |
+| MSG-02 | Phase 17 | Pending |
+| MSG-03 | Phase 17 | Pending |
+| GTM-01 | Phase 18 | Pending |
+| GTM-02 | Phase 19 | Pending |
+| GTM-03 | Phase 20 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 9 total
-- Mapped to phases: 0
-- Unmapped: 9
+- Mapped to phases: 9
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-01*
-*Last updated: 2026-04-01 after initial definition*
+*Last updated: 2026-04-01 after roadmap creation*
