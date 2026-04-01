@@ -53,9 +53,9 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   - [x] 17-01-PLAN.md — Message house with core positioning, architecture-to-message mapping, and vocabulary guidelines (MSG-02)
   - [x] 17-02-PLAN.md — Agent-native pitch and objection handling playbook (MSG-02, MSG-03) -- completed 2026-04-01
 
-- [ ] Phase 18: Channel Strategy
+- [x] Phase 18: Channel Strategy -- completed 2026-04-01
   **Plans:** 1 plan
   Plans:
-  - [ ] 18-01-PLAN.md — Channel matrix (P0-P3), success metrics, and content calendar framework (GTM-01)
+  - [x] 18-01-PLAN.md — Channel matrix (P0-P3), success metrics, and content calendar framework (GTM-01) -- completed 2026-04-01
 
 </details>
