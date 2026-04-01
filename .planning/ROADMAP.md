@@ -58,11 +58,11 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   2. Per-task and monthly cost projections exist for realistic OpenClaw agent workloads across all compared providers, showing where Gonka is cheaper and where it is not
   3. A provider landscape map categorizes all inference providers targeting OpenClaw developers into segments (centralized API, multi-provider router, dedicated inference, decentralized GPU) with positioning notes
   4. Gonka's competitive gaps are explicitly identified -- what must be closed before GTM push vs what can be deferred
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 15-01: TBD
-- [ ] 15-02: TBD
+- [ ] 15-01-PLAN.md — Competitive feature matrix (COMP-01) + provider landscape map and gap analysis (COMP-03)
+- [ ] 15-02-PLAN.md — Agent workload pricing analysis with cost projections across 3 tiers (COMP-02)
 
 ### Phase 16: Developer Personas & Journey Mapping
 **Goal**: The team knows exactly who OpenClaw builders are, what drives their provider decisions, and where they get stuck in the adoption journey
@@ -139,7 +139,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 15. Competitive Analysis | v1.3 | 0/TBD | Not started | - |
+| 15. Competitive Analysis | v1.3 | 0/2 | Not started | - |
 | 16. Developer Personas | v1.3 | 0/TBD | Not started | - |
 | 17. Positioning & Messaging | v1.3 | 0/TBD | Not started | - |
 | 18. Channel Strategy | v1.3 | 0/TBD | Not started | - |
