@@ -32,3 +32,14 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
 5 phases, 5 plans, 27 requirements. See milestones/v1.2-ROADMAP.md for details.
 
 </details>
+
+### v1.3 OpenClaw Go-To-Market Research (In Progress)
+
+- [ ] **Phase 15: Competitive Analysis & Market Mapping** (1/2 plans complete)
+  - [x] 15-01: Competitive feature matrix + provider landscape map -- completed 2026-04-01
+  - [ ] 15-02: Agent workload pricing analysis
+- [ ] Phase 16: Developer Personas & Journey Mapping
+- [ ] Phase 17: Positioning & Messaging
+- [ ] Phase 18: Channel Strategy
+- [ ] Phase 19: Partnership & Ecosystem Strategy
+- [ ] Phase 20: Product-Led Growth & v1.4 Backlog
