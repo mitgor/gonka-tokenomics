@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: No active phase
-Plan: No active plan
-Status: Between milestones — v1.2 shipped, next milestone TBD
-Last activity: 2026-02-14 — v1.2 milestone archived
+Phase: 15-competitive-analysis-market-mapping
+Plan: 2 of 3 in phase (15-02 complete)
+Status: Executing v1.3 milestone
+Last activity: 2026-04-01 — 15-02 agent workload pricing analysis complete
 
-Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED
+Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
 ## Accumulated Context
 
@@ -45,6 +45,13 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - Tests: OpenClaw, CrewAI, LangGraph integration tests, API compatibility suite, load tests, Locust config
 - Config: models.yaml registry, tiering rules, environment-based settings
 
+### From v1.3 (in progress)
+
+- Session persistence is Gonka's most defensible cost advantage (not per-token pricing)
+- Heartbeat overhead accounts for 44-85% of agent token consumption depending on tier
+- Recommended pricing: Scenario B ($0.35/$1.75) -- 30% below DeepInfra, competitive with sessions
+- Gonka pricing TBD -- all cost projections are scenario-based
+
 ### Pending Todos
 
 None.
@@ -55,6 +62,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-14
-Stopped at: v1.2 milestone archived
+Last session: 2026-04-01
+Stopped at: Completed 15-02-PLAN.md (agent workload pricing analysis)
 Resume file: None
