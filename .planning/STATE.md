@@ -4,17 +4,17 @@
 
 See: .planning/PROJECT.md (updated 2026-02-14)
 
-**Core value:** Position Gonka as the inference provider of choice for OpenClaw developers through research-driven GTM strategy
-**Current focus:** Phase 15 -- competitive analysis and market mapping
+**Core value:** Leadership can tweak assumptions and instantly see the impact on tokenomics health across all dimensions
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 15 (competitive-analysis-market-mapping) -- EXECUTING
-Plan: 2 of 2
-Status: Plan 15-01 complete, executing Plan 15-02
-Last activity: 2026-04-01 -- Plan 15-01 completed
+Phase: 15-competitive-analysis-market-mapping
+Plan: 2 of 3 in phase (15-02 complete)
+Status: Executing v1.3 milestone
+Last activity: 2026-04-01 — 15-02 agent workload pricing analysis complete
 
-Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 [#.........] 10%
+Progress: v1.0 SHIPPED | v1.1 SHIPPED | v1.2 SHIPPED | v1.3 IN PROGRESS
 
 ## Accumulated Context
 
@@ -45,14 +45,12 @@ See .planning/PROJECT.md Key Decisions table for full history.
 - Tests: OpenClaw, CrewAI, LangGraph integration tests, API compatibility suite, load tests, Locust config
 - Config: models.yaml registry, tiering rules, environment-based settings
 
-### From v1.3
+### From v1.3 (in progress)
 
-- Gonka wins 2/8 agent dimensions (sessions, tiering); loses on model breadth and uptime
-- OpenRouter is primary competitive threat (built-in OpenClaw, 500+ models, same target market)
-- 5 must-close gaps before GTM: OpenClaw built-in, docs, signup, pricing, persistent sessions
-- 6 can-defer gaps with timelines: single model, JSON keys, TF-IDF, load balancing, dashboard, SLA
-- Cost advantage claims must remain contingent until Gonka pricing is published
-- Blackwell GPUs narrowing decentralized cost advantages; non-price differentiation essential
+- Session persistence is Gonka's most defensible cost advantage (not per-token pricing)
+- Heartbeat overhead accounts for 44-85% of agent token consumption depending on tier
+- Recommended pricing: Scenario B ($0.35/$1.75) -- 30% below DeepInfra, competitive with sessions
+- Gonka pricing TBD -- all cost projections are scenario-based
 
 ### Pending Todos
 
@@ -60,11 +58,10 @@ None.
 
 ### Blockers/Concerns
 
-- Gonka pricing not finalized -- cost advantage claims cannot be validated until per-token pricing is set
-- OpenClaw ecosystem window is time-sensitive -- ClawHub submission should happen ASAP
+None.
 
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Completed 15-01-PLAN.md
+Stopped at: Completed 15-02-PLAN.md (agent workload pricing analysis)
 Resume file: None
