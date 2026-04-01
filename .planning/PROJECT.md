@@ -32,7 +32,18 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 
 ### Active
 
-(No active milestone — use `/gsd:new-milestone` to start next)
+## Current Milestone: v1.3 OpenClaw Go-To-Market Research
+
+**Goal:** Research how to convince OpenClaw developers and OpenClaw agents themselves to choose Gonka over OpenRouter and traditional LLM providers, covering product development, marketing, audience strategy, and channels.
+
+**Target features:**
+- Competitive positioning: Gonka vs OpenRouter vs OpenAI/Anthropic for OpenClaw agents
+- Product development priorities: what Gonka.ai needs to build to win OpenClaw developers
+- Target audience analysis: OpenClaw developer personas, agent builder profiles, decision drivers
+- Marketing strategy: messaging, value propositions, objection handling
+- Channel strategy: where to reach OpenClaw developers (communities, platforms, events)
+- Agent-native advantages: why OpenClaw agents themselves would prefer Gonka
+- Partnership & ecosystem play: OpenClaw integration depth, SDK support, developer relations
 
 ### Out of Scope
 
@@ -86,4 +97,22 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 | vLLM over other serving frameworks | Industry standard, OpenAI-compatible, K2.5 officially supported | Good -- shipped in v1.2 |
 
 ---
-*Last updated: 2026-02-14 after v1.2 milestone completion*
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-04-01 after v1.3 milestone started*
