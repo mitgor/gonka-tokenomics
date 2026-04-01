@@ -480,3 +480,201 @@ Which channels reach which persona, and what content theme resonates on each.
 - Weekend Builder: OpenClaw Discord, Reddit, YouTube (cost-focused content at every touchpoint)
 - Startup CTO: Technical blog, HackerNews, conferences (reliability-focused content, evidence-driven evaluation)
 - Privacy-First Builder: Crypto Twitter, privacy-focused forums, Reddit (privacy-focused content, honest limitations, audit invitations)
+
+---
+
+## Content Calendar Framework
+
+Content production follows two organizing principles:
+
+1. **AAARRRP mapping:** Every content piece targets one primary AAARRRP stage and one primary persona. This prevents "content for content's sake" and ensures each piece moves developers through the adoption journey.
+2. **70/30 content split:** 70% of content is developer-education (tutorials, benchmarks, comparisons, quickstart guides) targeting the demand side. 30% is ecosystem/community content (network updates, host stories, token utility explainers) targeting the supply side and broader community. The 30% ecosystem content follows Phase 17 vocabulary guidelines -- developer-facing vocabulary in all cases, with crypto-native vocabulary only in explicitly crypto-targeted channels per Phase 17 context rules.
+
+Content themes are drawn directly from the Phase 17 message house value propositions:
+- **VP1:** Session persistence eliminates heartbeat waste (lead message -- 73% cost reduction)
+- **VP2:** Automatic model tiering (classification on cheap model, reasoning on strong one)
+- **VP3:** One config change, 90 seconds (drop-in OpenClaw compatibility)
+- **VP4:** No content filters, no prompt logs (privacy-first builder message)
+- **VP5:** Inference gets cheaper as network grows (long-term cost trajectory)
+
+---
+
+## Content-Journey Matrix
+
+Every content piece maps to an AAARRRP journey stage, a content theme from the message house, and a primary channel for distribution.
+
+| AAARRRP Stage | Content Theme | Content Type | Primary Channel | Cadence | Persona Focus |
+|---------------|--------------|-------------|----------------|---------|---------------|
+| **Awareness** | "Why Gonka exists" -- heartbeat overhead costs developers 44-85% of their bill | Comparison blog posts, benchmark graphics, Reddit threads | Blog, Reddit, Twitter/X | Weekly | All personas |
+| **Awareness** | K2.5 agent performance -- 76.8% SWE-Bench, 200-300 tool calls stable | Benchmark result graphics, comparison tables | Twitter/X, Blog | Bi-weekly | Weekend Builder, Startup CTO |
+| **Awareness** | Privacy without self-hosting -- no content filtering, no central logging | Privacy architecture deep-dive, honest limitations | Blog, Privacy Forums, Lobsters | Monthly | Privacy-First Builder |
+| **Acquisition** | "Add Gonka in 90 seconds" -- 3 fields in openclaw.json, no wallet, no tokens | Quickstart guide, config snippet with copy button | Docs, OpenClaw Discord, dev.to | Always available | Weekend Builder |
+| **Acquisition** | Architecture for reliability-focused evaluation -- redundant nodes, health-checked routing | Architecture overview, staging deployment guide | Docs, Blog | Always available | Startup CTO |
+| **Acquisition** | Data handling and privacy policy -- what is logged, what is not, audit guide | Privacy policy page, open-source audit walkthrough | Docs, GitHub | Always available | Privacy-First Builder |
+| **Activation** | Working code examples -- OpenClaw config + agent template + session setup | Code examples, GitHub repo templates, docs snippets | GitHub, Docs, OpenClaw Discord | Bi-weekly updates | All personas |
+| **Activation** | "OpenClaw + Gonka in 5 Minutes" video walkthrough | Screencast tutorial -- config, first call, cost dashboard | YouTube, Twitter/X | Bi-weekly | Weekend Builder |
+| **Activation** | Staging-to-production migration guide with load testing results | Migration guide, test suite results, latency comparison | Blog, Docs | Updated quarterly | Startup CTO |
+| **Retention** | Session persistence deep-dive -- how sessions work, cost savings math, advanced config | Deep-dive guide: "Agent Sessions: Why Your Agent Pays for Context Twice" | Blog, Docs | Bi-weekly | Startup CTO |
+| **Retention** | Cost comparison calculator -- interactive tool showing savings vs OpenRouter/Together AI | Interactive web tool at docs.gonka.ai/calculator | Docs site | Always available, updated monthly | Weekend Builder, Startup CTO |
+| **Retention** | Ongoing privacy posture monitoring -- changelog for privacy-relevant changes | Privacy changelog, audit script, community watchdog | Docs, GitHub | With each release | Privacy-First Builder |
+| **Revenue** | ROI calculator -- total cost of ownership including heartbeat savings, tiering, engineering time | Interactive ROI tool, pricing comparison table | Blog, Docs | Monthly updates | Startup CTO |
+| **Revenue** | Pricing comparison at each tier -- Casual, Active, Heavy vs OpenRouter, Together AI, DeepInfra | Pricing page with tier calculator | Docs site | Always available | All personas |
+| **Referral** | Developer spotlight -- featured developer stories, cost savings testimonials | Blog interview, shareable cost savings badge/graphic | Twitter/X, Blog, Discord | Monthly | Weekend Builder |
+| **Referral** | Community recognition -- contributor highlights, referral credit program | Referral program page, pre-written share templates | Docs, Twitter/X, Discord | Monthly | Weekend Builder |
+| **Referral** | Engineering case study co-creation -- "How We Cut Costs 73% with Sessions" | Co-branded blog post with production customer | Blog, HackerNews | Quarterly | Startup CTO |
+| **Product** | Feedback channels -- GitHub issues, feature request templates, advisory program | Public GitHub repo with issue templates, quarterly advisory calls | GitHub, Docs | Ongoing | All personas |
+
+---
+
+## Content Themes by Quarter (Template)
+
+This framework provides a quarterly content allocation template. Actual dates are TBD at execution time -- this is a strategic framework, not a fixed calendar.
+
+### Q1: Launch Quarter
+
+**Content allocation:** 60% Awareness + Acquisition, 25% Activation, 15% Retention
+
+The launch quarter prioritizes making developers aware Gonka exists and removing friction from first API call. Without Awareness and Acquisition content, all downstream stages are blocked (developer personas: AAARRRP Priority Ranking -- Awareness and Acquisition are P0 universal blockers).
+
+| Week | Content Type | Channel | AAARRRP Stage |
+|------|-------------|---------|---------------|
+| 1-2 | Launch blog post: "Cut Agent Inference Costs 73% with Gonka" | Blog, Reddit, HN, Twitter/X | Awareness |
+| 1-2 | OpenClaw provider listing + config snippet | Provider Directory, Discord | Acquisition |
+| 3-4 | Quickstart guide: "OpenClaw + Gonka in 5 Minutes" | Blog, dev.to, Docs | Acquisition |
+| 3-4 | Comparison post: "Gonka vs OpenRouter vs Together AI" | Reddit, Blog | Awareness |
+| 5-6 | Video tutorial: config + first agent call | YouTube, Twitter/X | Activation |
+| 5-6 | Session persistence deep-dive | Blog | Retention |
+| 7-8 | Benchmark results: K2.5 agent performance | Twitter/X, Blog | Awareness |
+| 7-8 | Privacy architecture post | Blog, Lobsters | Awareness (Privacy-First) |
+| 9-10 | Cost calculator tool launch | Docs site | Retention |
+| 9-10 | Reddit AMA / community Q&A | Reddit | Awareness + Acquisition |
+| 11-12 | Developer spotlight: first power user | Blog, Twitter/X | Referral |
+| 11-12 | Month 3 metrics review (internal) | Internal | -- |
+
+### Q2: Growth Quarter
+
+**Content allocation:** 25% Awareness, 50% Activation + Retention, 25% Revenue + Referral
+
+Q2 shifts focus to converting acquired developers into API-active users and retaining them. Awareness continues at reduced cadence to sustain the top of funnel.
+
+- Bi-weekly deep-dive blog posts on sessions, tiering, memory API, webhooks
+- Monthly developer spotlights and cost savings case studies
+- Launch pricing page and ROI calculator
+- Begin conference evaluation (submit CFPs for Q3 events)
+- Cross-post best-performing blog content to dev.to/Hashnode
+
+### Q3+: Maturity Quarters
+
+**Content allocation:** Balanced across all AAARRRP stages
+
+- Content production is self-sustaining with established cadences per channel
+- Community-generated content supplements official content (referral stage activating)
+- Conference talks and case studies provide credibility at scale
+- Quarterly 70/30 split audit ensures channel investment remains balanced
+- Product stage feedback shapes content roadmap (address top feature requests in content)
+
+---
+
+## Content Production Guidelines
+
+Every piece of Gonka developer-facing content must follow these rules, derived from the Phase 17 message house and vocabulary guidelines.
+
+### Messaging Rules
+
+1. **Reference the Phase 17 message house** (gonka_message_house.md) before writing any content piece. The message hierarchy is: lead with cost reduction (VP1), support with tiering (VP2) and ease of integration (VP3), use privacy (VP4) only for Privacy-First Builder audience.
+
+2. **Never use the 16 crypto terms on the never-say list** in developer-facing content: wallet, staking, mining, DePIN, Web3, gas, slashing, governance proposals, epochs, validators, tokenomics, consensus mechanism, on-chain, smart contract, token (as cryptocurrency), decentralized (as headline). Use the approved alternatives from the vocabulary guidelines table.
+
+3. **Lead with heartbeat cost reduction (73%) as primary hook** per the Phase 17 core positioning statement. Every awareness and comparison piece should open with the heartbeat overhead problem and the session persistence solution before mentioning any other Gonka feature.
+
+4. **Include an OpenClaw config snippet in every tutorial and guide.** The "product" in every content piece is the 3-field `openclaw.json` configuration: `baseUrl`, `apiKey`, `api: "openai-completions"`. If the content does not show how to use Gonka with OpenClaw, it is not actionable.
+
+5. **Address at least one objection from the playbook** (gonka_objection_playbook.md) in every comparison post. Use the ACE framework (Acknowledge, Counter, Evidence). The most common objections to address: "never heard of Gonka" (universal), "is this a crypto thing?" (universal), "decentralized = unreliable" (Startup CTO).
+
+6. **Each content piece targets one primary persona and one AAARRRP stage.** This is not optional. If a content piece tries to address all three personas simultaneously, it addresses none effectively. The Content-Journey Matrix above specifies which persona and stage each content type targets.
+
+### Quality Standards
+
+- All cost claims cite specific pricing analysis data (Section 3 for tier costs, Section 5 for Gonka hidden cost analysis, Section 6 for monthly projections)
+- All benchmark claims cite competitive feature matrix (Section 3 for K2.5, Section 7 for uptime)
+- Honest concessions are included for Gonka's known weaknesses: single model (K2.5), no published SLA, no published pricing, TEE not yet built
+- Content that looks like a DeFi protocol page instead of a cloud platform page is rejected and rewritten
+- Visual style reference: Vercel, Supabase, Cloudflare blog -- clean, developer-friendly, no crypto aesthetics
+
+---
+
+## Channel-Content Cross-Reference
+
+For each P0 and P1 channel, the top 3 content pieces to produce first (prioritized backlog). This is the operational "what to build first" list.
+
+### P0 Channels
+
+**OpenClaw Provider Directory**
+1. Provider configuration page with copy-paste `openclaw.json` snippet and model card for `gonka/kimi-k2.5`
+2. Troubleshooting guide for the two-step provider gotcha (provider definition + model allowlisting per STACK.md)
+3. "Why Gonka?" comparison table on the provider page (sessions, tiering, cost savings -- no crypto language)
+
+**OpenClaw GitHub**
+1. PR adding Gonka as a built-in provider (eliminates manual config for all developers)
+2. Discussion post: "Gonka: Agent-Native Inference with Session Persistence" introducing Gonka to the OpenClaw community
+3. Template response for cost-related issues: config snippet + heartbeat savings data + link to blog comparison
+
+**OpenClaw Discord**
+1. Pinned config snippet in #providers or #configuration channel
+2. "Gonka vs OpenRouter cost comparison" post with specific tier data and savings breakdown
+3. Session persistence tutorial: "How to set up Gonka sessions for your always-on agent"
+
+### P1 Channels
+
+**Technical Blog (docs.gonka.ai/blog)**
+1. "Cut Agent Inference Costs 73% with Gonka" -- launch post with heartbeat math, session persistence explanation, before/after cost comparison, config snippet
+2. "OpenClaw + Gonka in 5 Minutes" -- quickstart guide with screenshots, curl verification, cost dashboard walkthrough
+3. "Agent Sessions: Why Your Agent Pays for Context Twice" -- deep-dive explaining why heartbeats waste tokens, how sessions fix it, and the architectural difference vs prompt caching
+
+**Twitter/X AI Developer Community**
+1. Launch thread: heartbeat overhead problem + session persistence solution + cost comparison graphic + config snippet
+2. Benchmark graphic: K2.5 vs GPT-4o vs Claude on SWE-Bench and tool calling, with per-token cost comparison
+3. "90-second setup" video clip: screen recording of adding Gonka to openclaw.json and making first call
+
+**Reddit (r/LocalLLaMA, r/OpenClaw)**
+1. "I compared OpenRouter, Together AI, and Gonka for my OpenClaw agent -- here are the real costs" comparison post with token math
+2. "Show r/LocalLLaMA: Gonka -- agent-native inference with server-side sessions" launch post with config snippet
+3. Monitoring + responses to "how do I reduce OpenClaw costs?" threads with specific data and config snippets
+
+**dev.to / Hashnode**
+1. Cross-posted "OpenClaw + Gonka in 5 Minutes" quickstart
+2. Cross-posted "Cut Agent Inference Costs 73%" comparison post
+3. "How to Add Session Persistence to Your OpenClaw Agent" tutorial adapted for dev.to format
+
+---
+
+## Measurement Cadence
+
+### Weekly Review
+
+- **API key signups:** total new signups, source attribution (which channel referred them)
+- **First-call-within-24h rate:** percentage of new signups who make their first API call within 24 hours
+- **Channel-specific engagement:** Reddit upvotes/comments, Twitter referral clicks, Discord Gonka mentions, blog unique visitors
+- **Content performance:** which content pieces drove signups vs which drove only views
+
+### Monthly Review
+
+- **API-active developer count:** developers with >100 API calls in the past 30 days (the primary KPI)
+- **Retention rate:** percentage of last month's API-active developers who remain API-active this month
+- **Content-to-signup funnel:** full funnel from content view to signup to first call to API-active status, by content piece
+- **Channel ROI ranking:** channels ranked by API-active developers attributed, not by engagement metrics
+- **Session adoption rate:** percentage of API-active developers using the sessions API (indicates agent-native feature adoption)
+
+### Quarterly Review
+
+- **70/30 split audit:** actual channel investment (time, money, content pieces) measured against the 70/30 AI-dev/crypto target -- adjust if drifting
+- **Persona reach assessment:** are all three personas being reached, or has content skewed to one? Check referral sources against persona indicators
+- **Channel promotion/demotion:** should any P2 channel be promoted to P1 based on conversion data? Should any P1 channel be demoted?
+- **Content theme effectiveness:** which message house value propositions (VP1-VP5) generate the most API-active developer conversions? Double down on winners
+- **Quarterly content plan:** set next quarter's content calendar based on this quarter's data, maintaining AAARRRP stage allocation appropriate to the growth phase
+
+---
+
+*Document: gonka_channel_strategy.md | Version 1.0 | 2026-04-01*
+*Dependencies: gonka_developer_personas.md (Phase 16), gonka_message_house.md (Phase 17), gonka_objection_playbook.md (Phase 17)*
+*Sources: ARCHITECTURE.md (Component 4), PITFALLS.md, gonka_competitive_feature_matrix.md, gonka_agent_pricing_analysis.md*
