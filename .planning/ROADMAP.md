@@ -58,4 +58,9 @@ Phases 1-9: 21 plans total. See MILESTONES.md for details.
   Plans:
   - [x] 18-01-PLAN.md — Channel matrix (P0-P3), success metrics, and content calendar framework (GTM-01) -- completed 2026-04-01
 
+- [ ] Phase 19: Partnership & Ecosystem Strategy
+  **Plans:** 1 plan
+  Plans:
+  - [ ] 19-01-PLAN.md — Partnership playbook: four-tier integration roadmap, ClawHub submission, built-in provider PR strategy, technical requirements (GTM-02)
+
 </details>
