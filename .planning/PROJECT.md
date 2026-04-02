@@ -42,7 +42,14 @@ Leadership can tweak assumptions and instantly see the impact on tokenomics heal
 
 ### Active
 
-(No active milestone — use `/gsd:new-milestone` to start next)
+## Current Milestone: v1.4 GTM Engineering Execution
+
+**Goal:** Execute the v1.3 engineering backlog — build everything needed so a developer can go from zero to first Gonka inference in under 5 minutes via OpenClaw.
+
+**Target features (18 must-ship items):**
+- Sprint 1 (Foundation): Production endpoint, docs site, pricing page, landing page, legal pages, support channels
+- Sprint 2 (Signup Flow): Email infra, self-serve signup, config template, integration guide, verify endpoint, usage headers, error messages
+- Sprint 3 (Hardening): Persistent sessions (Redis), OpenClaw npm plugin, status page
 
 ### Out of Scope
 
@@ -123,4 +130,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-01 after v1.3 milestone completion*
+*Last updated: 2026-04-02 after v1.4 milestone started*
