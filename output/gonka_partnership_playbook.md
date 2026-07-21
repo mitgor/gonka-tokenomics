@@ -1,7 +1,7 @@
 # Gonka Partnership & Ecosystem Strategy Playbook
 
-**Version:** 1.0
-**Date:** 2026-04-01
+**Version:** 1.3
+**Date:** 2026-07-18 (updated from 2026-04-01 original)
 **Classification:** Internal -- strategic playbook for Gonka's OpenClaw ecosystem integration
 **Status:** Strategy Document
 **Dependencies:** Phase 15 competitive analysis (gonka_competitive_feature_matrix.md), Phase 17 messaging (gonka_message_house.md), Phase 18 channel strategy (gonka_channel_strategy.md), provider landscape gap analysis (gonka_provider_landscape_map.md)
@@ -14,6 +14,18 @@
 Gonka's path to developer adoption runs through the OpenClaw ecosystem. This playbook defines a four-tier integration roadmap -- from custom provider listing to built-in provider status and co-development partnership -- with specific prerequisites, effort estimates, timelines, and success criteria at each tier. It also provides a ClawHub skill submission plan, a community-first strategy for getting Gonka merged as a built-in OpenClaw provider, and a comprehensive technical requirements checklist tracking what Gonka must deliver before each tier can be unlocked.
 
 All partner-facing language in this playbook follows Phase 17 positioning: lead with heartbeat cost reduction (73% savings via server-side session persistence), not decentralization or network economics. Partner conversations should reference the message house (gonka_message_house.md) for approved vocabulary and positioning guidance.
+
+### What Changed Since the April Original (July 2026 Update)
+
+Five ecosystem shifts materially affect this playbook:
+
+1. **Model refresh.** Kimi K2.5 has been superseded twice: Kimi K2.6 (April 2026 -- 1T MoE, 32B active, ~256K context, multimodal) and Kimi K2.7-Code (June 2026 -- coding/agent model, Modified MIT, official API $0.95 input / $4.00 output per 1M). Moonshot launched Kimi K3 via app/API on July 16, 2026 (2.8T MoE, 896 experts / 16 active, 1M context, native multimodal, $3/$15 per 1M, $0.30 cached input; full open weights still scheduled by July 27, 2026 -- the largest open-weight release ever). K3 debuted #1 in Frontend Code Arena ahead of Claude Fable 5 and GPT-5.6 Sol -- the first open model at the closed-frontier tier. All model references in this playbook now target K2.6 as the workhorse tier with K2.7-Code and K3 as follow-ons; a K2.5-only catalog is a generation behind and undermines the "agent-native" pitch.
+2. **ClawHub trust crisis.** The ClawHavoc supply-chain campaign triggered a registry purge and hardened screening. The sourced sequence: Koi Security's Feb 1, 2026 audit found 341 malicious skills out of 2,857 scanned (335 in the ClawHavoc/AMOS campaign); OpenClaw partnered with VirusTotal on Feb 7, 2026, removing ~2,419 suspicious skills and adding automatic scanning of every published skill; Koi's continued scanning raised confirmed-malicious findings to 824 (~Feb 16, as ClawHub passed 10,700 skills); by Feb 19, Antiy CERT researchers had uncovered at least 1,184 malicious skill packages, with one analysis putting flagged-malicious-or-suspicious at ~7.6% of the registry, and Unit 42 (Palo Alto) has since published its own AI supply-chain threat analysis of the marketplace. The skill submission plan (Section 3) now budgets for security review and provenance expectations.
+3. **OpenClaw governance change.** The OpenClaw Foundation formally launched as a 501(c)(3) on July 8, 2026 -- chaired by Dave Morin with Peter Steinberger, with published leadership, paid maintainers, an MIT-license commitment, and "Switzerland of AI" neutrality positioning. Five published major donors: Offline Holdings, University of Michigan (reported largest), OpenAI, Microsoft, and NVIDIA -- the donor page designates no "lead sponsor" -- plus 311 individuals/orgs via GitHub Sponsors; partners include Microsoft, Tencent, Atlassian, Vercel, Cloudflare, GitHub, Blacksmith and Convex -- 30+ orgs total. Scale as of mid-July 2026 (foundation-published): 4.5 million new claws (users/agents) per week, "fastest growing GitHub repository in history," and ~30,000 ClawCon registrations across 34 events in 16 countries in five months; 18+ built-in providers (April-2026 count -- re-check against v2026.7.2 release notes). The built-in provider path (Tier 3) now runs through a foundation where OpenAI is a major donor, employs the project's creator (Steinberger runs Claw Labs inside OpenAI), and supports inference -- a rival inference vendor with structural influence; rivals now also ship their own OpenClaw distributions (NVIDIA NemoClaw, Microsoft Scout, Tencent maintaining security/stability/ClawHub). The foundation is now operational: a first full-time team of ten, Red Hat as a contributing partner on enterprise open source and supply-chain security, and standards councils convening on agent identity, agent profiles, evals, and enterprise deployment. Those councils are a vendor-neutral engagement venue for Gonka that does not run through the conflicted built-in-provider PR path (see Section 4).
+4. **MCP went mainstream -- and the spec is about to move.** 97M+ monthly SDK downloads, 9,652 servers in the official MCP Registry as of May 24, 2026 (10,000+ active public servers per Anthropic; third-party registries index 16,000-20,000), first-party support in ChatGPT, Gemini, Copilot, VS Code and Cursor. MCP itself is now neutrally governed -- donated to the Agentic AI Foundation under the Linux Foundation in December 2025 with multi-vendor governance (Anthropic, OpenAI, Block) -- which strengthens the MCP Registry as the hedge against OpenClaw Foundation gatekeeping. The MCP 2026-07-28 release candidate (final spec ships July 28, 2026) is more than the stateless-transport headline: remote servers become stateless/load-balancer-friendly (no sticky sessions or shared session store; routing on an `Mcp-Method` header; cacheable `tools/list`), plus an Extensions framework, a Tasks primitive (a server can answer `tools/call` with a task handle, driven via `tasks/get`/`tasks/update`/`tasks/cancel` -- standardized server-directed async execution), MCP Apps, authorization hardening, and a formal deprecation policy, with Tier-1 SDK support expected within ten weeks. The Tasks primitive gives every MCP-capable agent stack a standardized async pattern, which narrows Gonka's inference-layer-webhook differentiator across the board, not just against OpenAI's background mode. The Gonka MCP server is now a primary distribution channel, not a Tier 2 add-on -- build it against the 2026-07-28 spec, map stateful sessions/memory onto the stateless transport, and target Tasks for async work.
+5. **Agent-native payments (x402).** The Linux Foundation declared the x402 Foundation operationally live on July 14, 2026 with 40 member organizations across three tiers -- including Visa, Mastercard, American Express, Stripe, Ripple, Google, AWS, Shopify, Cloudflare and Coinbase. Real volume followed: ~75M transactions moving ~$24M (~$800K/day) in the 30 days ending mid-July 2026. x402 has also shipped at the edge -- AWS added x402 support to CloudFront and AWS WAF (GA, late June 2026) and Cloudflare opened a Monetization Gateway waitlist. BlockRunAI's ClawRouter already occupies the "agent-native payments for OpenClaw" position. x402 is one layer of a three-layer 2026 agentic-payments stack alongside AP2 (authorization mandates; Google donated the Agent Payments Protocol to the FIDO Alliance, so it is now community-led) and OpenAI/Stripe's ACP (agent checkout) -- see the partner framing section's x402 note for the agent-as-customer segment.
+
+**Ecosystem context:** Gonka now markets "$80M+ raised from Coatue and Bitfury Capital" (as of July 2026; the earlier anchors were Bitfury's $12M strategic round, Nov 2025, and $50M commitment, Dec 2025). A supply-side partner ecosystem has formed around the network as of July 2026: gonka.ai names Gcore, Hyperfusion, and 6blocks as select hosts, with Web3.com Ventures, HardYaka, and Bitfury as community partners, and lists CertiK as auditor; the GAIB × Gonka "GAIC" public enrollment window ran June 5 - July 5, 2026 and is now closed -- GAIB reports the prior private phase delivered $600K+ with 200+ H200 GPUs in the first batch (GAIB handles GPU procurement and node ops for H100/H200/B200 hardware, with a 10%-of-mined-GNK insurance pool); Spheron and Gcore now run dedicated Gonka GPU-rental pages; and a broker/gateway retail layer (GonkaBroker, GonkaGate, JoinGonka, OpenGNK, gonka.to) fronts developer access with fixed-USD pricing. Gonka plans Asia expansion (Japan, South Korea) by end of 2026. On the software side, Devshard v3.0.0 (July 9, 2026) enables inference during validation phases -- a capacity gain relevant to partner reliability conversations. The v0.2.14 chain upgrade PR (open for review since July 8, 2026) adds PoC duplicate-artifact protection and deprecates the classic API -- disabling billing on `/v1/chat/completions` -- pushing all paid inference through the devshard/broker path; the OpenAI-compatible integration story in this playbook must be validated against that path before external use. AI tokens were the only profitable crypto sector in Q1 2026 (~$21.7B sector cap), with revenue-generating compute networks decoupling from speculative tokens -- supporting Gonka's fee-revenue thesis in infrastructure-partner conversations (not developer-facing ones).
 
 ---
 
@@ -47,11 +59,11 @@ Timeline (months from start)
 
 | Requirement | Status | Notes |
 |-------------|--------|-------|
-| OpenAI-compatible `/v1/chat/completions` API | DONE | Shipped in v1.2; maps to OpenClaw's `api: "openai-completions"` |
+| OpenAI-compatible `/v1/chat/completions` API | DONE (re-verify) | Shipped in v1.2; maps to OpenClaw's `api: "openai-completions"`. Caveat: the v0.2.14 chain upgrade PR (Jul 2026) disables billing on the classic `/v1/chat/completions` path, routing paid inference through devshard/broker -- confirm the public endpoint fronts that path |
 | Publicly accessible endpoint | NEEDED | `https://api.gonka.ai/v1` must be live and reachable |
 | API documentation site (docs.gonka.ai) | NEEDED | Quickstart guide, API reference, OpenClaw integration guide -- minimum 10 pages |
 | Self-service API key signup | NEEDED | Web form with email + GitHub OAuth; no manual approval; free tier activated automatically |
-| Published pricing page | NEEDED | Per-token rates for K2.5 tiers, comparison table, cost calculator for OpenClaw agent workloads |
+| Published pricing page | NEEDED | Per-token rates for K2.6 tiers (and K3 once weights land), comparison table, cost calculator for OpenClaw agent workloads |
 
 **Deliverables:**
 
@@ -66,9 +78,9 @@ Timeline (months from start)
            "api": "openai-completions",
            "models": [
              {
-               "id": "kimi-k2.5",
-               "name": "Kimi K2.5",
-               "contextWindow": 131072,
+               "id": "kimi-k2.6",
+               "name": "Kimi K2.6",
+               "contextWindow": 262144,
                "maxTokens": 8192,
                "cost": { "input": 0.50, "output": 1.50 }
              }
@@ -78,7 +90,7 @@ Timeline (months from start)
      }
    }
    ```
-   Note: Both `baseUrl` and model allowlisting in `agents.defaults.models` are required -- missing either causes silent failure (a known OpenClaw gotcha). The integration guide must document both steps.
+   Note: Both `baseUrl` and model allowlisting in `agents.defaults.models` are required -- missing either causes silent failure (a known OpenClaw gotcha). The integration guide must document both steps. Cost values shown are illustrative placeholders pending Gonka's published pricing (April-2026 estimates, not verified July-2026 rates); add `kimi-k3` to the catalog once open weights land (~July 27, 2026) and Gonka serves it.
 
 2. **Integration guide on docs.gonka.ai** -- "Add Gonka to OpenClaw in 90 Seconds" covering: signup, API key setup, JSON config, model allowlisting, verification, and session/tiering feature intro.
 
@@ -107,20 +119,21 @@ Timeline (months from start)
 | Requirement | Status | Notes |
 |-------------|--------|-------|
 | All Tier 1 items complete | NEEDED | Validated with 10+ active users |
-| MCP server implementation | NEEDED | ~500 LOC TypeScript per ARCHITECTURE.md |
+| MCP server implementation | NEEDED | ~500 LOC TypeScript per ARCHITECTURE.md. Note: MCP is now the de facto agent interoperability standard (97M+ monthly SDK downloads, 9,652 servers in the official MCP Registry as of May 2026, first-party support in ChatGPT, Gemini, Copilot, VS Code, Cursor). Build against the 2026-07-28 spec (final ships July 28, 2026): remote servers become stateless/load-balancer-friendly, which affects how Gonka's stateful sessions/memory map to MCP tools, and the new Tasks primitive (`tools/call` returning a task handle driven via `tasks/get`/`tasks/update`/`tasks/cancel`) is the standardized target for Gonka's async work. This is a primary distribution channel, not an afterthought -- prioritize accordingly |
 | Gonka-specific MCP tools | NEEDED | Tools for session management, memory API, model tiering |
 | OpenClaw plugin API compatibility | NEEDED | Must match OpenClaw's jiti-based plugin loading pattern |
 | npm publishing account | NEEDED | Publish to npmjs.com as `openclaw-plugin-gonka` |
 
 **Deliverables:**
 
-1. **npm package** (`openclaw-plugin-gonka`) -- auto-registers Gonka as a provider, configures K2.5 model with correct context window and cost metadata, exposes MCP tools for:
+1. **npm package** (`openclaw-plugin-gonka`) -- auto-registers Gonka as a provider, configures the current model catalog (K2.6 workhorse; K2.7-Code and K3 as Gonka serves them) with correct context window and cost metadata, exposes MCP tools for:
    - `gonka_session_create` / `gonka_session_resume` -- manage server-side sessions
    - `gonka_memory_store` / `gonka_memory_recall` -- persistent agent memory
    - `gonka_tier_set` -- set model tier (lite/mid/full) for cost optimization
 2. **ClawHub skill listing** (SKILL.md) -- teaches OpenClaw agents how to use Gonka-specific features (see Section 3: ClawHub Submission Plan)
-3. **Plugin documentation** -- installation guide, configuration options, MCP tool reference, migration guide from manual JSON config
-4. **One-liner setup:** `npm install openclaw-plugin-gonka` + set `GONKA_API_KEY` environment variable
+3. **Official MCP Registry listing** -- publish the Gonka MCP server to the MCP Registry for discoverability across every major agent host (ChatGPT, Gemini, Copilot, VS Code, Cursor), independent of OpenClaw
+4. **Plugin documentation** -- installation guide, configuration options, MCP tool reference, migration guide from manual JSON config
+5. **One-liner setup:** `npm install openclaw-plugin-gonka` + set `GONKA_API_KEY` environment variable
 
 **Effort estimate:** 2-3 weeks engineering (MCP server + npm packaging + tests) + 1 week testing with real OpenClaw agents.
 
@@ -138,7 +151,7 @@ Timeline (months from start)
 
 ### Tier 3 -- Built-In Provider (Medium-term goal)
 
-**Description:** Gonka added to OpenClaw's ~20 built-in providers. Developers configure Gonka by setting a single `GONKA_API_KEY` environment variable -- no `baseUrl`, no model config, no JSON editing. Gonka appears in `openclaw models list` output alongside OpenAI, Anthropic, and OpenRouter.
+**Description:** Gonka added to OpenClaw's built-in providers (18+ as of v2026.7.1 -- OpenAI, Anthropic, Gemini, Azure, Bedrock, Groq, Together, Fireworks, OpenRouter and others; onboarding defaults to openrouter/auto; re-verify the count against v2026.7.2, the current release as of July 2026, before external use). Developers configure Gonka by setting a single `GONKA_API_KEY` environment variable -- no `baseUrl`, no model config, no JSON editing. Gonka appears in `openclaw models list` output alongside OpenAI, Anthropic, and OpenRouter.
 
 **Prerequisites:**
 
@@ -157,7 +170,7 @@ Timeline (months from start)
 1. **PR to openclaw/openclaw** -- adds Gonka provider module matching existing provider implementation patterns (TypeScript, same file structure, same config schema as OpenRouter/Together AI/Groq modules)
 2. **Provider test suite** -- comprehensive jest tests matching OpenClaw's assertion style and test patterns
 3. **Documentation page** -- added to OpenClaw docs alongside other providers, covering: setup, available models, capability flags (`reasoning`, `toolUse`, `vision`), pricing, and Gonka-specific extensions
-4. **Model catalog** -- accurate pricing, context windows, and capability metadata for K2.5 (all quantization tiers)
+4. **Model catalog** -- accurate pricing, context windows, and capability metadata for the current Kimi lineup (K2.6, K2.7-Code, K3 as served)
 5. **Extension headers** -- `X-Gonka-Session-ID` and `X-Gonka-Tier` handled as optional provider extensions that enhance but do not break standard OpenClaw flow
 
 **Effort estimate:** 1-2 weeks engineering (PR preparation, tests, docs) + unknown review time (depends on maintainer responsiveness and feedback cycles).
@@ -170,7 +183,7 @@ Timeline (months from start)
 - Developers can configure Gonka with only `GONKA_API_KEY` environment variable
 - Gonka provider page live in official OpenClaw documentation
 
-**Risk:** High -- requires OpenClaw maintainer approval. This is not guaranteed. Per the CONTEXT.md decision: "community approach, not cold PR -- build relationship first." The community relationship plan (Section 4) is a prerequisite, not an optional nice-to-have. A cold PR from an unknown contributor will likely be ignored or rejected.
+**Risk:** High -- requires OpenClaw maintainer approval. This is not guaranteed. Per the CONTEXT.md decision: "community approach, not cold PR -- build relationship first." The community relationship plan (Section 4) is a prerequisite, not an optional nice-to-have. A cold PR from an unknown contributor will likely be ignored or rejected. Added risk (July 2026): the OpenClaw Foundation formally launched July 8, 2026; OpenAI is one of five published major donors and employs the project's creator (Steinberger runs the "Claw Labs" team inside OpenAI) -- a structurally conflicted gatekeeper for a rival inference network, even under the foundation's published "Switzerland of AI" neutrality positioning. Governance and leadership are now published; review them before investing PR effort, and treat the MCP Registry (Tier 2) -- itself neutrally governed under the Linux Foundation's Agentic AI Foundation -- as the hedge if built-in status stalls.
 
 ---
 
@@ -217,7 +230,7 @@ A comprehensive checklist of everything Gonka must deliver to unlock each partne
 
 | # | Requirement | Status | Blocks Tier | Effort | Owner |
 |---|-------------|--------|-------------|--------|-------|
-| 1 | OpenAI-compatible `/v1/chat/completions` API | DONE | 1 | -- | Engineering |
+| 1 | OpenAI-compatible `/v1/chat/completions` API | DONE (re-verify vs v0.2.14 classic-API deprecation) | 1 | -- | Engineering |
 | 2 | Tool calling with `--enable-auto-tool-choice` configured | DONE | 1 | -- | Engineering |
 | 3 | SSE streaming via OpenAI-compatible endpoint | DONE | 1 | -- | Engineering |
 | 4 | Rate limiting with 429 responses (triggers OpenClaw key rotation) | DONE | 1 | -- | Engineering |
@@ -248,7 +261,7 @@ A comprehensive checklist of everything Gonka must deliver to unlock each partne
 | 19 | OpenClaw Discord presence (#help, #models, #users-helping-users) | NEEDED | 1 | Ongoing | Community |
 | 20 | Integration guide on dev.to or Medium | NEEDED | 2 | 3-5 days | Content |
 | 21 | Video tutorial ("OpenClaw + Gonka in 5 Minutes") | NEEDED | 2 | 1 week | Content |
-| 22 | ClawHub skill submission (SKILL.md) | NEEDED | 2 | 1 week | Engineering + Content |
+| 22 | ClawHub skill submission (SKILL.md) | NEEDED | 2 | 1 week + 1-3 weeks security screening | Engineering + Content |
 | 23 | Non-Gonka PR contributions to openclaw/openclaw | NEEDED | 3 | 2-4 weeks (3-5 merged PRs) | Engineering |
 | 24 | GitHub Discussion RFC for built-in provider | NEEDED | 3 | 2 days | Engineering + Community |
 
@@ -283,13 +296,21 @@ When engaging with OpenClaw maintainers, community members, or potential partner
 
 **Never lead with:** Decentralization, GNK tokens, mining rewards, DePIN, Web3, staking, epochs, validators, or any term on the 16-item never-say list (gonka_message_house.md: Section 6.1).
 
+**Exception -- the agent-as-customer segment (x402, July 2026 update):** The "API keys only, never crypto" rule holds for human Web2 developer personas, but agent-native payment rails went mainstream between April and July 2026. The x402 Foundation went operationally live under the Linux Foundation on July 14, 2026 with 40 member organizations across three tiers -- the traditional-payments entrants (Visa, Mastercard, American Express, Stripe, Ripple) alongside Google, AWS, Shopify, Cloudflare and Coinbase. Volume is no longer a caveat: ~75M transactions moving ~$24M (~$800K/day, ~29 tx/sec) between ~94,000 buyers and ~22,000 sellers over the 30 days ending mid-July 2026, mostly sub-dollar payments settling predominantly in USDC. Distribution is commoditizing too: AWS shipped x402 support in CloudFront and AWS WAF (GA), and Cloudflare's Monetization Gateway waitlist lets any customer charge for APIs or MCP tools via x402 -- meaning an x402-gated Gonka inference endpoint becomes deployable behind commodity edge infra. BlockRunAI's ClawRouter already occupies the "agent-native payments for OpenClaw" position, authenticating agents with wallet signatures and paying for inference via USDC micropayments over x402. Situate the story correctly: x402 is the machine-to-machine execution/micropayment layer of a three-layer 2026 stack, alongside AP2 (authorization via signed Intent/Cart/Payment mandates as W3C Verifiable Credentials; 60+ partners; in production with Gemini Spark since May 2026; Google has since donated the Agent Payments Protocol to the FIDO Alliance, making it community-led rather than Google-stewarded) and OpenAI/Stripe's ACP (agent checkout, live in ChatGPT). One caveat to the clean layer separation: AP2 v0.2 introduces "Human Not Present" payments -- agents executing payments autonomously -- which moves AP2 into x402's machine-to-machine territory, so present "x402=execution, AP2=authorization" as a simplification, not a hard boundary. For agent-procured inference x402 is the right layer, but enterprise buyers will ask how Gonka relates to AP2 and ACP -- partner-facing material should answer that. Gonka -- already a crypto network -- has a natural x402 story for autonomous-agent buyers and should scope an x402 payment endpoint as a distinct workstream with its own (crypto-permissive) messaging, kept strictly separate from the developer-facing message house.
+
 **For partner-facing technical discussions:** Frame Gonka as "the agent-native inference provider" -- a description that is accurate, memorable, and crypto-free. The decentralized infrastructure is the "how," not the "what." Developers and partners care about what Gonka does for their agents, not how the network achieves consensus.
 
 ---
 
 ## ClawHub Submission Plan
 
-ClawHub is OpenClaw's marketplace of 5,700+ skills -- markdown-based agent capability definitions (SKILL.md files) injected into system prompts based on context. Publishing Gonka content on ClawHub puts Gonka in front of developers who are actively configuring their agents.
+ClawHub is OpenClaw's skills marketplace -- markdown-based agent capability definitions (SKILL.md files) injected into system prompts based on context. Publishing Gonka content on ClawHub puts Gonka in front of developers who are actively configuring their agents.
+
+**Security context (updated July 2026) -- this changes the plan.** The sourced ClawHavoc sequence: Koi Security's Feb 1, 2026 audit found 341 malicious skills out of 2,857 scanned (335 in the ClawHavoc/AMOS campaign, malware targeting crypto wallets); OpenClaw responded by partnering with VirusTotal on Feb 7, 2026, removing ~2,419 suspicious skills and adding automatic scanning of every published skill; as ClawHub grew past 10,700 skills, Koi's continued scanning more than doubled confirmed-malicious findings to 824 (~Feb 16); by Feb 19, Antiy CERT had uncovered at least 1,184 malicious skill packages -- one analysis puts flagged-malicious-or-suspicious at ~7.6% of the registry -- and Unit 42 (Palo Alto) has since published its own AI supply-chain threat analysis of the marketplace. This came alongside a one-click RCE (CVE-2026-25253, patched v2026.1.29) and 30,000+ internet-exposed OpenClaw instances. Consequences for Gonka:
+
+- ClawHub now runs hardened screening (the VirusTotal automatic scanning above); budget for a security review stage, provenance/signing expectations, and slower approval than the original 7-day plan assumed
+- The community is acutely suspicious of skills that touch API keys or payments -- and the ClawHavoc malware stole cryptocurrency, so a crypto-adjacent provider is a credibility landmine. Lead with security posture: publish the skill from a verified Gonka org account, sign releases, keep the skill's scope minimal (headers and config only, no key handling beyond the standard env-var pattern), and state this explicitly in the listing
+- Developer distrust of third-party skills means organic install counts will be slower than pre-ClawHavoc benchmarks; weight the MCP Registry listing (Tier 2) as the complementary distribution channel
 
 ### What to Submit
 
@@ -372,9 +393,9 @@ A companion skill providing the exact `openclaw.json` configuration for adding G
         "api": "openai-completions",
         "models": [
           {
-            "id": "kimi-k2.5",
-            "name": "Kimi K2.5",
-            "contextWindow": 131072,
+            "id": "kimi-k2.6",
+            "name": "Kimi K2.6",
+            "contextWindow": 262144,
             "maxTokens": 8192,
             "cost": { "input": 0.50, "output": 1.50 }
           }
@@ -396,17 +417,18 @@ A step-by-step skill that walks an agent through setting up Gonka as a provider.
 | 1 | Create GitHub repository `gonka-openclaw-skill` following ClawHub naming conventions | Day 1 |
 | 2 | Write SKILL.md following OpenClaw's skill format (markdown with YAML frontmatter, structured sections for agent consumption) | Day 2-3 |
 | 3 | Test skill locally with an OpenClaw agent to verify system prompt injection works correctly -- agent should demonstrate awareness of Gonka features | Day 4-5 |
-| 4 | Submit to ClawHub via the standard contribution process (PR to skills registry or direct publish through ClawHub interface) | Day 6-7 |
-| 5 | Promote in OpenClaw Discord `#skills` channel and GitHub Discussions -- brief post explaining what the skill does and how it helps agents optimize costs | Day 8-10 |
+| 4 | Submit to ClawHub via the post-ClawHavoc contribution process from a verified Gonka org account, with signed releases and provenance metadata | Day 6-7 |
+| 5 | Clear ClawHub security screening -- respond promptly to reviewer questions; expect extra scrutiny for a crypto-adjacent provider | Week 2-4 (registry-dependent) |
+| 6 | Promote in OpenClaw Discord `#skills` channel and GitHub Discussions -- brief post explaining what the skill does, how it helps agents optimize costs, and the security posture (signed, minimal scope, no key handling) | After approval |
 
 ### Timeline
 
-1-2 weeks from Tier 1 completion. The SKILL.md can be drafted during Tier 1 work and submitted as soon as the public endpoint and API key signup are live.
+2-5 weeks from Tier 1 completion: ~1 week authoring and testing, plus post-ClawHavoc security screening (variable, assume 1-3 weeks). The SKILL.md can be drafted during Tier 1 work and submitted as soon as the public endpoint and API key signup are live.
 
 ### Success Metrics
 
 - Skill appears in ClawHub search results for "inference," "cost optimization," "sessions," "agent memory"
-- 25+ installs in first month
+- 25+ installs in first month after approval (pre-ClawHavoc benchmark; expect slower organic uptake given current skill distrust)
 - Skill referenced in OpenClaw community discussions (Discord, GitHub Discussions)
 - Agents using the skill demonstrate correct usage of session headers and tiering
 
@@ -425,11 +447,13 @@ Getting Gonka merged as a built-in OpenClaw provider is the single highest-impac
 
 **Core principle: Community approach, not cold PR -- build relationship first.** A PR from an unknown contributor proposing a new provider will likely be ignored, deprioritized, or rejected. OpenClaw's maintainers receive thousands of PRs. Earning credibility through sustained community contribution is the prerequisite.
 
+**Governance caveat (July 2026):** provider decisions now route through the OpenClaw Foundation (formally launched July 8, 2026 as a 501(c)(3), chaired by Dave Morin with Peter Steinberger). The five published major donors are Offline Holdings, University of Michigan (reported largest), OpenAI, Microsoft, and NVIDIA -- no designated "lead sponsor" -- with 30+ partner orgs including Microsoft, Tencent, Atlassian, Vercel, Cloudflare, GitHub, Blacksmith and Convex. OpenAI's position -- major donor, employer of the project's creator (Steinberger runs Claw Labs inside OpenAI), inference supporter, and shipper of Codex Security hardening -- makes the foundation a potentially conflicted gatekeeper for a rival inference provider; NVIDIA (NemoClaw) and Microsoft (Scout) now ship their own OpenClaw distributions, so several major donors are themselves competing distributors. This raises the value of the Tier 2 assets (community plugin + MCP Registry listing) as the fallback distribution path. Counterweight: the foundation's new standards councils (agent identity, agent profiles, evals, enterprise deployment; first full-time team of ten, Red Hat contributing on enterprise open source and supply-chain security) are a vendor-neutral engagement channel that bypasses the provider-PR gate -- the agent-identity council in particular intersects Gonka's wallet-authenticated x402 payment story.
+
 ### Community Relationship Building (Pre-PR Phase)
 
 **Month 1-2: Establish Presence**
 
-- Join OpenClaw Discord and become a helpful presence in `#help`, `#models`, and `#users-helping-users` channels
+- Join the official OpenClaw Discord ("Friends of the Crustacean," discord.com/invite/clawd -- ~175K members as of July 2026, having crossed 100K within six weeks of its January 2026 founding) and become a helpful presence in `#help`, `#models`, and `#users-helping-users` channels; the channel directory lives at docs.openclaw.ai
 - Answer provider configuration questions -- especially around custom provider setup, model configuration, and common gotchas (like the missing model allowlisting silent failure)
 - Share Gonka config snippets when organically relevant: when developers ask about cost-effective providers, agent-native features, or session management. Not promotional -- only when the question matches Gonka's strengths
 - Follow OpenClaw GitHub repositories: watch issues, read PR discussions, understand the project's code review culture
@@ -451,6 +475,7 @@ Getting Gonka merged as a built-in OpenClaw provider is the single highest-impac
 - Participate in GitHub Discussions about provider architecture, agent infrastructure, and the future of built-in provider support
 - Understand maintainer priorities: What are their pain points? What providers are they considering adding? What criteria matter most?
 - Share insights from the Gonka community plugin experience -- what developers want, what patterns work, what gaps exist
+- Seek a seat or observer role in the OpenClaw Foundation's standards councils (agent identity, agent profiles, evals, enterprise deployment) -- a vendor-neutral venue independent of the provider-PR gate; agent identity is the natural fit given Gonka's wallet-authenticated x402 work
 - Goal: Become a trusted voice in provider-related technical discussions
 
 **Throughout: Track Community Adoption Signals**
@@ -473,8 +498,8 @@ Getting Gonka merged as a built-in OpenClaw provider is the single highest-impac
 - TypeScript module matching OpenClaw's provider implementation pattern
 - Config schema: `GONKA_API_KEY` environment variable, automatic model catalog, capability flags
 - Model catalog with accurate data:
-  - `kimi-k2.5`: contextWindow 131072, maxTokens 8192, pricing (input/output per 1M tokens), capability flags (`reasoning: true`, `toolUse: true`)
-  - Include all quantization tiers if exposed as separate model IDs
+  - `kimi-k2.6`: contextWindow 262144, maxTokens 8192, pricing (input/output per 1M tokens), capability flags (`reasoning: true`, `toolUse: true`, `vision: true`)
+  - `kimi-k2.7-code` and `kimi-k3` as Gonka serves them; include quantization tiers if exposed as separate model IDs
 - Handle Gonka-specific headers (`X-Gonka-Session-ID`, `X-Gonka-Tier`) as optional provider extensions that enhance but do not break standard OpenClaw flow
 - Ensure standard chat completions, tool calling, and streaming work without any Gonka-specific headers
 
@@ -561,7 +586,7 @@ All partnership and ecosystem activities ordered by priority, with dependencies 
 | P0 | Publish `openclaw.json` config template | 1 | 1 day | Public endpoint | Month 1 |
 | P0 | Join OpenClaw Discord; begin community presence | 1 | Ongoing | None | Immediately |
 | P1 | Write and publish OpenClaw integration guide | 1 | 2-3 days | Docs site, config template | Month 1-2 |
-| P1 | Submit Gonka Provider Skill to ClawHub | 2 | 1-2 weeks | Public endpoint, API key signup | Month 2-3 |
+| P1 | Submit Gonka Provider Skill to ClawHub | 2 | 2-5 weeks (incl. security screening) | Public endpoint, API key signup | Month 2-3 |
 | P1 | Build npm plugin (`openclaw-plugin-gonka`) | 2 | 2-3 weeks | Tier 1 validation (10+ users) | Month 2-3 |
 | P1 | Build MCP server for agent extensions | 2 | 2-3 weeks | npm plugin | Month 2-3 |
 | P1 | Create quickstart GitHub template repo | 2 | 1 week | Config template, integration guide | Month 2-3 |
@@ -591,5 +616,5 @@ The three most important immediate actions to start executing this playbook:
 
 ---
 
-*Document: gonka_partnership_playbook.md | Version 1.0 | 2026-04-01*
+*Document: gonka_partnership_playbook.md | Version 1.3 | 2026-07-18*
 *Companion documents: gonka_message_house.md (positioning), gonka_channel_strategy.md (channels), gonka_competitive_feature_matrix.md (competitive analysis), gonka_provider_landscape_map.md (gap analysis)*

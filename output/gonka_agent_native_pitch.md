@@ -1,16 +1,23 @@
 # Gonka Agent-Native Pitch: Why Autonomous Agents Would Choose Gonka
 
-**Version:** 1.0
-**Date:** 2026-04-01
+**Version:** 1.3
+**Date:** 2026-07-18
 **Classification:** Internal -- technical argument for Gonka's agent-native positioning
 **Feeds into:** Phase 18 (Channel Strategy), Phase 19 (Partnership & Ecosystem)
 **Requirement:** MSG-03
+
+> **July 2026 revision note:** This document was originally written April 2026 around a single-model (Kimi K2.5) network with unpublished pricing. Since then: Gonka's pricing went live (a blended per-token rate, recently ~$0.0003 per 1M tokens via GonkaGate and as low as ~$0.00016/1M via OpenGNK passthrough -- effectively near-zero while the network is underutilized and partly subsidized); the network's model lineup has churned significantly (as of July 18, 2026: MiniMax M2.7 is the sole PoC/base model, GLM-5.2 is live as an optional model, and Kimi K2.6 is re-bootstrapping after its second removal in three weeks -- Qwen3-235B was retired June 25; combined traffic ~100M tokens/day); and Moonshot has shipped two Kimi generations past K2.5 (K2.6 in April, K2.7-Code in June), with Kimi K3 launched via app/API July 16, 2026 and open weights due by July 27 -- K2.5 itself is being sunset (closed to newly registered Moonshot users since the K3 launch; full platform retirement August 31, 2026, with API traffic redirected to K2.6). The network also disclosed its first live exploit attempt (patched by the v0.2.13-post7 hotfix, July 6, 2026 -- see Section 6). Sections below have been updated accordingly. Token-savings dollar figures carried over from the April pricing analysis are marked as estimates pending a July re-run against cached-input baselines.
 
 ---
 
 ## 1. Executive Summary
 
-This document answers the question: "If an OpenClaw agent could autonomously evaluate and select its own inference provider, why would it choose Gonka?" This is not marketing -- it is a technical argument grounded in how agent systems make decisions. Autonomous agents optimize for measurable criteria: cost per task, context management efficiency, API capability surface, error recovery, and operational resilience. When evaluated against these criteria, Gonka's agent-native features -- server-side session persistence, automatic model tiering, memory API, and webhook notifications -- create a measurable advantage for specific agent workload profiles that no other compared provider matches. This document also identifies workload profiles where Gonka is not the rational choice, because an agent evaluating providers programmatically would reach those conclusions too.
+This document answers the question: "If an OpenClaw agent could autonomously evaluate and select its own inference provider, why would it choose Gonka?" This is not marketing -- it is a technical argument grounded in how agent systems make decisions. Autonomous agents optimize for measurable criteria: cost per task, context management efficiency, API capability surface, error recovery, and operational resilience. When evaluated against these criteria, Gonka's agent-native features -- server-side session persistence, automatic model tiering, memory API, and webhook notifications -- plus its currently market-leading per-token price create a measurable advantage for specific agent workload profiles. This document also identifies workload profiles where Gonka is not the rational choice, because an agent evaluating providers programmatically would reach those conclusions too.
+
+Two competitive shifts since April materially change the argument and are reflected throughout:
+
+1. **Sessions are no longer unique.** OpenAI deprecated the Assistants API (shutdown August 26, 2026) and replaced it with the Responses API plus Conversations API -- server-side stateful conversations on OpenAI's *primary* API surface. Gonka's session differentiation is now "sessions on an OpenAI-compatible chat completions surface, on decentralized open-weight infrastructure," not "the only provider with sessions."
+2. **Prompt caching is now effectively universal** (OpenAI 90% off cached input, Anthropic 90%, Together AI default-on, DeepInfra, Fireworks, Moonshot's own API, DeepSeek, Google). Session-savings deltas computed in April against mostly-uncached baselines overstate the advantage and need recomputation.
 
 ---
 
@@ -20,13 +27,15 @@ This document answers the question: "If an OpenClaw agent could autonomously eva
 
 The traditional inference provider evaluation treats the human developer as the sole decision-maker: they read pricing pages, compare features, and configure their agent to use a specific provider. But OpenClaw agents are not passive consumers of a developer's configuration -- they are autonomous systems that make runtime decisions about which model to call, how to manage context, and how to optimize their own resource consumption.
 
-This distinction matters because of three architectural realities in the OpenClaw ecosystem:
+This distinction matters because of four architectural realities in the OpenClaw ecosystem:
 
 **1. Agents make runtime model selection decisions.** An OpenClaw agent processing a multi-step task decides at each step whether to use the current model or request a different one. When multiple models are available, the agent's routing logic determines which model handles which subtask. This is programmatic provider selection happening inside the agent's execution loop, not a one-time developer configuration choice (ARCHITECTURE.md: Anti-Pattern 5, "Ignoring the Agent-as-Customer").
 
-**2. K2.5's Agent Swarm creates independent sub-agents.** Kimi K2.5's Agent Swarm feature enables a parent agent to spawn sub-agents that independently select models and manage their own inference. Each sub-agent operates with its own context window, its own cost budget, and its own model preferences. In a swarm of five sub-agents, five independent "purchasing decisions" happen per task -- not one. The sub-agents are the customers (competitive feature matrix: K2.5 capability overview).
+**2. Kimi's Agent Swarm creates independent sub-agents.** The Agent Swarm capability (introduced with K2.5, carried forward and extended in K2.6's agent-swarm/long-horizon-coding focus) enables a parent agent to spawn sub-agents that independently select models and manage their own inference. Each sub-agent operates with its own context window, its own cost budget, and its own model preferences. In a swarm of five sub-agents, five independent "purchasing decisions" happen per task -- not one. The sub-agents are the customers.
 
-**3. Agent frameworks increasingly support dynamic provider switching.** OpenClaw, CrewAI, and LangGraph all support configuring multiple inference providers with fallback chains. An agent that detects a timeout on Provider A can automatically retry on Provider B. This is not hypothetical -- it is built into the framework's error handling. Provider selection is becoming a runtime decision, not a deploy-time decision (ARCHITECTURE.md: Component 6, OpenClaw Configuration Pattern).
+**3. Agent frameworks support dynamic provider switching.** OpenClaw, CrewAI, and LangGraph all support configuring multiple inference providers with fallback chains. An agent that detects a timeout on Provider A can automatically retry on Provider B. Provider selection is a runtime decision, not a deploy-time decision (ARCHITECTURE.md: Component 6, OpenClaw Configuration Pattern).
+
+**4. Agent-native payment rails now exist -- and went mainstream in July.** The x402 protocol lets agents pay for inference directly via stablecoin micropayments (predominantly USDC). On July 14, 2026 the Linux Foundation declared the x402 Foundation operationally live with 40 member organizations; premier members span the traditional payments industry and hyperscalers -- Visa, Mastercard, American Express, Adyen, Fiserv, Stripe, Ripple, Circle, MoonPay, Google, AWS, Shopify, Cloudflare, Coinbase, plus the Monad, Solana, and Stellar foundations. Volume is no longer trivial: Chainalysis reports x402 agentic payments crossed 100 million cumulative transactions on Base within three quarters (report published early June 2026), and over the 30 days ending ~July 15, 2026 the network processed ~75M payments moving ~$24M (~$800K/day) between ~94,000 buyers and ~22,000 sellers. The value mix has shifted decisively: $1+ transactions grew from 49% to 95% of payment value while 10¢-$1 transactions collapsed from 46% to 4% -- the earlier "mostly testing/gamed micropayments" caveat is retired. Distribution is going commodity: AWS shipped x402 support in CloudFront and AWS WAF (GA, ~late June 2026), and Cloudflare opened applications for its x402-based Monetization Gateway on July 1. In the OpenClaw ecosystem specifically, BlockRunAI's ClawRouter already authenticates agents with wallet signatures and pays for inference over x402 on Base/Solana -- and ClawRouter clones are proliferating, with a provider-plugin proposal open on openclaw/clawhub: the x402-router position is becoming a category, not a single competitor. One framing note: x402 is the machine-to-machine *execution* layer of a three-layer 2026 agentic-payments stack -- alongside AP2 (authorization via signed Intent/Cart/Payment mandates as W3C Verifiable Credentials; originated at Google, donated to the FIDO Alliance in July 2026 and now community-led; in production with Gemini Spark since Google I/O, May 19, 2026) and ACP (agent checkout; now an open standard co-created by Stripe, OpenAI, and Meta -- Instant Checkout is live for US ChatGPT users buying from US Etsy sellers, with 1M+ Shopify merchants announced and Salesforce committing support). The layer separation is blurring at the edges: AP2 v0.2 adds "Human Not Present" payments, letting agents execute payments autonomously -- overlapping x402's machine-to-machine territory -- so treat "x402=execution, AP2=authorization" as a simplification, not a hard boundary. For agent-procured inference x402 is still the correct layer, but enterprise buyers will ask about AP2/ACP, and the Gonka x402 story should be situated in that stack. Gonka -- already a crypto network -- has a natural x402 story for the agent-as-customer segment that no GTM doc has yet exploited.
 
 ### What an Agent Optimizes For
 
@@ -35,18 +44,20 @@ An agent evaluating providers programmatically would weigh these criteria, in ap
 | Criterion | What the Agent Measures | Why It Matters |
 |-----------|------------------------|----------------|
 | **Cost per task** | Total tokens consumed (input + output) for a complete task, including overhead | Lower cost per task means more tasks within a fixed budget |
-| **Context management efficiency** | How many tokens of repeated context must be re-sent per request | Re-sending unchanged context is waste -- the agent gains nothing from retransmitting information the provider already has |
-| **API capability surface** | What operations the API supports beyond basic chat completions (sessions, memory, tiering, webhooks) | More capabilities mean fewer workarounds the agent must implement in its own code |
+| **Context management efficiency** | How many tokens of repeated context must be re-sent per request, net of cached-input discounts | Re-sending unchanged context is waste -- though universal prompt caching now discounts (not eliminates) that waste elsewhere |
+| **API capability surface** | What operations the API supports beyond basic chat completions (sessions, memory, tiering, webhooks) -- and whether those operations are exposed as MCP tools | More capabilities mean fewer workarounds the agent must implement in its own code |
 | **Error recovery** | How the provider handles failures (retries, fallback, timeout behavior) | Agents running 24/7 encounter more failure modes than on-demand chatbots |
 | **Latency consistency** | p95 latency, not just median | Agents making sequential tool call chains experience latency cumulatively -- 10 calls at p95 latency = 10x the tail latency |
 
-These are the criteria against which Gonka's features are evaluated below. Every claim cites a specific source from the competitive analysis, pricing analysis, or architecture research.
+On capability surface, delivery mechanism now matters as much as the capability: MCP is the dominant agent-tool integration standard as of July 2026 -- donated to the Agentic AI Foundation under the Linux Foundation in December 2025 (OpenAI and Block co-founders; AWS, Google, Microsoft, Cloudflare supporting), ~97M monthly SDK downloads (official TypeScript + Python SDKs only; other July 2026 reporting cites 110M/month from an April 2026 measurement, and more bullish contested enterprise figures circulate -- e.g. 78% of enterprise AI teams with MCP-backed agents in production, 28% of Fortune 500 running MCP servers), 9,652 servers in the official MCP Registry (May 24, 2026; Glama indexes ~19,800), first-party support in ChatGPT, Gemini, Copilot, VS Code, and Cursor, and 41% of software organizations running MCP servers in limited or broad production (Stacklok 2026 survey). The protocol itself is about to move: the MCP 2026-07-28 release candidate (final spec ships July 28, 2026) makes remote MCP servers stateless and load-balancer-friendly (no sticky sessions or shared session store; routing on an `Mcp-Method` header; cacheable `tools/list`) -- and goes well beyond that: an Extensions framework, a Tasks primitive (a server can answer `tools/call` with a task handle the client drives via `tasks/get`, `tasks/update`, `tasks/cancel` -- server-directed async execution), MCP Apps, authorization hardening, and a formal deprecation policy, with Tier-1 SDK support expected within a ten-week window. Gonka's sessions, memory, and tiering should ship as MCP tools -- the delivery mechanism agents already discover and call -- as the partnership playbook plans, built against the 2026-07-28 spec; the stateless-transport shift matters directly for how Gonka exposes its stateful sessions/memory as MCP tools, and the planned Gonka MCP server should target the Tasks primitive for async work (see Section 3d for what Tasks does to the webhook story). A capability that is not MCP-exposed is invisible to a growing share of agent stacks.
+
+These are the criteria against which Gonka's features are evaluated below. Every claim cites a specific source from the competitive analysis, pricing analysis, or architecture research; where the underlying April 2026 figures have gone stale, that is flagged inline.
 
 ---
 
 ## 3. Why Agents Prefer Gonka: Technical Evidence
 
-For each Gonka feature, the argument is structured as agent decision logic: what happens without the feature, what happens with it, and why an autonomous agent would prefer the "with" option. This is not marketing language -- it is the cost-benefit calculation an agent would perform if it could evaluate providers programmatically.
+For each Gonka feature, the argument is structured as agent decision logic: what happens without the feature, what happens with it, and why an autonomous agent would prefer the "with" option.
 
 ### a) Session persistence reduces agent cognitive overhead
 
@@ -57,52 +68,42 @@ For each Gonka feature, the argument is structured as agent decision logic: what
 **Agent decision logic:**
 
 ```
-if provider_A.heartbeat_cost == 9600 tokens
-   and provider_B.heartbeat_cost == 1920 tokens
+if provider_A.heartbeat_cost == 9600 tokens (billed at ~10% cached-input rate)
+   and provider_B.heartbeat_cost == 1920 tokens (billed at full rate)
    and output_quality is equivalent:
-   select provider_B  # 80% lower overhead per heartbeat
+   compare billed cost, not raw tokens  # caching changes the math
 ```
 
+**Important qualification (July 2026):** The April version of this section claimed no other provider offers server-side state on its standard API and computed savings against uncached competitor rates. Both premises are now false:
+
+- OpenAI's Responses API + Conversations API (`previous_response_id`, server-side conversation objects) provides native server-side stateful conversations on OpenAI's primary API surface. The legacy Assistants API shuts down August 26, 2026. Any comparison referencing "Assistants threads on a separate API surface" is dead on arrival.
+- Prompt caching is universal at the 90%-discount level across OpenAI, Anthropic, Moonshot's own API, Together AI, DeepInfra, and others. Sessions eliminate re-transmission; caching discounts it by ~90%. The residual session advantage is the last ~10% of billed input, plus reduced bandwidth/latency and no cache-TTL management -- real, but far smaller than the April 60-84% deltas suggested.
+
 **Evidence:**
-- Heartbeat overhead accounts for 44% of tokens at Casual tier, 51% at Active tier, and 85% at Heavy tier with 5-minute heartbeats (pricing analysis: Section 3)
-- No other compared provider offers server-side session persistence on the standard chat completions API surface (competitive feature matrix: Section 1, Agent Sessions -- Gonka WIN)
-- OpenAI's Assistants API provides thread-based state but requires a different API surface from chat completions, creating integration friction (competitive feature matrix: Section 1, OpenAI scored TIE)
-- Cost impact: Active tier drops from $218/month (DeepInfra) to $59/month (Gonka Scenario B) -- a 73% reduction (pricing analysis: Section 6)
+- Heartbeat overhead accounts for 44% of tokens at Casual tier, 51% at Active tier, and 85% at Heavy tier with 5-minute heartbeats (pricing analysis: Section 3 -- token ratios remain valid; dollar deltas do not)
+- Cost impact figures from April ("Active tier $218/month DeepInfra vs $59/month Gonka Scenario B, a 73% reduction") were computed against uncached rates and hypothetical Gonka pricing; both inputs are obsolete and the comparison needs a July 2026 re-run. Note that with live Gonka pricing at ~$0.0003 per 1M tokens, the *current* Gonka cost is orders of magnitude below every April scenario -- but that rate reflects an underutilized, partly subsidized network and should not be presented as steady-state economics.
 
 ---
 
-### b) Model tiering enables cost-optimal task routing
+### b) Model tiering: convenient, but no longer a differentiator
 
-**Without tiering:** The agent uses the same model for every task. A classification task ("Is this a coding question or a general question?") consumes the same per-token cost as a complex reasoning task ("Debug this race condition in the distributed system"). The agent overpays on simple tasks and cannot optimize its own cost profile without custom routing middleware.
+**Without tiering:** The agent uses the same model for every task. A classification task consumes the same per-token cost as a complex reasoning task.
 
-**With Gonka tiering:** The agent sends `X-Gonka-Tier: lite` for classification tasks, `X-Gonka-Tier: mid` for moderate tasks, and `X-Gonka-Tier: full` for complex reasoning. Classification runs on a heavily quantized K2.5 variant at a fraction of full-model cost. Alternatively, the gateway performs automatic content-aware routing without the header. The agent or its developer sets the tier per request with no application code changes beyond adding one header (competitive feature matrix: Section 2, Model Tiering).
+**With Gonka tiering:** The agent sends `X-Gonka-Tier: lite|mid|full` and the gateway routes to the appropriate model/quantization; alternatively, the gateway performs automatic content-aware routing without the header. One header, no application code changes.
 
-**Agent decision logic:**
+**July 2026 reality check:** The April version scored this a unique WIN ("no other compared provider offers infrastructure-level automatic model tiering; all four competitors scored LOSE") and cited a Startup CTO persona maintaining custom routing middleware. Cost-based model routing is now a commoditized layer in the OpenClaw ecosystem: ClawRouter ships with/alongside OpenClaw as a governance surface (bundled routing, dynamic model discovery, quotas, budget reporting), and multiple third-party routers exist (BlockRunAI's ClawRouter: 41-55+ models, <1ms local tier classification, claimed up to 92% savings; iblai/claw-router: 70%+ claimed savings; ClawRoute). Enterprise practice has standardized on tiered routing: blended enterprise cost per million tokens fell from $18.40 (Q1 2025) to $6.07 (Q1 2026) -- a 67% drop attributed to model routing/tiering plus price cuts, per the AICC (AI Cost Council) report "Enterprise Token Costs Drop 67% Year-Over-Year," from analysis of 2.4B enterprise API calls. The same AICC analysis verifies the tiering-specific figure the April draft discarded: organizations running a tiered model architecture achieved a *median blended cost of $2.31 per million tokens* in Q1 2026, versus $18.40/M for frontier-only routing -- cite all three together (frontier-only $18.40 → blended $6.07 → tiered-median $2.31). The developer no longer maintains custom middleware -- they install a router.
 
-```
-for task in workflow:
-    if task.complexity == "classification":
-        tier = "lite"   # 1/4 cost per token
-    elif task.complexity == "moderate":
-        tier = "mid"    # 1/2 cost per token
-    else:
-        tier = "full"   # full quality, full cost
-    response = call(provider="gonka", tier=tier)
-```
-
-In a typical agent workflow with 10 classification calls and 1 complex reasoning call, tiering saves approximately 60% on the classification tokens compared to routing all calls through the full model.
+**What remains defensible:** Gonka's tiering is server-side and zero-install (one header vs deploying and maintaining a client-side router), and it composes with sessions -- a client-side router that switches models mid-conversation breaks provider-side caching and state; Gonka's gateway can tier within a persistent session. The defensible agent-native remainder is sessions + memory, with tiering as a convenience feature, not a moat. Section 3b's WIN verdict in the competitive matrix needs downgrading.
 
 **Evidence:**
-- Competitive feature matrix verdict: Model Tiering -- **WIN**. No other compared provider offers infrastructure-level automatic model tiering (competitive feature matrix: Section 2)
-- All four competitors scored **LOSE** on this dimension (competitive feature matrix: Summary Scores)
-- 76% of teams use multiple models, indicating demand for task-specific routing (developer personas: citing LangChain State of Agent Engineering)
-- Startup CTO persona currently maintains custom routing middleware for model selection -- Gonka eliminates that engineering overhead (developer personas: Startup CTO, Pain Point #2)
+- ClawRouter (openclaw/clawrouter), BlockRunAI/ClawRouter, iblai/claw-router -- all shipping as of July 2026
+- Multi-model usage is standard practice; tiered multi-model routing is default enterprise practice (per the 2.4B-call AICC analysis above). Framework datapoints verifiable as of July 2026: LangGraph overtook CrewAI in GitHub stars in early 2026, leads monthly search volume (~27.1K vs ~14.8K), and has crossed ~38M monthly PyPI downloads (LangGraph 0.4, April 2026, sharpened state persistence and HITL checkpoints); CrewAI is at ~45K+ GitHub stars (July 2026 measurements: ~45.4K-46.3K; v1.10.1, March 2026) with a claimed 450M monthly workflows, and its own marketing claims ~60% of the Fortune 500 touch it -- the consensus pattern remains CrewAI for prototyping, LangGraph for production state management; Princeton's HAL benchmark shows framework choice can move identical-model agent scores by up to 30 percentage points. (The April doc's "~45% LangChain/LangGraph, ~20% CrewAI" split could not be re-sourced to a named survey and is retired, as was the 2025-era "76% use multiple models" citation.)
 
 ---
 
 ### c) Memory API enables persistent agent knowledge without context window waste
 
-**Without memory:** The agent stores accumulated facts (user preferences, project context, prior decisions) in its context window. As the conversation grows, the context window fills, and older information is either truncated (lost) or re-sent on every request (expensive). Knowledge degrades over sessions because the agent has no persistent storage -- it starts each session from scratch unless the developer implements custom persistence logic.
+**Without memory:** The agent stores accumulated facts (user preferences, project context, prior decisions) in its context window. As the conversation grows, the context window fills, and older information is either truncated (lost) or re-sent on every request (discounted by caching, but still billed and still consuming window). Knowledge degrades across sessions unless the developer implements custom persistence.
 
 **With Gonka memory:** The agent stores key facts via the `/v1/memory` API and retrieves them on demand via keyword-based TF-IDF search. Persistent facts do not consume context window tokens -- they are stored server-side and retrieved only when relevant. The agent can offload 5K-10K tokens of accumulated knowledge to memory, freeing its context window for the current task.
 
@@ -122,11 +123,10 @@ context_window = system_prompt + conversation_history + relevant_facts
 # Context window stays manageable; facts persist across sessions
 ```
 
-**Evidence:**
-- Competitive feature matrix verdict: Memory / Context Management -- **TIE** (competitive feature matrix: Section 5)
-- Only Gonka and OpenAI offer any form of server-side context management; OpenRouter, Together AI offer none (competitive feature matrix: Section 5)
-- Current implementation uses TF-IDF search, which provides functional keyword-based retrieval but lower recall than vector embedding approaches (competitive feature matrix: Section 5, Gonka detailed analysis)
-- OpenAI and Anthropic offer prompt caching (50% and 90% discounts respectively) which addresses cost but not knowledge persistence -- caching reduces cost of re-sending, memory eliminates the need to re-send (competitive feature matrix: Key Takeaway #4)
+**Evidence and qualifications:**
+- Competitive feature matrix verdict: Memory / Context Management -- **TIE** (matrix Section 5); note the matrix's reasoning was computed from an obsolete "OpenAI caching = 50% discount" figure -- current OpenAI cached input is billed at 10% of the input rate (90% discount), so the matrix Memory verdict needs re-running
+- Current implementation uses TF-IDF search: functional keyword retrieval, lower recall than vector embeddings (matrix: Section 5, Gonka detailed analysis)
+- Caching (now universal, including Moonshot's own API -- Kimi K3 cached input is $0.30/M vs $3.00/M uncached, a 90% discount) addresses *cost* of re-sending but not knowledge *persistence* -- caching reduces the price of re-transmission, memory eliminates the need to re-send and survives across sessions. This persistence argument still holds; the cost argument alone no longer does.
 
 ---
 
@@ -153,9 +153,8 @@ task = submit(prompt, webhook_url=callback)
 ```
 
 **Evidence:**
-- No compared provider offers inference-layer webhook notifications (competitive feature matrix: architecture-to-message mapping table; developer personas: Startup CTO, Gonka Value Proposition #3)
-- Webhook support enables event-driven agent architecture, reducing both API call volume and agent idle time
-- Particularly valuable for the Startup CTO persona running multi-agent systems where polling overhead scales with agent count (developer personas: Startup CTO, Pain Points)
+- No compared provider offers inference-layer webhook notifications on the chat completions surface (competitive feature matrix: architecture-to-message mapping table) -- still true as of July 2026, but the differentiator is narrowing on two fronts: OpenAI's Responses API background mode, and -- more structurally -- the MCP 2026-07-28 Tasks primitive, which gives every MCP-capable agent stack a standardized async-task pattern (server returns a task handle; client drives it via `tasks/get`/`tasks/update`/`tasks/cancel`) once Tier-1 SDKs ship support (~ten-week window). Gonka's planned MCP server should expose async work via Tasks, and the webhook WIN verdict in the competitive matrix needs the same qualification
+- Particularly valuable for multi-agent systems where polling overhead scales with agent count (developer personas: Startup CTO, Pain Points)
 
 ---
 
@@ -175,9 +174,9 @@ if benefits > 0 and switching_cost == 0:
 
 **Evidence:**
 - Competitive feature matrix: Streaming -- **TIE**, Tool Calling -- **TIE** (Gonka matches the standard OpenClaw expects)
-- K2.5 supports 200-300 sequential tool calls in testing (competitive feature matrix: Section 3)
-- All compared providers except Akash (raw GPU compute) offer OpenAI compatibility -- this is table stakes, not a differentiator, but its absence would be a dealbreaker (competitive feature matrix: Section 4)
-- Drop-in compatibility verified with OpenClaw, CrewAI, and LangGraph integration test suites (ARCHITECTURE.md: architecture-to-message mapping)
+- Kimi K2.5 sustained 200-300 sequential tool calls in April testing (matrix: Section 3); K2.6/K2.7-Code are explicitly agentic-coding focused and should be re-benchmarked on this dimension
+- All compared providers except Akash raw GPU compute offer OpenAI compatibility -- table stakes, not a differentiator, but its absence would be a dealbreaker (matrix: Section 4)
+- Note: OpenAI's primary surface is now the Responses API; chat completions remains supported and remains the OpenClaw-ecosystem standard, so "OpenAI-compatible" compatibility claims should be re-verified against framework defaults quarterly
 
 ---
 
@@ -193,20 +192,21 @@ if benefits > 0 and switching_cost == 0:
 probability_of_total_outage:
     centralized_provider = P(all M datacenters fail simultaneously)
     # M is typically 2-4; correlated failures possible (shared cloud provider)
-    
+
     decentralized_provider = P(all N nodes fail simultaneously)
     # N >> M; nodes are independently operated, geographically distributed
     # Lower probability of correlated failure
-    
+
 if P(decentralized) < P(centralized):
     prefer decentralized  # lower tail risk for always-on operation
 ```
 
-**Caveat:** This argument is currently theoretical for Gonka. The network does not yet have published uptime data, a public status page, or a track record of sustained operation at production scale. The competitive feature matrix scores Gonka as LOSE on Uptime / Reliability, citing "no published SLA; unproven at production scale" (competitive feature matrix: Section 7). An agent making this evaluation today would weigh the theoretical resilience advantage against the lack of empirical evidence -- and a rational agent would not trust unproven claims over a provider with a demonstrated 99.9%+ uptime record.
+**Caveat:** This argument is still largely theoretical for Gonka. The network does not yet have published uptime data, a public status page, or a track record of sustained operation at production scale, though it is now serving real traffic (~100M tokens/day across its three-model lineup). The competitive feature matrix scores Gonka as LOSE on Uptime / Reliability (matrix: Section 7). A rational agent would not trust unproven claims over a provider with a demonstrated 99.9%+ uptime record.
+
+**Competitive caveat (July 2026):** "Gonka is the only decentralized provider with agent-native features" can no longer be asserted without qualification. Akash launched the Akash Agents platform in Q1 2026, which deploys OpenClaw (and Hermes) agents specifically "in a few clicks -- no terminal, YAML, or cloud console" -- a direct play for the same OpenClaw-builder personas Gonka targets. The scale gap is stark: AkashML's managed OpenAI-compatible inference grew from ~5B tokens/day in May 2026 to over 10B tokens/day by early July -- roughly 100x Gonka's ~100M tokens/day -- with Venice, ElizaOS, Morpheus, and Gensyn as named production customers. The April docs flagged AkashML as "the competitor most likely to copy Gonka's agent features" at MEDIUM threat; that prediction has materialized against a decentralized rival serving two orders of magnitude more volume, and the threat level (here and in the competitive matrix's Akash row) should be raised accordingly.
 
 **Evidence:**
 - Sprint Consensus dedicates 98% of GPU compute to serving inference, with only 2% spent on consensus (ARCHITECTURE.md: USP #3)
-- No centralized competitor wastes compute on consensus, but no decentralized competitor matches 98% productivity (competitive feature matrix: architecture-to-message mapping)
 - Competitive feature matrix: Uptime / Reliability -- Gonka **LOSE** (no SLA, unproven at scale)
 - Akash saw active providers drop below 100; Render daily active users declined below 100 -- both partly due to reliability perception (PITFALLS.md: Pitfall 3)
 
@@ -216,16 +216,18 @@ if P(decentralized) < P(centralized):
 
 ### Concrete Example: Five Sub-Agents Solving a Coding Task
 
-K2.5's Agent Swarm feature enables a parent agent to spawn multiple sub-agents that work on different aspects of a complex task simultaneously. Each sub-agent operates independently -- selecting its own model tier, managing its own context, and optimizing its own resource consumption. This is where Gonka's agent-native features create compound advantages: each sub-agent benefits individually, and the aggregate savings across the swarm are multiplicative.
+Kimi's Agent Swarm capability (K2.5-era, extended in K2.6) enables a parent agent to spawn multiple sub-agents that work on different aspects of a complex task simultaneously. Each sub-agent operates independently -- selecting its own model tier, managing its own context, and optimizing its own resource consumption. This is where Gonka's agent-native features create compound advantages: each sub-agent benefits individually, and the aggregate savings across the swarm are multiplicative.
 
-**Scenario:** A developer asks their OpenClaw agent to "refactor the authentication module from session-based to JWT with refresh token rotation." The parent agent spawns five sub-agents via K2.5 Agent Swarm:
+*Token counts below are illustrative estimates from the April 2026 analysis; the mechanics are unchanged, but dollar conversions should use live July 2026 rates.*
+
+**Scenario:** A developer asks their OpenClaw agent to "refactor the authentication module from session-based to JWT with refresh token rotation." The parent agent spawns five sub-agents via Agent Swarm:
 
 ### Sub-agent 1: Planner
 
 **Task:** Analyze the existing auth module, identify all session-dependent code paths, and create a step-by-step refactoring plan.
 
 **Gonka features used:**
-- **X-Gonka-Tier: full** -- Planning requires complex reasoning about code architecture. The full K2.5 model provides the highest quality analysis.
+- **X-Gonka-Tier: full** -- Planning requires complex reasoning about code architecture; the full-precision top-tier model provides the highest quality analysis.
 - **Session persistence** -- The planning phase involves multiple turns: initial code analysis, dependency mapping, risk identification, and plan generation. Session persistence means the Planner does not re-send the full codebase context on each turn.
 
 **Without Gonka:** Planner re-sends 15K tokens of code context on each of its 4 planning turns = 60K tokens of repeated context. With Gonka sessions: 15K on the first turn + 3K of new messages on turns 2-4 = 24K tokens. Savings: 36K tokens (60% reduction).
@@ -281,7 +283,7 @@ K2.5's Agent Swarm feature enables a parent agent to spawn multiple sub-agents t
 | Tester | Tiering (lite + full) | ~11K tokens (75% on classification) | -- |
 | **Total** | | **~148K tokens saved** | **16 fewer API calls + knowledge persistence** |
 
-For a single coding task, the swarm saves approximately 148K tokens and 16 unnecessary API calls. Over a month of daily coding tasks, that compounds to approximately 4.4M tokens saved -- roughly $1.50-2.00/month at K2.5 pricing. The savings are modest for a single swarm invocation but meaningful at scale and across multiple concurrent swarms.
+For a single coding task, the swarm saves approximately 148K tokens and 16 unnecessary API calls. Two caveats on the dollar value: (1) against competitors, the counterfactual re-sent tokens would mostly be billed at ~10% cached-input rates, so the billed-dollar delta is far smaller than the raw token delta; (2) at Gonka's current near-zero live pricing, per-token dollar savings are negligible in absolute terms -- the swarm argument's durable value is bandwidth, latency, context-window headroom, and cross-agent knowledge persistence, plus billed savings if/when Gonka pricing normalizes with utilization. The broader market context strengthens the overhead thesis regardless: agentic workflows consume 5-30x the tokens of chatbots (Gartner, March 2026), inference is now ~85% of enterprise AI budgets, and the FinOps Foundation's 2026 State of FinOps report found 73% of enterprises reported AI costs exceeding original projections despite per-token prices falling 67% YoY -- consumption growth outran every budget model, which is exactly the overhead class sessions and tiering attack.
 
 ---
 
@@ -307,7 +309,7 @@ def select_provider(
 
 ### Task Profile Results
 
-Each task profile below represents a real agent workload pattern observed in the OpenClaw ecosystem. The selected provider is the rational choice based on published capabilities and pricing.
+Each task profile below represents a real agent workload pattern observed in the OpenClaw ecosystem. The selected provider is the rational choice based on published capabilities and pricing as of July 2026.
 
 **Profile 1: Long-running agent with 30-minute heartbeats**
 
@@ -321,7 +323,7 @@ select_provider(
 ) -> "gonka"
 ```
 
-**Why Gonka:** Session persistence reduces heartbeat overhead by ~80%. At the Casual tier, monthly cost drops from $47 (Together AI) to ~$13 (Gonka Scenario B). No other provider eliminates heartbeat context re-sending on the standard chat completions API (pricing analysis: Section 5; competitive feature matrix: Agent Sessions -- WIN).
+**Why Gonka:** Session persistence reduces heartbeat token overhead by ~80%, and Gonka's live blended rate (~$0.0003 per 1M tokens via brokers, July 2026) makes it the cheapest listed provider for the models it serves. The April estimate ("Casual tier $47/month Together AI vs ~$13 Gonka Scenario B") is superseded: current Gonka cost at this profile is effectively negligible. Sustainability caveat: the near-zero rate reflects underutilization and subsidy; budget against a normalized rate, not the spot rate.
 
 ---
 
@@ -337,9 +339,9 @@ select_provider(
 ) -> "openrouter"  # NOT Gonka
 ```
 
-**Why OpenRouter (not Gonka):** This workflow requires routing between fundamentally different models -- GPT-4o for structured outputs, Claude for long-context reasoning, K2.5 for cost-effective tool calling. OpenRouter's 500+ model catalog and single API key access every model. Gonka's 3-tier K2.5 quantization provides cost tiering within one model family but cannot substitute for model diversity (competitive feature matrix: Model Breadth -- OpenRouter WIN, Gonka LOSE).
+**Why OpenRouter (not Gonka):** This workflow requires routing between fundamentally different models -- GPT-5.x for structured outputs, Claude for long-context reasoning, Kimi K2.6/K2.7 for cost-effective tool calling. OpenRouter's catalog (400+ active models across 70+ providers per its official mid-July 2026 figures; the April "500+" figure overstated it) and single API key access every model. Gonka now serves multiple families (MiniMax M2.7 as base model, GLM-5.2, and Kimi K2.6 re-bootstrapping) -- a real improvement over the April single-family network -- but three models is still not catalog breadth (matrix: Model Breadth -- OpenRouter WIN, Gonka LOSE).
 
-**Gonka opportunity:** Use Gonka as primary for K2.5 workloads (where session savings apply) and OpenRouter as secondary for model diversity. Dual-provider configuration is supported in OpenClaw.
+**Gonka opportunity:** Use Gonka as primary for the models it serves (where session savings and near-zero pricing apply) and OpenRouter as secondary for model diversity. Dual-provider configuration is supported in OpenClaw.
 
 ---
 
@@ -352,10 +354,10 @@ select_provider(
     latency_req="low",
     session_length="single-shot",
     privacy_req="standard"
-) -> "together_ai"  # NOT Gonka
+) -> "gonka"  # changed from together_ai in April version
 ```
 
-**Why Together AI (not Gonka):** Single-shot inference does not benefit from session persistence (no context to carry across requests). Together AI offers the lowest verified K2.5 pricing at $0.50/$2.50 per 1M tokens. Gonka's agent-native features provide no advantage for stateless, single-request workloads. If the workload is single-shot and budget is the priority, the cheapest per-token rate wins (pricing analysis: Section 4, Together AI pricing).
+**Why Gonka (July 2026 revision):** The April version picked Together AI on the strength of "$0.50/$2.50 per 1M -- lowest verified K2.5 price." That benchmark no longer exists: Together AI no longer lists K2.5 on its serverless pricing page (its Kimi lineup is now K2.6 at $1.20/$0.20 cached/$4.50 and K2.7-Code at $0.95/$0.19/$4.00), and K2.5 itself is end-of-life -- Moonshot has closed it to newly registered users following the K3 launch (July 16) and will sunset it platform-wide on August 31, 2026, redirecting API traffic to K2.6; third-party hosts (OpenRouter $0.375/$2.025, DeepInfra $0.45/$2.25) still serve it, with lifecycle risk, so no K2.5-anchored comparison should be quoted past August. Meanwhile Gonka's live blended rate is orders of magnitude below all of them, and Gonka is listed as the cheapest provider for Kimi K2.6 and MiniMax M2.7 on public price trackers. For a stateless, budget-priority workload whose model is on the Gonka network, the cheapest per-token rate now belongs to Gonka -- with the reliability and rate-sustainability caveats from Sections 3f and 6, and a model-availability caveat for K2.6 specifically: it has been removed from the network twice in three weeks (June 25 and July 15, 2026) and is mid-re-bootstrap (see Section 6), so "cheapest K2.6 provider" claims should note it is not yet stably served.
 
 ---
 
@@ -371,7 +373,7 @@ select_provider(
 ) -> "openai"  # NOT Gonka
 ```
 
-**Why OpenAI (not Gonka):** For complex reasoning tasks where quality is the priority and budget is flexible, GPT-5.4 and GPT-4o deliver best-in-class results with structured output guarantees. OpenAI wins on Tool Calling quality (competitive feature matrix: Section 3 -- WIN) and Uptime / Reliability (competitive feature matrix: Section 7 -- WIN). K2.5 is competitive on benchmarks (76.8% SWE-Bench) but has less real-world validation for enterprise reasoning tasks.
+**Why OpenAI (not Gonka):** For complex reasoning tasks where quality is the priority and budget is flexible, the frontier tier -- GPT-5.6 (Sol) and GPT-5.4, alongside Anthropic's Claude Opus-class models -- delivers best-in-class results with structured output guarantees. (GPT-4o, the April version's reference point, was retired from ChatGPT April 3, 2026 and lingers in the API as legacy only.) OpenAI wins on Tool Calling quality and Uptime / Reliability (matrix: Sections 3, 7). The open-weight side is closing fast -- DeepSeek V4 Pro (released April 24, 2026; 1.6T MoE, MIT license, 1M context, $0.435/$0.87 per 1M) leads open models at 80.6% SWE-bench Verified in Think Max mode, tied with Gemini 3.1 Pro and displacing MiniMax M2.5's 80.2%; K2.7-Code is the current open coding-agent pick; and Kimi K3 (launched via app/API July 16, 2026 -- 2.8T MoE, 1M context, $3/$15 per M tokens with $0.30 cached input; open weights due by July 27) took #1 in Frontend Code Arena (1,679) ahead of Claude Fable 5 (1,631) and GPT-5.6 Sol (1,618) -- the first open model to top a frontier arena leaderboard, though it ranks third-to-fourth on overall intelligence indices (Artificial Analysis ~57 vs Fable 5 ~60, GPT-5.6 Sol ~59). For this profile, proven frontier closed models remain the rational default.
 
 ---
 
@@ -387,7 +389,7 @@ select_provider(
 ) -> "gonka"
 ```
 
-**Why Gonka:** K2.5 is open-weight with no content filtering. Prompts that trigger refusals on OpenAI and Anthropic (legal adversarial arguments, security exploit analyses, medical discussions) complete without interference. Decentralized infrastructure means no central entity aggregates prompts. Session persistence means sensitive context is re-sent less frequently across the network. Combined: privacy posture of decentralized open-weight inference plus agent-native features that self-hosted vLLM cannot match (developer personas: Privacy-First Builder; competitive feature matrix: content filtering comparison).
+**Why Gonka:** Gonka's served models (MiniMax M2.7, GLM-5.2, Kimi K2.6) are open-weight with no provider-imposed content filtering. Prompts that trigger refusals on OpenAI and Anthropic (legal adversarial arguments, security exploit analyses, medical discussions) complete without interference. Decentralized infrastructure means no central entity aggregates prompts. Session persistence means sensitive context is re-sent less frequently across the network. Combined: privacy posture of decentralized open-weight inference plus agent-native features that self-hosted vLLM cannot match (developer personas: Privacy-First Builder; matrix: content filtering comparison).
 
 **Caveat:** Current privacy guarantee is architectural (no central log aggregation), not cryptographic (TEE-based encrypted inference is not yet built). For maximum-sensitivity workloads requiring cryptographic guarantees, self-hosted vLLM remains the most conservative choice (developer personas: Privacy-First Builder, Objection #1; PITFALLS.md: Pitfall 1).
 
@@ -405,7 +407,7 @@ select_provider(
 ) -> "gonka"
 ```
 
-**Why Gonka:** At the Active tier (6 channel-agents, 200 messages/day), heartbeats consume 51% of all tokens. Session persistence reduces this to approximately 10%, saving 2.2M tokens per day. Monthly cost drops from $218 (DeepInfra) to $59 (Gonka Scenario B). Built-in model tiering eliminates the custom routing middleware this team currently maintains. Webhooks enable event-driven architecture for agent coordination (pricing analysis: Section 6; competitive feature matrix: Agent Sessions -- WIN, Model Tiering -- WIN).
+**Why Gonka:** At the Active tier (6 channel-agents, 200 messages/day), heartbeats consume 51% of all tokens; session persistence reduces this to approximately 10%, saving 2.2M tokens per day (pricing analysis: Section 3, 5 -- token ratios still valid). The April dollar comparison ($218/month DeepInfra vs $59 Gonka Scenario B) predates both universal prompt caching and Gonka's live near-zero pricing; at current rates the Gonka cost is negligible and the delta is larger than April projected, though against cached competitor rates the *structural* (non-subsidy) advantage is smaller than April claimed. Webhooks enable event-driven agent coordination; tiering is a convenience (see Section 3b -- routers have commoditized it).
 
 ---
 
@@ -421,7 +423,7 @@ select_provider(
 ) -> "openai"  # NOT Gonka
 ```
 
-**Why OpenAI (not Gonka):** Production customer-facing workloads require guaranteed uptime. OpenAI offers 99.9%+ SLA with global infrastructure and multi-region redundancy. Gonka has no published SLA, no public status page, and no historical uptime data. For workloads where downtime directly impacts revenue, the reliability track record of a proven provider outweighs cost savings from session persistence (competitive feature matrix: Section 7, Uptime / Reliability -- OpenAI WIN, Gonka LOSE).
+**Why OpenAI (not Gonka):** Production customer-facing workloads require guaranteed uptime. OpenAI offers 99.9%+ SLA with global infrastructure and multi-region redundancy. Gonka has no published SLA, no public status page, and no historical uptime data. For workloads where downtime directly impacts revenue, the reliability track record of a proven provider outweighs cost savings from session persistence (matrix: Section 7, Uptime / Reliability -- OpenAI WIN, Gonka LOSE).
 
 ---
 
@@ -429,15 +431,15 @@ select_provider(
 
 | Task Profile | Best Provider | Why |
 |-------------|--------------|-----|
-| Long-running agent, 30-min heartbeats | **Gonka** | Session persistence saves ~80% on heartbeats |
-| Multi-model diverse workflow | OpenRouter | 500+ models, single API key |
-| Single-shot inference | Together AI | Cheapest per-token K2.5 pricing |
-| High-quality complex reasoning | OpenAI | Best tool calling, structured outputs |
+| Long-running agent, 30-min heartbeats | **Gonka** | Sessions cut heartbeat tokens ~80%; lowest live per-token rate |
+| Multi-model diverse workflow | OpenRouter | 400+ models, single API key |
+| Single-shot inference | **Gonka** | Cheapest listed rate for its served models (was Together AI in April) |
+| High-quality complex reasoning | OpenAI | Frontier quality (GPT-5.6/5.4), best tool calling |
 | Privacy-sensitive, unrestricted | **Gonka** | No content filtering, no central logs |
-| Multi-agent system, cost-sensitive | **Gonka** | Sessions + tiering + webhooks compound |
+| Multi-agent system, cost-sensitive | **Gonka** | Sessions + webhooks + near-zero pricing compound |
 | Enterprise, guaranteed uptime | OpenAI | 99.9%+ SLA, proven reliability |
 
-Gonka wins on 3 of 7 profiles -- the profiles where agent-native features (sessions, tiering) provide structural cost advantages and where privacy requirements favor decentralized infrastructure. Gonka loses on profiles where model diversity, raw per-token cost, or guaranteed reliability are the dominant criteria.
+Gonka now wins on 4 of 7 profiles (up from 3 in April, driven by live pricing) -- the profiles where agent-native features provide structural cost advantages, where privacy requirements favor decentralized infrastructure, and where raw per-token price dominates. Gonka loses on profiles where model catalog breadth, frontier quality, or guaranteed reliability are the dominant criteria. The price-driven wins carry a sustainability asterisk: they depend on a subsidized, underutilized network rate holding.
 
 ---
 
@@ -445,55 +447,63 @@ Gonka wins on 3 of 7 profiles -- the profiles where agent-native features (sessi
 
 An autonomous agent evaluating Gonka would also identify these disadvantages. Omitting them would be intellectually dishonest and would undermine the technical credibility of this document.
 
-### Single model -- no fallback if K2.5 is unsuitable
+### Narrow model catalog -- improved, but churning, and still no frontier or catalog breadth
 
-Gonka serves one model family: Kimi K2.5 in three quantization tiers (lite, mid, full). If K2.5 performs poorly on a specific task type (e.g., certain domain-specific reasoning, language translation quality, or structured output edge cases), there is no alternative model on the Gonka network. The agent cannot fall back to GPT-4o or Claude within the same provider. This is Gonka's most significant capability gap -- the competitive feature matrix scores it as LOSE on Model Breadth (competitive feature matrix: Section 8). OpenRouter's 500+ model catalog is the benchmark on this dimension.
+The April version's biggest weakness ("Gonka serves one model family: Kimi K2.5 in three quantization tiers") is partially resolved, but the lineup has churned hard through June-July 2026. As of July 18, 2026 the network serves three models:
 
-**Mitigation:** Dual-provider configuration. Use Gonka as primary for K2.5-suitable workloads (tool calling, coding, agent reasoning) and maintain a secondary provider (OpenRouter, OpenAI) for tasks requiring different models. OpenClaw supports this natively.
+- **MiniMax M2.7** -- the sole PoC model and base delegation target since June 25, 2026 (Proposal 78, which removed both Qwen3-235B -- retired from the network entirely -- and Kimi K2.6, both having lost validation majority)
+- **GLM-5.2** -- live since June 26, 2026 (Proposal 79; weight factor 2.47, optional model with no participation penalty)
+- **Kimi K2.6** -- mid-re-bootstrap after its *second* removal in three weeks, not a stable workhorse. First cycle: removed June 25 (Proposal 78, validation majority lost), restored June 26 (Proposal 79), re-bootstrapped at epoch 311 on June 27. Second cycle: lost validation majority again in epochs 328-329 (concentrated guardian delegations plus provider failures), removed via expedited Proposal 87 (July 15, 2026), re-registered via Proposal 88 (July 16, 2026) for re-bootstrap at epoch 331. The official network-updates page currently lists its weight factor at 0.78; a reported 0.78 → 0.9 raise could not be verified against that page and should be checked against on-chain proposal text before external use
+
+On the runtime side, devshard v3.0.0 (released July 9, 2026; standalone versioned runtime, inference during validation phases, better RAM utilization -- and explicitly preparing brokers to keep serving inference through the v0.2.14 chain upgrade) was approved on-chain July 11, and on July 16 the v1/v2 devshard runtimes were removed entirely -- all traffic must use `/devshard/v3`. Latest chain release is v0.2.13-post7, a security hotfix shipped July 6, 2026 (see Section 6 reliability note); the June 15 v0.2.13-devshard-v2 upgrade was the first devshard-only upgrade independent of chain software. The v0.2.14 chain upgrade is imminent -- open as a PR since July 8, 2026, carrying PoC duplicate-artifact protection, guardian-voting fixes in PoC validation, and deprecation of the classic API (billing disabled on `/v1/chat/completions`, pushing all paid inference through the devshard/broker path -- a change that reshapes the fee-infrastructure picture the tokenomics docs model).
+
+Three models is not OpenRouter's 400+, and none are frontier-class. The obvious roadmap moves: K2.7-Code (the current open coding-agent leader) and Kimi K3 once weights land (launched via app/API July 16; weights due by July 27, 2026 -- 2.8T MoE, 1M context, the largest open-weight release to date, and the first open model to top a frontier arena leaderboard via its #1 Frontend Code Arena debut, though third-to-fourth on overall intelligence indices). Reframe the tiering story around MiniMax M2.7 as the stable base tier -- not K2.6, whose re-bootstrap must complete first -- with K3 as the prospective frontier tier, retiring the K2.5-quantization framing.
+
+**Mitigation:** Dual-provider configuration. Use Gonka as primary for its served models and maintain a secondary provider (OpenRouter, OpenAI) for tasks requiring other models. OpenClaw supports this natively.
 
 ### Unproven reliability -- no uptime SLA, no track record
 
-Gonka has no published SLA, no public status page, no historical uptime data, and no track record of sustained production operation. The competitive feature matrix scores Gonka as LOSE on Uptime / Reliability (competitive feature matrix: Section 7). For agents running 24/7, every hour of downtime means missed messages, lost context, and degraded user experience. An agent evaluating providers would weigh Gonka's theoretical decentralized resilience against OpenAI's proven 99.9%+ uptime -- and would rationally choose the proven track record until Gonka demonstrates equivalent reliability.
+Gonka has no published SLA, no public status page, and no track record of sustained production operation (though it now serves ~100M tokens/day). The track record that does exist cuts both ways. Kimi K2.6 lost validation majority and was removed from the network twice in three weeks (Proposal 78, June 25; Proposal 87, July 15) -- concrete evidence that model availability on the network can break mid-flight. And the network has now had its first publicly disclosed live exploit attempt: the v0.2.13-post7 security hotfix (July 6, 2026) patched a PoC-v2 weight-validation vulnerability, and per the official network-updates feed, host `gonka1w7s4pharl5qs2lupxkuw2c0gzcls8chehwafg3` was detected exploiting the flaw before the fix deployed. Post-incident, Gonka's official guidance is to *not delegate to guardian nodes*; guardian-delegation fixes ship with the pending v0.2.14 chain upgrade (see the model-catalog section above). The incident was detected and patched -- a functioning security response -- but it belongs in any honest risk assessment. The competitive feature matrix scores Gonka as LOSE on Uptime / Reliability (matrix: Section 7). For agents running 24/7, every hour of downtime means missed messages, lost context, and degraded user experience. An agent evaluating providers would weigh Gonka's theoretical decentralized resilience against OpenAI's proven 99.9%+ uptime -- and would rationally choose the proven track record until Gonka demonstrates equivalent reliability. Access also currently runs through third-party brokers, each adding its own fee and its own reliability surface. Broker pricing is no longer opaque: three brokers (Gonka24, GonkaBroker, OpenGNK) publish rates -- OpenGNK (proxy.gonka.gg) lists $0.00016434 per 1M tokens for both Kimi K2.6 and MiniMax M2.7 on pricepertoken's Gonka endpoint page, a near-network-rate passthrough roughly half the GonkaGate-quoted ~$0.000314/1M blended snapshot -- while GonkaGate and JoinGonka remain unpublished. A broker-fee comparison table can now be built from public data.
 
 **Mitigation:** Start with non-critical workloads (dev/staging, secondary provider) while Gonka builds a reliability track record. Transparent uptime dashboards and public post-mortems would accelerate trust building (PITFALLS.md: Pitfall 3, recovery strategy).
 
+### Sessions differentiation is weaker than the April framing
+
+OpenAI's Responses API + Conversations API now provides server-side stateful conversations on OpenAI's primary surface (the legacy Assistants API shuts down August 26, 2026), and prompt caching at ~90% discounts is universal -- including on Moonshot's own API (K3 cached input $0.30/M vs $3.00/M). "Only provider with server-side sessions" and "sessions eliminate a cost no one else can touch" can no longer be claimed. The honest claim: Gonka offers sessions on the OpenAI-compatible chat completions surface OpenClaw already uses, on decentralized open-weight infrastructure, eliminating (not just discounting) re-transmission. All 60-84% savings deltas must be recomputed against cached-input baselines before external use.
+
+### Model tiering is commoditized
+
+Client-side routers (ClawRouter and peers) now deliver cost-based model routing to the OpenClaw ecosystem as an install-and-go layer. Gonka's server-side tiering is a convenience, not a moat (see Section 3b).
+
 ### Memory API uses TF-IDF, not vector embeddings
 
-Gonka's `/v1/memory` API uses TF-IDF for search, which provides functional keyword-based retrieval but lower recall than vector embedding approaches. A query like "What did the user say about their deployment preferences?" may miss semantically similar but lexically different stored memories (e.g., if the user said "I prefer Kubernetes" instead of "my deployment preference is Kubernetes"). OpenAI's approach to context management (prompt caching with guaranteed schema compliance) is more mature. The TF-IDF limitation is acknowledged as v1.2 tech debt (competitive feature matrix: Section 5, Gonka detailed analysis).
+Gonka's `/v1/memory` API uses TF-IDF for search, which provides functional keyword-based retrieval but lower recall than vector embedding approaches. A query like "What did the user say about their deployment preferences?" may miss semantically similar but lexically different stored memories (e.g., if the user said "I prefer Kubernetes" instead of "my deployment preference is Kubernetes"). The TF-IDF limitation is acknowledged as v1.2 tech debt (matrix: Section 5, Gonka detailed analysis).
 
-**Mitigation:** TF-IDF is functional for keyword-based retrieval. For agents storing structured facts (key-value pairs, explicit preferences), TF-IDF recall is adequate. For semantic search over unstructured notes, the limitation is real.
+**Mitigation:** For agents storing structured facts (key-value pairs, explicit preferences), TF-IDF recall is adequate. For semantic search over unstructured notes, the limitation is real.
 
-### No prompt caching -- Anthropic's 90% cache discount beats sessions for certain patterns
+### Live pricing is not steady-state pricing
 
-Anthropic offers a 90% discount on cached input tokens. For workloads with very large, rarely-changing system prompts (50K+ tokens) and frequent requests, Anthropic's caching economics can be more cost-effective than Gonka's session persistence -- because the 90% discount applies to the full cached prefix, not just the heartbeat portion. Specifically: if the system prompt dominates the request (90%+ of input tokens) and does not change between requests, Anthropic's caching saves more than Gonka's sessions because the savings apply to the entire prompt, not just the context that was previously sent (competitive feature matrix: Section 5, Anthropic scored WIN on Memory / Context Management).
-
-**Mitigation:** For typical OpenClaw agent workloads where the system prompt is approximately 9,600 tokens and heartbeats are the primary overhead pattern, Gonka's sessions are more cost-effective because they eliminate the re-transmission entirely (not just discount it). The Anthropic advantage applies to atypical workloads with very large, static system prompts.
-
-### Pricing is TBD -- all cost claims are scenario-based
-
-Every cost comparison in this document uses hypothetical Gonka pricing scenarios (Scenario A/B/C from the pricing analysis). Gonka's actual per-token rates have not been published. The cost advantage narrative depends entirely on final pricing decisions. If Gonka prices above Together AI's $0.50/$2.50 per 1M tokens for K2.5, the session persistence advantage must be large enough to overcome the per-token premium (pricing analysis: Section 4, Gonka pricing TBD).
-
-**Impact:** An agent evaluating providers cannot include Gonka in a cost comparison until pricing is published. The "agent-native pitch" is strongest when session persistence savings demonstrably exceed any per-token premium -- which requires published pricing to verify.
+The April version's "pricing is TBD" limitation is resolved -- Gonka publishes a single blended per-token rate recalculated every block from network utilization, recently ~$0.0003 per 1M tokens via brokers. But that rate is near-zero *because* the network is underutilized and partly subsidized. An agent (or a GTM claim) that anchors on the spot rate is anchoring on a number that rises with adoption. Cost projections for external use should model a normalized rate band, present the spot rate as a launch-window advantage, and disclose broker fees on top (now publicly comparable: OpenGNK passes through at ~$0.00016/1M vs GonkaGate's ~$0.00031/1M blended snapshot; see Section 6 reliability note).
 
 ---
 
 ## 7. Conclusion: The Agent-Native Positioning Opportunity
 
-Gonka's unique position in the inference provider landscape is not cheaper tokens -- Together AI holds that position. It is not broader model selection -- OpenRouter dominates there. It is not guaranteed uptime -- OpenAI and Anthropic lead on reliability.
+Gonka's position in the July 2026 inference landscape: it currently holds the cheapest listed per-token rate for its served models (with a sustainability asterisk), but that is a subsidy-driven, temporary moat. It is not broader model selection -- OpenRouter dominates there. It is not guaranteed uptime -- OpenAI and Anthropic lead on reliability. And it is no longer the only provider with server-side state -- OpenAI's Responses/Conversations API closed that gap.
 
-Gonka's unique position is that it is the only inference provider designed for how autonomous agents actually work:
+Gonka's durable position is the *combination* no other provider offers on the OpenAI-compatible chat completions surface, on decentralized open-weight infrastructure:
 
-- Agents maintain state across calls -- Gonka maintains it for them (sessions)
-- Agents route tasks to different cost tiers -- Gonka routes for them (tiering)
+- Agents maintain state across calls -- Gonka maintains it for them (sessions, eliminating rather than discounting re-transmission)
 - Agents need persistent knowledge -- Gonka stores it for them (memory)
 - Agents orchestrate async work -- Gonka notifies them on completion (webhooks)
+- Agents route tasks to cost tiers -- Gonka does it server-side with one header (tiering; convenient, though routers have commoditized this client-side)
 
-No other compared provider offers all four capabilities on the standard chat completions API surface. This is not a marketing claim -- it is a measurable, verifiable architectural advantage that an autonomous agent, given the capability to evaluate providers programmatically, would factor into its provider selection decision.
+Two additions the GTM strategy should now make. First, an x402 story: Gonka is a crypto network selling to a segment whose payment rails went mainstream this year -- the x402 Foundation is operationally live with Visa, Mastercard, Amex, Adyen, Fiserv, Stripe, and Ripple among its 40 members; volume is running ~$800K/day past a 100M-cumulative-transaction milestone; and AWS (CloudFront/WAF x402 support GA) and Cloudflare (Monetization Gateway, applications open since July 1) now ship x402 at the edge, meaning an x402-gated Gonka inference endpoint is deployable behind commodity infrastructure. Pitch x402 as the execution layer of the three-layer agentic-payments stack (x402 execution, AP2 authorization -- now under the FIDO Alliance -- and Stripe/OpenAI/Meta's ACP checkout; see Section 2) so enterprise AP2/ACP questions land as adjacent layers, not objections. Wallet-authenticated, stablecoin-paying agents are the natural extension of agent-as-customer, and the ClawRouter category is already occupying that position for OpenClaw. The "API keys only, never crypto" framing stays correct for human Web2 personas but should not be absolutist for the agent segment. Second, the demand backdrop has strengthened: agentic workloads consume 5-30x chatbot token volumes, inference is roughly two-thirds of all AI compute in 2026, Goldman Sachs projects token consumption multiplying 24x to 120 quadrillion tokens/month between 2026 and 2030 on agent adoption, and revenue-generating decentralized compute networks decoupled from speculative tokens in the Q1 2026 selloff -- all of which supports Gonka's fee-revenue thesis.
 
 The pitch to developers: "Your agent is already making provider selection decisions at runtime. Give it a provider that was built for how it works."
 
 ---
 
-*Document: gonka_agent_native_pitch.md | Version 1.0 | 2026-04-01*
-*Sources: gonka_competitive_feature_matrix.md, gonka_agent_pricing_analysis.md, gonka_developer_personas.md, ARCHITECTURE.md, PITFALLS.md*
+*Document: gonka_agent_native_pitch.md | Version 1.3 | 2026-07-18 (rev. of 2026-04-01 original)*
+*Sources: gonka_competitive_feature_matrix.md, gonka_agent_pricing_analysis.md, gonka_developer_personas.md, ARCHITECTURE.md, PITFALLS.md; July 2026 verification pass (pricepertoken.com, together.ai/pricing, developers.openai.com, openrouter.ai, gonka.ai/docs/network-updates + gonka releases, platform.kimi.ai/docs/models, Linux Foundation / Chainalysis x402 reporting, FIDO Alliance AP2 donation, Agentic AI Foundation / MCP Registry + 2026-07-28 spec RC, AICC enterprise-cost report, FinOps Foundation 2026, AkashML, hokai.io / OpenRouter open-weight insights)*
 *Feeds into: Phase 18 (Channel Strategy), Phase 19 (Partnership & Ecosystem)*

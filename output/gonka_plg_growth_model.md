@@ -1,7 +1,7 @@
 # Gonka Product-Led Growth Model
 
-**Version:** 1.0
-**Date:** 2026-04-01
+**Version:** 1.3
+**Date:** 2026-07-18
 **Classification:** Internal -- actionable growth model for Gonka developer acquisition
 **Dependencies:** Phase 15 (competitive analysis), Phase 16 (developer personas), Phase 17 (messaging), Phase 18 (channel strategy), Phase 19 (partnership playbook)
 **Requirement:** GTM-03
@@ -15,6 +15,8 @@ This document synthesizes all Phase 15-19 research into a single actionable grow
 Every conversion rate, usage limit, and design decision is grounded in evidence from the research corpus. Where data is indirect (industry benchmarks rather than Gonka-specific measurements), confidence levels are noted. The model is designed so that leadership can read this document and know exactly what Gonka must build, what the targets are, and how to measure progress.
 
 All developer-facing copy in this document follows the Phase 17 vocabulary guidelines (gonka_message_house.md Section 6). No terms from the 16-item never-say list appear in any developer-facing recommendation.
+
+**July 2026 revision note:** This revision re-bases the model on the current Moonshot lineup -- Kimi K2.5 has been superseded by K2.6 (April 2026) and K2.7-Code (June 2026); K3 launched July 16, 2026, and Moonshot has closed K2.5 to new users, is redirecting K2.5 API traffic to K2.6, and will sunset K2.5 platform-wide on August 31, 2026 -- any K2.5-anchored comparison has ~6 weeks of shelf life. It also corrects the Kimi context window (256K, not 131K), refreshes competitor free-tier and pricing facts, flags that prompt caching is now universal across compared providers (which shrinks the session-persistence savings deltas computed in April), and adds ClawHub security and x402 agent-payment context. **Pricing re-base:** the April 2026 Scenario B rates ($0.35/$1.75 per 1M) are now fully obsolete, not merely thin. Gonka's live network rate is ~$0.0003/1M tokens (per-block dynamic pricing; pricepertoken.com/endpoints/gonka). Broker retail via Gonka24 is now model-specific: Kimi K2.6 $0.055/$0.32 per 1M, GLM-5.2 $0.095/$0.30, MiniMax M2.7 from $0.018/$0.072 -- the widely quoted "$0.018/$0.072" is the M2.7 floor rate only, not a flat Gonka rate. All dollar figures inherited from gonka_agent_pricing_analysis.md that still assume Scenario B are marked obsolete below; revenue projections must be rebuilt on the live per-block pricing mechanism plus a normalized-rate band that accounts for current utilization subsidy.
 
 ---
 
@@ -33,7 +35,7 @@ The PLG funnel maps Gonka's developer acquisition to the AAARRRP framework from 
 | **Habitual Use** | Retention | 100+ API calls in 30 days -- developer has integrated Gonka into a real workflow | 20-30% of First Inference | API-active developers per month (gonka_channel_strategy.md primary KPI) |
 | **Paid Conversion** | Revenue | Developer exceeds free tier limits and upgrades to paid plan | 5-10% of Habitual Use | Paying users; monthly revenue per user |
 
-**Why these rates:** The target conversion rates are calibrated against developer tool industry benchmarks (Stripe, Twilio, and Vercel report 10-25% signup-to-activation rates; Gonka targets higher because the activation step is a single config paste, not an SDK integration). The 5-10% paid conversion rate reflects the typical PLG pattern where most value is delivered free and only production-scale workloads trigger payment (gonka_developer_personas.md: Weekend Builder stays on free tier; Startup CTO converts to paid).
+**Why these rates:** The target conversion rates are calibrated against the January 2026 ChartMogul/ProductLed/Growth Unhinged free-to-paid conversion study (200 B2B products, conversion measured within 6 months): overall median free-to-paid is 8%; opt-in no-credit-card trials convert at ~8.9% median; credit-card-required trials at ~30-31.4% (more than 5x no-card trials); freemium products rarely convert above 15%, and developer-tool freemium benchmarks sit at 2-4%. Top-performing PLG companies target 40-60% activation (best-in-class 70%+) -- an April 2026 industry estimate we have not re-verified. Gonka's 70-80% signup-to-first-inference target is aggressive but defensible because the activation step is a single config paste, not an SDK integration. The 5-10% paid conversion rate reflects the typical PLG pattern where most value is delivered free and only production-scale workloads trigger payment (gonka_developer_personas.md: Weekend Builder stays on free tier; Startup CTO converts to paid).
 
 ### Per-Persona Conversion Drivers
 
@@ -43,7 +45,7 @@ Each funnel stage has a different primary driver depending on the developer pers
 
 | Persona | Primary Conversion Driver | #1 Drop-off Risk | Mitigation |
 |---------|--------------------------|-------------------|------------|
-| **Weekend Builder** | Reddit r/LocalLLaMA cost comparison post showing Gonka's heartbeat savings vs OpenRouter ($40/mo to $13/mo) | "Never heard of Gonka -- is this a crypto scam?" Landing page looks like a DeFi protocol | Landing page must resemble Vercel/Supabase, not a token project. Lead with "Cut your agent costs by 73%" not "Decentralized AI inference" (gonka_message_house.md VP1; PITFALLS.md Pitfall 1) |
+| **Weekend Builder** | Reddit r/LocalLLaMA cost comparison post showing Gonka as the cheapest tracker-listed provider for K2.6/K2.7 (pricepertoken.com-verifiable; note the current network rate reflects low utilization and is effectively subsidized -- do not quote the April 2026 "$40/mo to $13/mo" Scenario B figures) | "Never heard of Gonka -- is this a crypto scam?" Landing page looks like a DeFi protocol | Landing page must resemble Vercel/Supabase, not a token project. Lead with "Cut your agent costs by 73%" not "Decentralized AI inference" (gonka_message_house.md VP1; PITFALLS.md Pitfall 1) |
 | **Startup CTO** | Hacker News technical deep-dive on agent heartbeat overhead problem with Gonka cited as the session persistence solution | "Decentralized infrastructure means unreliable. Akash and Render both failed at scale" | Technical white paper with uptime data and p95 latency benchmarks. Must read like a Cloudflare blog post, not a crypto whitepaper (gonka_developer_personas.md Startup CTO Awareness stage) |
 | **Privacy-First Builder** | GitHub repository README or technical article on privacy-preserving inference architectures, found while researching alternatives to self-hosted vLLM | "Every cloud provider claims no logging. How is Gonka different architecturally?" | Honest capabilities page: current guarantees (no central log aggregation, open-weight model, no content filtering) vs roadmap (TEE-based encrypted inference) (gonka_developer_personas.md Privacy-First Awareness stage) |
 
@@ -75,7 +77,7 @@ Each funnel stage has a different primary driver depending on the developer pers
 |---------|--------------------------|-------------------|------------|
 | **Weekend Builder** | Pre-built openclaw.json snippet on docs page with copy button. "Add Gonka to OpenClaw in 90 seconds" tutorial | The two-step provider gotcha: developer defines provider but forgets to add model to agent allowlist, causing silent failure | Quickstart guide explicitly shows both steps (provider definition AND model allowlisting) with a troubleshooting section for the gotcha (STACK.md Section 1: provider selection is a TWO-STEP process) |
 | **Startup CTO** | Integration test results from v1.2 showing OpenClaw, CrewAI, and LangGraph compatibility. Staging deployment guide | First test request times out or returns unexpected error, destroying trust at first contact | Sub-200ms p95 latency on first call. Clear error messages with actionable troubleshooting. Integration test suite available for the team to run against their staging environment (gonka_developer_personas.md Startup CTO Activation stage; PITFALLS.md Pitfall 3) |
-| **Privacy-First Builder** | Test prompt that would be blocked by OpenAI/Anthropic content filters completes successfully on Gonka. Aha moment: "It processed my prompt without filtering" | First prompt triggers an unexpected error or content filter, contradicting "no content policy" claim | K2.5 is open-weight with no built-in content filtering. Verify no content filtering middleware in the gateway. Test with adversarial prompts during QA (gonka_competitive_feature_matrix.md: Content filtering -- Gonka "None (open)") |
+| **Privacy-First Builder** | Test prompt that would be blocked by OpenAI/Anthropic content filters completes successfully on Gonka. Aha moment: "It processed my prompt without filtering" | First prompt triggers an unexpected error or content filter, contradicting "no content policy" claim | The served Kimi models (K2.6, K2.7-Code -- Modified MIT, open-weight) have no built-in content filtering. Verify no content filtering middleware in the gateway. Test with adversarial prompts during QA (gonka_competitive_feature_matrix.md: Content filtering -- Gonka "None (open)") |
 
 **Source:** gonka_developer_personas.md AAARRRP Journey Maps, Activation stage; STACK.md.
 
@@ -83,7 +85,7 @@ Each funnel stage has a different primary driver depending on the developer pers
 
 | Persona | Primary Conversion Driver | #1 Drop-off Risk | Mitigation |
 |---------|--------------------------|-------------------|------------|
-| **Weekend Builder** | Usage dashboard showing session persistence savings: "$40/month on OpenRouter vs $13/month on Gonka for the same agent." Cost comparison is visceral and shareable | After initial excitement, the developer forgets about Gonka and defaults back to OpenRouter because it is built-in | Weekly email digest showing cost savings. X-Gonka-Usage-Remaining header in every response keeps savings visible. Cost comparison calculator in dashboard (gonka_developer_personas.md Weekend Builder Retention stage) |
+| **Weekend Builder** | Usage dashboard showing actual spend vs the cheapest listed competitor route, cached-adjusted (retire the April 2026 "$40 vs $13" Scenario B framing; at live network rates the dashboard delta is dramatic but must carry the utilization/subsidy caveat). Cost comparison is visceral and shareable | After initial excitement, the developer forgets about Gonka and defaults back to OpenRouter because it is built-in | Weekly email digest showing cost savings. X-Gonka-Usage-Remaining header in every response keeps savings visible. Cost comparison calculator in dashboard (gonka_developer_personas.md Weekend Builder Retention stage) |
 | **Startup CTO** | Weekly cost report showing session persistence savings across all agents. Gradual migration from 2 agents to 4 to all 6 as confidence builds | One timeout or error during production usage triggers revert to previous provider. First impressions are permanent for infrastructure trust | Real-time status page (status.gonka.ai) with per-model availability and historical uptime. Incident report publication process. Gradual migration path with dual-provider configuration (gonka_developer_personas.md Startup CTO Retention stage; PITFALLS.md Pitfall 3) |
 | **Privacy-First Builder** | Ongoing use for sensitive workloads with periodic privacy posture auditing via open-source verification tools | Gonka updates terms of service or infrastructure in a way that weakens privacy guarantees without communicating the change | Privacy-specific changelog (separate from feature releases). Automated privacy audit tool. Community-maintained watchdog (gonka_developer_personas.md Privacy-First Retention stage) |
 
@@ -93,7 +95,7 @@ Each funnel stage has a different primary driver depending on the developer pers
 
 | Persona | Primary Conversion Driver | #1 Drop-off Risk | Mitigation |
 |---------|--------------------------|-------------------|------------|
-| **Weekend Builder** | Exceeds free tier credit ($5-10 trial). Clear pricing page showing per-token rates with session savings calculator. Credit card entry with spending cap | Fear of runaway costs -- "OpenClaw agents can spike unpredictably, $300+ in 2 days" | Configurable daily spending cap. Usage alerts at 50%, 80%, 100% of limit. "No surprise bills" guarantee. Pricing comparison table: Gonka vs OpenRouter vs Together AI at Casual tier (gonka_developer_personas.md Weekend Builder Revenue stage) |
+| **Weekend Builder** | Exceeds free tier credit ($5-10 trial). Clear pricing page showing per-token rates with session savings calculator. Credit card entry with spending cap | Fear of runaway costs -- "OpenClaw agents can spike unpredictably, $300+ in 2 days." This fear is validated at industry scale: a 2026 review of 127 enterprise agentic-AI implementations found 73% went over budget (some by 2.4x+), and blended enterprise cost per 1M tokens fell 67% YoY ($18.40 to $6.07, Q1 2025 to Q1 2026); the FinOps Foundation's State of FinOps 2026 survey separately reports 98% of FinOps teams now manage AI spend (up from 31% in 2024) | Configurable daily spending cap. Usage alerts at 50%, 80%, 100% of limit. "No surprise bills" guarantee. Pricing comparison table: Gonka vs OpenRouter vs Together AI at Casual tier (gonka_developer_personas.md Weekend Builder Revenue stage) |
 | **Startup CTO** | Commits to paid plan after 2-4 weeks of staging + gradual production rollout. Volume pricing for 161M+ tokens/month | Needs formal SLA with downtime credits to justify to co-founder and investors | Enterprise pricing tier with committed-use discounts. SLA framework: 99.5% uptime target with credit mechanism. Invoice and receipt system for accounting (gonka_developer_personas.md Startup CTO Revenue stage; gonka_competitive_feature_matrix.md Section 7) |
 | **Privacy-First Builder** | Converts to paid plan valuing session persistence for reducing how often sensitive context traverses the network. Willing to pay premium for TEE when available | No privacy-specific pricing tier or TEE timeline commitment | Privacy tier with optional TEE-backed inference at premium when available. Roadmap commitment on encrypted inference with quarterly updates. Early access program for privacy beta features (gonka_developer_personas.md Privacy-First Revenue stage) |
 
@@ -114,7 +116,7 @@ If 1,000 developers discover Gonka (visit docs.gonka.ai or encounter Gonka in th
 
 **Interpretation:**
 
-- **Pessimistic:** ~0.04% end-to-end conversion. From 1,000 developers who discover Gonka, zero to one becomes a paying customer. This scenario reflects a cold start with no ecosystem presence, minimal content, and the crypto perception barrier fully active. Recovery requires aggressive investment in P0 channels (OpenClaw Provider Directory, GitHub, Discord -- gonka_channel_strategy.md).
+- **Pessimistic:** ~0.04% end-to-end conversion. From 1,000 developers who discover Gonka, zero to one becomes a paying customer. This scenario reflects a cold start with no ecosystem presence, minimal content, and the crypto perception barrier fully active. Recovery requires aggressive investment in P0 channels (OpenClaw Provider Directory, GitHub, Discord -- gonka_channel_strategy.md; the official OpenClaw Discord stands at ~175K members as of July 2026, and OpenClaw hit 247K GitHub stars and 47.7K forks by March 2, 2026 -- the fastest-growing repo in GitHub history -- validating these as P0 channels. A fork ecosystem is emerging, including sandboxed-execution security forks, Chinese adaptations wired to DeepSeek and WeChat, and OpenClaw-based commercial services from Tencent and Z.ai -- notable because Z.ai's GLM-5.2 is on Gonka's network).
 
 - **Target:** ~0.13% end-to-end conversion. From 1,000 discovers, approximately 1 paying user and 17 API-active developers generating usage data, cost savings testimonials, and referral potential. At the Month 6 target of 200 API-active developers (gonka_channel_strategy.md), this implies needing approximately 12,000 discover-stage developers.
 
@@ -122,13 +124,14 @@ If 1,000 developers discover Gonka (visit docs.gonka.ai or encounter Gonka in th
 
 **Key insight:** The funnel is widest at the top (Discover to Explore) and steepest at the Habitual Use stage. The 20-30% conversion from First Inference to Habitual Use is the critical gate -- this is where developers decide if Gonka's session persistence savings are real enough to justify switching from their default provider. The X-Gonka-Usage-Remaining header and cost comparison dashboard are the primary retention mechanisms at this stage.
 
-**Revenue projection at target rates:**
+**Revenue projection at target rates (obsolete -- rebuild required):**
 
-- 17 API-active developers at Casual tier (~31.5M tokens/month each) at Scenario B pricing ($1.05/1M blended): ~$563/month total inference revenue
-- 1 paying Startup CTO at Active tier (~161.5M tokens/month) at Scenario B pricing: ~$170/month
-- Combined Month 6 revenue from 1,000 discover-stage cohort: ~$733/month
+The April 2026 projection (~$733/month at Month 6 from a 1,000-discover cohort) was computed at Scenario B pricing ($0.35/$1.75 per 1M). Scenario B is now obsolete: Gonka's live network rate is ~$0.0003/1M tokens under the per-block dynamic pricing mechanism, and broker retail on Gonka24 is model-specific (Kimi K2.6 $0.055/$0.32 per 1M; $0.018/$0.072 is the MiniMax M2.7 floor rate only). At those rates:
 
-These projections use Scenario B pricing ($0.35/$1.75 per 1M tokens input/output) from gonka_agent_pricing_analysis.md. Revenue scales with discover-stage volume, which is driven by P0 channel investment (gonka_channel_strategy.md).
+- A Casual-tier developer (~31.5M tokens/month) costs under one cent per month at the network rate -- Scenario B overstated near-term revenue-per-developer by roughly 2-3 orders of magnitude.
+- Near-term inference revenue from this cohort is therefore negligible; the current rate reflects low network utilization and is effectively a supply-side subsidy, not a sustainable price.
+
+The projection must be rebuilt on the live per-block pricing mechanism plus a normalized-rate band (what the rate converges to at target utilization). Until that re-run exists, treat funnel volume metrics (API-active developers), not revenue, as the Month 6 success measure. Revenue scales with discover-stage volume, which is driven by P0 channel investment (gonka_channel_strategy.md).
 
 ---
 
@@ -138,11 +141,13 @@ These projections use Scenario B pricing ($0.35/$1.75 per 1M tokens input/output
 
 The free tier must accomplish three goals simultaneously:
 
-1. **Eliminate all friction for the Weekend Builder** -- generous enough that a solo developer running one agent on one channel can use Gonka indefinitely without paying, experiencing session persistence savings firsthand and becoming a referral source (gonka_developer_personas.md: Weekend Builder monthly spend $20-50 on OpenRouter; free tier must cover their reduced-cost Gonka usage)
+1. **Eliminate all friction for the Weekend Builder** -- generous enough that a solo developer running one agent on one channel can use Gonka indefinitely without paying, experiencing session persistence savings firsthand and becoming a referral source (gonka_developer_personas.md: Weekend Builder monthly spend $20-50 on OpenRouter). Note (July 2026): at the live network rate (~$0.0003/1M) a Casual month costs under a cent, so "must the free tier cover a Casual agent" is currently moot on cost grounds -- the limits below matter as abuse control and as the upgrade-trigger structure for when rates normalize.
 
 2. **Create a natural upgrade trigger for the Startup CTO** -- limited enough that a team running multiple agents across channels hits the ceiling within their first week of serious evaluation, triggering the paid conversion conversation (gonka_developer_personas.md: Startup CTO monthly spend $200-500; free tier should cover approximately 1 agent, not 6)
 
 3. **Remove the crypto barrier entirely** -- Email-only signup with no wallet, no token purchase, no OAuth complexity. The word "wallet" must never appear before "API key" on any page (gonka_message_house.md Section 6.1: Never-Say List -- "wallet" is the single most alienating word for Web2 developers)
+
+**Scope note (July 2026):** the "API keys only, never crypto" rule applies to the human Web2 personas above. For the agent-as-customer segment (gonka_agent_native_pitch.md), agent-native payment rails went mainstream in 2026: the x402 Foundation reached operational launch under the Linux Foundation on July 14, 2026 with 40 member organizations -- 17 premier members: Adyen, AWS, American Express, Circle, Cloudflare, Coinbase, Fiserv, Google, Mastercard, Monad Foundation, MoonPay, Ripple, Shopify, Solana Foundation, Stellar Development Foundation, Stripe, and Visa (general members include Polygon Labs, NEAR Foundation, Fireblocks, and KakaoPay). In the 30 days ending ~July 15, 2026 the protocol processed ~75M transactions moving ~$24M (~$800K/day) between ~94K buyers and ~22K sellers, predominantly settled in USDC, with 95% of payment value now in transactions above $1 (Chainalysis) -- the earlier "mostly testing/gamed micropayments" caveat no longer holds. BlockRunAI's ClawRouter already authenticates OpenClaw agents with wallet signatures and pays for inference via x402 USDC micropayments. Gonka -- already a crypto network -- has a natural x402 story here and a competitor occupying the position; this deserves a separate track that never leaks into the human onboarding flow.
 
 ### Signup Flow
 
@@ -177,18 +182,18 @@ Step 5: Developer is using Gonka
 
 Free tier limits are calibrated against two data points:
 
-1. **Competitor free tiers:** OpenRouter offers free-tier access with rate limiting and quality degradation under load. Google Gemini offers a generous free tier. No K2.5-specific free tier exists among compared providers (gonka_competitive_feature_matrix.md; gonka_provider_landscape_map.md Segment 3: Together AI and DeepInfra are pay-per-use only).
+1. **Competitor free tiers:** OpenRouter offers free-tier access with rate limiting and quality degradation under load. Google cut Gemini API free-tier quotas 50-80% starting December 2025 and removed Pro-series models from the free tier in April 2026 (Flash/Flash-Lite only, ~250-1,000 requests/day); Google also now imposes a mandatory monthly spending cap that auto-pauses the API, and the free tier disappears once billing is enabled. No Kimi-family free tier exists among compared providers (gonka_competitive_feature_matrix.md; gonka_provider_landscape_map.md Segment 3: Together AI and DeepInfra are pay-per-use only).
 
-2. **Persona workload profiles:** The Weekend Builder consumes ~31.5M tokens/month at Casual tier with 30-minute heartbeats (gonka_agent_pricing_analysis.md Section 3). With Gonka's session persistence reducing effective token consumption by ~80%, the Weekend Builder's actual Gonka token usage would be approximately 12.6M tokens/month. The free tier should cover most of this.
+2. **Persona workload profiles:** The Weekend Builder consumes ~31.5M tokens/month at Casual tier with 30-minute heartbeats (gonka_agent_pricing_analysis.md Section 3, April 2026 estimate). With Gonka's session persistence reducing effective token consumption by ~80% (estimate; competitors' universal prompt caching now captures part of this delta), the Weekend Builder's actual Gonka token usage would be approximately 12.6M tokens/month. The free tier should cover most of this.
 
 | Limit | Free Tier Value | Rationale |
 |-------|----------------|-----------|
 | **Daily requests** | 1,000 requests/day | Covers 1 agent with 50 user messages + 150 tool calls + 48 heartbeats = ~248 requests/day. Generous buffer for burst testing. Startup CTO with 6 channel-agents needs ~1,488 requests/day -- exceeds limit within first day of serious evaluation (gonka_agent_pricing_analysis.md Section 3: Active tier daily breakdown) |
 | **Monthly tokens** | 15,000,000 tokens/month | Covers Weekend Builder's session-optimized usage (~12.6M tokens/month) with headroom. Startup CTO at Active tier (~56.3M session-optimized tokens/month) exceeds this in week 1 (gonka_agent_pricing_analysis.md Section 5: Gonka hidden cost analysis) |
 | **Concurrent sessions** | 2 active sessions | Covers 1 agent on 1-2 channels (Weekend Builder). Startup CTO with 6 channel-agents needs 6 concurrent sessions -- hits upgrade trigger immediately when deploying team workload |
-| **Models available** | K2.5 lite and mid tiers only | Full-precision K2.5 reserved for paid tier. Lite and mid tiers are sufficient for the Weekend Builder's personal assistant workload. Startup CTO evaluating quality for production needs full tier access (gonka_competitive_feature_matrix.md: 3-tier K2.5 quantization) |
+| **Models available** | K2.6 lite and mid tiers only | Full-precision K2.6 (and a K3 frontier tier -- K3 launched July 16, 2026; open-weight availability on Gonka to be confirmed) reserved for paid tier. Lite and mid tiers are sufficient for the Weekend Builder's personal assistant workload. Startup CTO evaluating quality for production needs full tier access (gonka_competitive_feature_matrix.md 3-tier quantization concept, re-based from K2.5 to K2.6) |
 | **Rate limit** | 60 requests/minute | Prevents abuse while allowing burst testing (a developer testing their agent configuration may send 10-20 requests in quick succession). Production agents with 30-minute heartbeats generate ~1 request/minute baseline. 60 RPM provides comfortable headroom |
-| **Context window** | 32,768 tokens | Reduced from K2.5's full 131,072. Sufficient for most agent workloads (system prompt + context is ~9,600 tokens). Startup CTO running complex multi-step workflows with deep context needs the full window |
+| **Context window** | 32,768 tokens | Reduced from the full 262,144 (Kimi K2.6 and K2.7-Code both ship 256K contexts). Sufficient for most agent workloads (system prompt + context is ~9,600 tokens). Startup CTO running complex multi-step workflows with deep context needs the full window |
 
 ### Upgrade Triggers
 
@@ -201,7 +206,7 @@ When a developer reaches 80% of their daily request limit or monthly token limit
 ```
 X-Gonka-Usage-Remaining: 200
 X-Gonka-Usage-Limit: 1000
-X-Gonka-Usage-Reset: 2026-04-02T00:00:00Z
+X-Gonka-Usage-Reset: 2026-07-19T00:00:00Z
 X-Gonka-Upgrade-URL: https://docs.gonka.ai/pricing
 ```
 
@@ -227,12 +232,12 @@ This trigger is designed specifically for the Startup CTO persona: they have pro
 
 **Trigger 3: Model Tier Access**
 
-When a developer requests the full-precision K2.5 model (available only on paid tier), the API routes to mid-tier K2.5 and includes a header:
+When a developer requests the full-precision model (available only on paid tier), the API routes to the mid tier and includes a header:
 
 ```
 X-Gonka-Tier-Served: mid
 X-Gonka-Tier-Requested: full
-X-Gonka-Tier-Upgrade: "Full-precision K2.5 available on paid tier. See docs.gonka.ai/pricing"
+X-Gonka-Tier-Upgrade: "Full-precision models available on paid tier. See docs.gonka.ai/pricing"
 ```
 
 The request succeeds (no error) but with a lower-tier model, and the header transparently communicates the substitution. This avoids breaking the developer's workflow while making the quality difference discoverable.
@@ -243,7 +248,7 @@ Features reserved for paid plans to create clear value differentiation:
 
 | Feature | Free Tier | Paid Tier | Why Reserved |
 |---------|-----------|-----------|--------------|
-| **Full-precision K2.5** | No (lite and mid only) | Yes | Quality differentiation for production workloads |
+| **Full-precision K2.6 / K3 frontier tier** | No (lite and mid only) | Yes | Quality differentiation for production workloads |
 | **Unlimited sessions** | 2 concurrent max | Unlimited | Multi-agent production requires paid commitment |
 | **SLA guarantee** | Best effort | 99.5% uptime target with credits | SLA has cost implications; reserved for committed customers |
 | **Priority routing** | Standard queue | Priority queue with dedicated capacity | Ensures paid customers get consistent low latency |
@@ -258,12 +263,12 @@ Features reserved for paid plans to create clear value differentiation:
 | Provider | Free Tier | Signup Friction | Limits |
 |----------|-----------|-----------------|--------|
 | **OpenRouter** | Free-tier access to select models | GitHub OAuth | Rate-limited; quality degraded under load; free requests queued behind paid (gonka_competitive_feature_matrix.md Section 5) |
-| **Google Gemini** | Generous free tier | Google account | Rate limits vary by model; generous for experimentation |
-| **Together AI** | No free tier | Credit card required | Pay-per-use only (gonka_provider_landscape_map.md Segment 3) |
+| **Google Gemini** | Flash/Flash-Lite only (Pro removed April 2026) | Google account | Quotas cut 50-80% since Dec 2025; ~250-1,000 requests/day; free tier disappears once billing is enabled |
+| **Together AI** | No free tier (signup credits retired July 2025) | $5 minimum credit purchase | Pay-per-use only (gonka_provider_landscape_map.md Segment 3); Startup Accelerator credits exist for qualifying startups |
 | **DeepInfra** | No free tier | Credit card required | Pay-per-use only |
-| **Gonka (proposed)** | 15M tokens/month, 1,000 requests/day, 2 sessions | Email only | Most generous free tier among K2.5 providers; lowest signup friction; session persistence active on free tier |
+| **Gonka (proposed)** | 15M tokens/month, 1,000 requests/day, 2 sessions | Email only | Most generous free tier among Kimi-family providers; lowest signup friction; session persistence active on free tier |
 
-**Competitive advantage:** Gonka's free tier is the only one that (a) requires no credit card or OAuth, (b) includes session persistence (the primary cost-saving feature), and (c) provides enough capacity for a solo developer's always-on agent. The Weekend Builder can experience the full session persistence savings without paying, creating the cost comparison data point ("$40/month on OpenRouter vs free on Gonka") that drives organic referrals (gonka_developer_personas.md Weekend Builder Referral stage).
+**Competitive advantage:** Gonka's free tier is the only one that (a) requires no credit card or OAuth, (b) includes session persistence (the primary cost-saving feature), and (c) provides enough capacity for a solo developer's always-on agent. The Weekend Builder can experience the full session persistence savings without paying, creating the cost comparison data point ("what I paid on OpenRouter vs free on Gonka" -- use the developer's own tracked spend, not the retired April 2026 estimates) that drives organic referrals (gonka_developer_personas.md Weekend Builder Referral stage).
 
 ### Copy Guidelines
 
@@ -291,7 +296,7 @@ Per CONTEXT.md locked decision: target under 5 minutes from email submission to 
 | 4 | Receive verification email | 60s | Must arrive within 60 seconds. Delayed verification emails (>2 minutes) cause developers to lose context and abandon. Use a transactional email service (SendGrid, Postmark, or AWS SES) with dedicated IP and domain authentication (SPF, DKIM, DMARC) to avoid spam folders | Email sending infrastructure. Transactional email template. Email deliverability monitoring |
 | 5 | Click verification link, see API key | 15s | Key must be displayed immediately on the page with a one-click copy button. No "check your dashboard" redirect. No additional login step. The key is shown once, prominently, with a "Copy" button that provides visual confirmation | Key generation service. Key display page with clipboard API integration. Key storage (hashed) in database |
 | 6 | Paste config into openclaw.json | 90s | The exact config snippet must be pre-filled with the developer's API key and ready to copy-paste. Show both steps of the two-step process (provider definition AND model allowlisting) to avoid the silent failure gotcha (STACK.md Section 1) | Pre-filled config snippet generator. Documentation page showing the exact JSON to paste |
-| 7 | Send first message to agent | 60s | Agent responds via Gonka inference. The first response must arrive within 2-3 seconds (sub-200ms TTFT + streaming). Any timeout or error at this step permanently damages trust | Live API endpoint at api.gonka.ai. Health-checked GPU hosts. vLLM inference with K2.5 model loaded and warm |
+| 7 | Send first message to agent | 60s | Agent responds via Gonka inference. The first response must arrive within 2-3 seconds (sub-200ms TTFT + streaming). Any timeout or error at this step permanently damages trust | Live API endpoint at api.gonka.ai. Health-checked GPU hosts. vLLM inference with K2.6 model loaded and warm |
 | **Total** | | **~4 min 15s** | | |
 
 ### Step 6 Detail: The Config Snippet
@@ -307,11 +312,11 @@ After the developer copies their API key, the verification page displays the exa
     "api": "openai-completions",
     "models": [
       {
-        "id": "kimi-k2.5",
-        "name": "Kimi K2.5",
-        "contextWindow": 131072,
+        "id": "kimi-k2.6",
+        "name": "Kimi K2.6",
+        "contextWindow": 262144,
         "maxTokens": 8192,
-        "cost": { "input": 0.35, "output": 1.75 }
+        "cost": { "input": 0.055, "output": 0.32 }  // K2.6 Gonka24 retail; set from live rate at publish time
       }
     ]
   }
@@ -319,13 +324,13 @@ After the developer copies their API key, the verification page displays the exa
 
 // Step 2: Add this to your agents.defaults.models to enable the model:
 {
-  "gonka/kimi-k2.5": { "alias": "k2.5" }
+  "gonka/kimi-k2.6": { "alias": "k2.6" }
 }
 ```
 
 **Why both steps are shown:** OpenClaw requires both provider definition (Step 1) AND model allowlisting (Step 2). Missing Step 2 causes silent failure -- the agent ignores the provider entirely with no error message. This is a known gotcha in the OpenClaw community (STACK.md Section 1: "Missing either step causes silent failure"). Showing both steps on the same page with clear "Step 1" and "Step 2" labels prevents the most common configuration error.
 
-**Config snippet format:** Based on the OpenClaw `openclaw.json` configuration format documented in STACK.md. The `api: "openai-completions"` value tells OpenClaw to use the standard `/v1/chat/completions` endpoint format, which Gonka's gateway already implements (shipped in v1.2). Cost values reflect Scenario B pricing ($0.35/$1.75 per 1M tokens input/output) from gonka_agent_pricing_analysis.md.
+**Config snippet format:** Based on the OpenClaw `openclaw.json` configuration format documented in STACK.md. The `api: "openai-completions"` value tells OpenClaw to use the standard `/v1/chat/completions` endpoint format, which Gonka's gateway already implements (shipped in v1.2). Cost values shown use the July 2026 Gonka24 retail rate for Kimi K2.6 ($0.055/$0.32 per 1M; the raw network rate is ~$0.0003/1M, and $0.018/$0.072 applies only to MiniMax M2.7) and must be regenerated from the live rate at publish time -- the April 2026 Scenario B values ($0.35/$1.75) are obsolete. Competitor reference points: Together AI K2.6 $1.20/$4.50, K2.7-Code $0.95/$4.00. (OpenRouter still lists K2.5 at $0.375/$2.025 and DeepInfra at $0.45/$2.25, but Moonshot is sunsetting K2.5 on August 31, 2026 -- do not anchor comparisons on K2.5 rates.)
 
 ### Current Gaps vs Target Flow
 
@@ -353,23 +358,23 @@ The `openclaw.json` config snippet is Gonka's atomic growth unit -- the smallest
 
 3. **It is portable across OpenClaw installations.** The same config snippet works on any OpenClaw deployment -- personal laptop, VPS, cloud server, Docker container. A developer who configures Gonka on their local machine can copy the same config to production. This portability means the snippet carries across environments without modification (STACK.md: OpenClaw's declarative configuration model).
 
-4. **It embeds Gonka's cost advantage.** The `cost` field in the config snippet shows Gonka's per-token rates directly in the developer's configuration file. Every time a developer opens `openclaw.json`, they see Gonka's rates next to their other providers. If Gonka's rates are lower (Scenario B: $0.35/$1.75 vs Together AI: $0.50/$2.50 -- gonka_agent_pricing_analysis.md Section 4), the cost advantage is visible without visiting a pricing page.
+4. **It embeds Gonka's cost advantage.** The `cost` field in the config snippet shows Gonka's per-token rates directly in the developer's configuration file. Every time a developer opens `openclaw.json`, they see Gonka's rates next to their other providers. At July 2026 rates the gap is unmissable: Gonka24 K2.6 retail $0.055/$0.32 per 1M (network rate ~$0.0003/1M) vs Together AI's $1.20/$4.50 (K2.6) and OpenRouter's cheapest Kimi route at $0.375/$2.025 (K2.5 -- being sunset by Moonshot August 31, 2026) -- Gonka is the cheapest tracker-listed provider for K2.6 by roughly an order of magnitude. Frame external claims as "cheapest listed provider for K2.6/K2.7" with the caveat that the current rate reflects low utilization and is effectively subsidized.
 
-5. **ClawHub skills amplify the snippet.** The Gonka Provider Skill submitted to ClawHub (gonka_partnership_playbook.md: ClawHub Submission Plan) teaches agents how to use Gonka-specific features. When a developer installs the skill, it includes the config snippet as part of the setup instructions. The skill and the snippet work together: the snippet connects the agent to Gonka, and the skill teaches the agent to use sessions, tiering, and memory (gonka_partnership_playbook.md: SKILL.md draft outline).
+5. **ClawHub skills amplify the snippet -- with a security caveat.** The Gonka Provider Skill submitted to ClawHub (gonka_partnership_playbook.md: ClawHub Submission Plan) teaches agents how to use Gonka-specific features. When a developer installs the skill, it includes the config snippet as part of the setup instructions. The skill and the snippet work together: the snippet connects the agent to Gonka, and the skill teaches the agent to use sessions, tiering, and memory (gonka_partnership_playbook.md: SKILL.md draft outline). **Caveat (July 2026):** the early-2026 ClawHavoc supply-chain campaign seeded ClawHub with malicious skills delivering crypto-wallet-stealing malware (Atomic macOS Stealer), with ~$2.3M in cryptocurrency reported stolen across ~247K confirmed installs. Koi Security's first audit (Feb 1, 2026) found 341 malicious skills among 2,632 audited (registry then ~2,857); Koi's count rose to 824 by mid-February as the marketplace passed 10,700 skills, and by Feb 19 Antiy CERT had uncovered at least 1,184 malicious skill packages tied to 12 compromised publisher accounts -- published estimates of the flagged-malicious-or-suspicious share of the registry range from ~7.6% to ~20% ("approximately one in five packages at the time of discovery"), depending on registry-size denominator and date; payloads included Windows VMProtect-packed infostealers alongside AMOS. Unit 42 (Palo Alto) has since published its own AI supply-chain threat analysis of the marketplace. ClawHub now screens every submission via VirusTotal plus code-level ClawScan analysis (3,016+ samples analyzed). The campaign was compounded by a one-click RCE (CVE-2026-25253, patched). Developers now distrust third-party skills, registry vetting is heightened, and -- because the malware targeted crypto wallets -- this is a credibility landmine for a crypto-adjacent provider. The Gonka skill submission must lead with security: signed releases, auditable source, minimal permissions.
 
 **The viral loop:**
 
 ```
 Developer A configures Gonka (pastes config snippet)
-  -> Saves 73% on heartbeat costs (session persistence)
+  -> Saves on heartbeat costs (session persistence)
   -> Shares cost comparison screenshot on Reddit/Twitter
   -> Developer B sees post, copies config snippet from comment
   -> Developer B configures Gonka in 90 seconds
-  -> Developer B saves 73% on heartbeat costs
+  -> Developer B saves on heartbeat costs
   -> Developer B shares their own comparison...
 ```
 
-This loop is driven by the session persistence savings -- the cost reduction is dramatic enough (73% at Active tier -- gonka_agent_pricing_analysis.md Section 6) to motivate organic sharing, and the config snippet makes sharing frictionless. No referral program is needed to trigger the initial loop; the savings create natural word-of-mouth. The referral program (gonka_developer_personas.md Weekend Builder Referral stage: "$5 credit for each referred developer who makes 100+ API calls") amplifies an already-functioning viral mechanism.
+This loop is driven by the session persistence savings -- the cost reduction was modeled at 73% at Active tier in April 2026 (gonka_agent_pricing_analysis.md Section 6), computed against mostly-uncached competitor baselines. Prompt caching is now universal (OpenAI/Anthropic 90% off cached input, Together default-on, Moonshot cache-hit discounts on current models, DeepSeek $0.0028; Moonshot's first-party K2.5 rates are no longer quotable -- the model is closed to new users and sunsets August 31, 2026), so the honest delta is smaller and must be recomputed before any shared comparison claims 73%. Even at a reduced delta, the savings plus the config snippet keep sharing frictionless. No referral program is needed to trigger the initial loop; the savings create natural word-of-mouth. The referral program (gonka_developer_personas.md Weekend Builder Referral stage: "$5 credit for each referred developer who makes 100+ API calls") amplifies an already-functioning viral mechanism.
 
 ### What Competitors Require
 
@@ -383,13 +388,13 @@ Gonka's time-to-first-inference target (under 5 minutes, email-only signup) crea
 | 2 | Click "Sign In" | 10s | None |
 | 3 | GitHub OAuth login | 30-60s | Requires GitHub account. OAuth redirect. Permission grant screen. Some developers hesitate to grant OAuth permissions to unknown services |
 | 4 | Credit card for paid tier | 120-180s | Credit card entry form. Address verification. Payment processing. **This step does not exist for Gonka's free tier** |
-| 5 | Browse 500+ model catalog, select model | 60-120s | Model selection paralysis. "Which model do I pick?" No guidance for agent workloads. Developer must research models independently |
+| 5 | Browse 400+ model catalog (60+ providers), select model | 60-120s | Model selection paralysis. "Which model do I pick?" No guidance for agent workloads. Developer must research models independently |
 | 6 | Copy API key, configure application | 60-90s | API key is available immediately after signup (no email verification) |
 | **Total** | | **~5-8 min (free tier) or ~8-12 min (paid)** | GitHub OAuth + credit card + model selection |
 
-**Gonka advantage:** No OAuth, no credit card, no model selection paralysis. Gonka offers one model (K2.5) in three tiers with automatic routing -- the developer does not need to choose. Email-only signup eliminates the OAuth permission screen that causes hesitation. The free tier eliminates the credit card step entirely.
+**Gonka advantage:** No OAuth, no credit card, no model selection paralysis. Gonka offers one model family (Kimi K2.6, with a K3 frontier tier pending open-weight availability) in quantization tiers with automatic routing -- the developer does not need to choose. Email-only signup eliminates the OAuth permission screen that causes hesitation. The free tier eliminates the credit card step entirely.
 
-**Source:** gonka_competitive_feature_matrix.md (OpenRouter: 500+ models); gonka_developer_personas.md (Weekend Builder: OpenRouter is the default, zero-config provider).
+**Source:** gonka_competitive_feature_matrix.md (OpenRouter catalog re-verified July 2026: 400+ active models from 60+ providers, per openrouter.ai/models); gonka_developer_personas.md (Weekend Builder: OpenRouter is the default, zero-config provider).
 
 #### Together AI (Startup CTO's Primary Alternative)
 
@@ -399,11 +404,11 @@ Gonka's time-to-first-inference target (under 5 minutes, email-only signup) crea
 | 2 | Click "Sign Up" | 10s | None |
 | 3 | OAuth login (Google or GitHub) | 30-60s | OAuth redirect. Permission grant. Account creation |
 | 4 | Credit card required for all usage | 120-180s | No free tier. Credit card is mandatory. Some developers abandon at this step for evaluation purposes |
-| 5 | Select model from 200+ catalog | 60-120s | Less paralysis than OpenRouter (200 vs 500+ models) but still requires research. K2.5 is one of many options |
+| 5 | Select model from 200+ catalog | 60-120s | Less paralysis than OpenRouter (200 vs 400+ models) but still requires research. The Kimi family is one of many options |
 | 6 | Copy API key, configure application | 60-90s | API key generation is straightforward |
 | **Total** | | **~5-8 min** | OAuth + mandatory credit card + model selection |
 
-**Gonka advantage:** No credit card requirement (free tier exists). No model selection step (K2.5 with auto-tiering). Email-only signup (no OAuth). The Startup CTO can evaluate Gonka on staging without entering payment information or requesting procurement approval from their finance team.
+**Gonka advantage:** No credit card requirement (free tier exists). No model selection step (K2.6 with auto-tiering). Email-only signup (no OAuth). The Startup CTO can evaluate Gonka on staging without entering payment information or requesting procurement approval from their finance team.
 
 **Source:** gonka_agent_pricing_analysis.md Section 4 (Together AI pricing: $0.50/$2.50); gonka_provider_landscape_map.md Segment 3 (Together AI: pay-per-use only, no free tier).
 
@@ -413,15 +418,15 @@ Gonka's time-to-first-inference target (under 5 minutes, email-only signup) crea
 |------|------------------------------|------|----------|
 | 1 | Acquire GPU hardware ($2,000-10,000+) | Days to weeks | Hardware procurement. Budget approval. Delivery time |
 | 2 | Install CUDA, Python, vLLM | 30-60 min | Driver compatibility issues. Python environment management. Dependency conflicts |
-| 3 | Download K2.5 model weights | 20-60 min | Model weights are 10-50 GB depending on quantization. Requires HuggingFace account. Network bandwidth dependent |
+| 3 | Download K2.6 model weights | 20-60 min | Model weights are 10-50 GB depending on quantization. Requires HuggingFace account. Network bandwidth dependent |
 | 4 | Configure vLLM server | 15-30 min | Configuration options for GPU memory, quantization, batch size. Trial and error for optimal settings |
 | 5 | Start server, verify inference works | 5-10 min | Health checks, first inference warm-up, verify output quality |
 | 6 | Configure OpenClaw to point to local vLLM | 5-10 min | Same openclaw.json config as Gonka, but with localhost URL |
 | **Total** | | **Hours to days** | Hardware + software + model download + configuration |
 
-**Gonka advantage:** Under 5 minutes vs hours to days. No hardware procurement. No driver installation. No model download. The Privacy-First Builder gets the same open-weight K2.5 model with no content filtering, served on distributed infrastructure with no central logging -- and they can start using it in 4 minutes instead of 4 hours. The tradeoff: Gonka's privacy guarantees are architectural (no central log aggregation) rather than absolute (no TEE yet). The honest capabilities page (gonka_developer_personas.md Privacy-First Activation stage) communicates this clearly.
+**Gonka advantage:** Under 5 minutes vs hours to days. No hardware procurement. No driver installation. No model download. The Privacy-First Builder gets the same open-weight K2.6 model with no content filtering, served on distributed infrastructure with no central logging -- and they can start using it in 4 minutes instead of 4 hours. The tradeoff: Gonka's privacy guarantees are architectural (no central log aggregation) rather than absolute (no TEE yet). The honest capabilities page (gonka_developer_personas.md Privacy-First Activation stage) communicates this clearly.
 
-**Source:** gonka_developer_personas.md Privacy-First Pain Point #2 (self-hosting costs and maintenance); gonka_competitive_feature_matrix.md (K2.5: open-weight, no content filtering).
+**Source:** gonka_developer_personas.md Privacy-First Pain Point #2 (self-hosting costs and maintenance); gonka_competitive_feature_matrix.md (K2.6: open-weight, no content filtering).
 
 ### Failure Modes and Recovery
 
@@ -433,7 +438,7 @@ Each step in the time-to-first-inference plan has a specific failure mode that w
 | 4 | Verification email delayed >2 minutes | Developer loses context, opens new tab, forgets about Gonka | Alert on email delivery latency >30s. Use multiple email service providers with failover. Display "email sent, check your inbox" with a countdown timer |
 | 5 | API key page fails to load or copy button does not work | Developer cannot retrieve their key | Client-side key display (no server round-trip after page load). Fallback: display key as selectable text if clipboard API fails. Email the key as backup |
 | 6 | Developer pastes config but misses Step 2 (model allowlisting) | Silent failure -- agent ignores Gonka provider entirely | Show both steps on the same page with numbered instructions. Verification endpoint: `GET /v1/verify` that returns 200 if the key is valid, helping developers test before configuring their agent |
-| 7 | First API call times out or returns 500 | Permanent trust damage -- developer will not try again (PITFALLS.md Pitfall 3) | Health-checked routing ensures requests go only to responsive nodes. Cold-start mitigation: keep K2.5 warm on minimum N nodes. Error response includes troubleshooting link |
+| 7 | First API call times out or returns 500 | Permanent trust damage -- developer will not try again (PITFALLS.md Pitfall 3) | Health-checked routing ensures requests go only to responsive nodes. Cold-start mitigation: keep K2.6 warm on minimum N nodes. Error response includes troubleshooting link |
 
 ---
 
@@ -445,7 +450,7 @@ Every claim in this document traces to a specific Phase 15-19 output document. T
 |----------|---------------|
 | **gonka_developer_personas.md** (Phase 16) | Three personas (Weekend Builder, Startup CTO, Privacy-First Builder) with decision drivers, pain points, adoption triggers, objections, and complete AAARRRP journey maps. Per-persona conversion drivers at each funnel stage. Drop-off risk analysis. Referral mechanisms. |
 | **gonka_agent_pricing_analysis.md** (Phase 15) | Workload tier definitions (Casual: 31.5M tokens/month, Active: 161.5M, Heavy: 2.94B). Heartbeat overhead percentages (44%, 51%, 85%). Scenario B pricing ($0.35/$1.75). Session persistence savings (80% token reduction). Monthly cost projections per provider per tier. Competitor pricing data (Together AI, DeepInfra, OpenRouter, OpenAI, Anthropic). |
-| **gonka_competitive_feature_matrix.md** (Phase 15) | 8-dimension competitive comparison. WIN verdicts on Agent Sessions and Model Tiering. LOSE verdicts on Model Breadth and Uptime/Reliability. Competitor free tier analysis. Content filtering comparison (Gonka: "None (open)"). K2.5 quantization tiers. |
+| **gonka_competitive_feature_matrix.md** (Phase 15) | 8-dimension competitive comparison. WIN verdicts on Agent Sessions and Model Tiering. LOSE verdicts on Model Breadth and Uptime/Reliability. Competitor free tier analysis. Content filtering comparison (Gonka: "None (open)"). Quantization-tier concept (originally modeled on K2.5, re-based to K2.6). |
 | **gonka_provider_landscape_map.md** (Phase 15) | 5 critical must-close gaps (not built-in provider, no docs site, no self-serve signup, no pricing page, in-memory sessions). 4-segment landscape framework. Gonka's unique position as only decentralized provider with agent-native extensions. |
 | **gonka_message_house.md** (Phase 17) | Core positioning statement (73% cost reduction via session persistence). 16-item never-say list. Approved vocabulary mapping. VP1-VP3 ranked value propositions. Competitive differentiation statements per persona. |
 | **gonka_channel_strategy.md** (Phase 18) | Primary KPI: API-active developers (>100 calls/month). Target trajectory (10 Month 1, 50 Month 3, 200 Month 6, 1000 Month 12). 70/30 channel split. P0 channels (OpenClaw Provider Directory, GitHub, Discord). Anti-metrics (follower counts, Discord members, GitHub stars). |
@@ -456,5 +461,5 @@ Every claim in this document traces to a specific Phase 15-19 output document. T
 
 ---
 
-*Document: gonka_plg_growth_model.md | Version 1.0 | 2026-04-01*
+*Document: gonka_plg_growth_model.md | Version 1.3 | 2026-07-18*
 *Capstone deliverable for Phases 15-19. Companion document: gonka_v14_engineering_backlog.md (Plan 20-02)*

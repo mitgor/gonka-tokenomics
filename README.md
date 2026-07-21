@@ -1,8 +1,12 @@
 # Gonka Tokenomics
 
-Economic modeling suite for the Gonka Network -- a decentralized AI infrastructure platform with ~98% productive compute and Sprint Consensus (2.3B-parameter Transformer-based PoW).
+*Last updated: 2026-07-18*
 
-Generates **5 Excel workbooks** (1 master + 4 standalone) that model token emission, price scenarios, fee transition, host profitability, and treasury operations over a 10-year horizon. Built for Gonka leadership, investors, and economic stakeholders.
+Economic modeling and go-to-market research suite for the Gonka Network -- a decentralized AI infrastructure platform with ~98% productive compute and Sprint Consensus (2.3B-parameter Transformer-based PoW).
+
+Generates **5 Excel workbooks** (1 master + 4 standalone) that model token emission, price scenarios, fee transition, host profitability, and treasury operations over a 10-year horizon, plus GTM research deliverables (v1.2-v1.4). Built for Gonka leadership, investors, and economic stakeholders.
+
+**Network context (as of 2026-07-18):** Gonka has raised ~$80M total -- a $12M Bitfury strategic round (Nov 2025, entry ~$0.60/GNK) plus Bitfury's $50M commitment (Dec 2025, the first draw from its $1B ethical-AI fund). In 2026, the GAIB x Gonka partnership opened GNK mining rewards to the open market, with GAIB handling GPU procurement, node operations, and reward routing for H100/H200/B200 hardware. Live network size is far below the ~14,000 H100-equivalent GPUs announced Feb 2, 2026 (the announced peak): as of July 18, 2026, [joingonka.ai](https://joingonka.ai/en/)'s live counter shows ~1,178 GPUs active, consistent with [tracker.gonka.vip](https://tracker.gonka.vip/)'s ~1,214. Both the April 2026 figure of ~4,648 GPUs (~113 participants / ~582 MLNodes) and CoinMarketCap's static "~5,000 H100-equivalents" description are stale -- treat the live counters (~1,200 GPUs) as the active-mining denominator. The previously cited "448+ active hosts" does not match any current source. Real-time network data is available from independent explorers: [gonka.gg](https://gonka.gg/) (free public API), [gonkascan.com](https://gonkascan.com/), [gonkahub.com](https://gonkahub.com/), and [tracker.gonka.vip](https://tracker.gonka.vip/). Workbook adoption assumptions remain Feb-2026 estimates and predate these figures; note in particular that per-GPU mining share and host break-even were computed on the 14,000-GPU denominator -- at a ~1,200-GPU live network, per-GPU share is ~11-12x higher and host break-even GNK price is correspondingly lower (~4x lower than even a 5,000-GPU assumption).
 
 ---
 
@@ -222,6 +226,8 @@ All parameters include **source citations** (whitepaper sections, comparable pro
 gonka-tokenomics/
   generate.py                  # CLI entry point (--test flag for quick validation)
   requirements.txt             # openpyxl==3.1.5
+  research-model-selection.md  # Open-model selection research (v1.2, re-baselined 2026-07-18)
+  strategy-kimi-k25-agent-inference.md  # Kimi agent-inference strategy (v1.2, re-baselined 2026-07-18)
   models/
     parameters.py              # 70 parameters, 15 groups (single source of truth)
   generators/
@@ -240,7 +246,9 @@ gonka-tokenomics/
     standalone.py              # Standalone workbook generator
     standalone_config.py       # Per-standalone configs, glossary terms, narratives
     print_setup.py             # Print settings and cell protection
-  output/                      # Generated workbooks (gitignored)
+  output/                      # Generated workbooks (gitignored) + committed GTM docs
+    gonka_*.md                 # 11 GTM research deliverables (v1.3-v1.4)
+    pdf/                       # PDF renders of the GTM deliverables
 ```
 
 **17 charts** across 6 model/dashboard tabs. All charts use `fix_chart_rendering()` to patch the openpyxl application tag for reliable rendering in desktop Excel.
@@ -277,7 +285,30 @@ Five specialized research reports in `.planning/phases/01-deep-macro-tokenomics-
 
 ---
 
+## GTM Research (v1.2-v1.4)
+
+Milestones v1.2-v1.4 added go-to-market research on top of the economic models:
+
+- **v1.2 root docs:** `research-model-selection.md` (open-model landscape) and `strategy-kimi-k25-agent-inference.md` (agent-inference strategy)
+- **v1.3-v1.4 deliverables** in `output/`: message house, developer personas, competitive feature matrix, provider landscape map, agent pricing analysis, agent-native pitch, objection playbook, channel strategy, partnership playbook, PLG growth model, and the v1.4 engineering backlog (PDF renders in `output/pdf/`)
+
+**Freshness note (2026-07-18):** the two v1.2 root docs were originally written against **Kimi K2.5** (Feb 2026) and have since been **re-baselined to the July 2026 model landscape** (headers dated 2026-07-18; major claims audit-verified as current). The current landscape they reflect: Moonshot shipped K2.6, then **Kimi K2.7-Code** (June 2026: 1T MoE, 32B active, 256K context, Modified MIT, coding-agent-focused), and launched **Kimi K3** via app/API on July 16, 2026 (2.8T-param MoE, 896 experts with 16 active per token, 1M-token context, native multimodal, always-on thinking mode, $3/$15 per M tokens with $0.30 cached input; full open weights scheduled by July 27, 2026 -- the largest open-weight release to date). K3 debuted #1 in Frontend Code Arena (1,679), ahead of Claude Fable 5 (1,631) and GPT-5.6 Sol (1,618) -- the first open model at the closed-frontier tier. The v1.3-v1.4 GTM deliverables in `output/` still predate the ~$80M funding total and the GAIB partnership described above.
+
+---
+
 ## Version History
+
+### v1.4 -- GTM Engineering Execution (started 2026-04-02, in progress)
+
+- Engineering backlog: 18 must-ship and 14 nice-to-have items (`output/gonka_v14_engineering_backlog.md`)
+
+### v1.3 -- OpenClaw Go-To-Market Research (2026-04-01)
+
+- 10 GTM deliverables in `output/` with PDF renders: positioning, personas, pricing, competitive analysis, channels, partnerships, and PLG growth model
+
+### v1.2 -- Kimi K2.5 Integration & Agent Inference (2026-02-13)
+
+- Open-model selection research and Kimi agent-inference strategy (re-baselined to the July 2026 landscape on 2026-07-18; see GTM Research freshness note)
 
 ### v1.1 -- Economic Modeling (2026-02-07)
 

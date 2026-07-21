@@ -1,7 +1,7 @@
 # Gonka Channel Strategy: Reaching OpenClaw Developers
 
-**Version:** 1.0
-**Date:** 2026-04-01
+**Version:** 1.3
+**Date:** 2026-07-18 (revised from 2026-04-01 original; model references, ecosystem data, and channel facts re-verified against live sources as of 2026-07-18)
 **Classification:** Internal -- canonical channel strategy for all Gonka developer acquisition efforts
 **Dependencies:** Phase 16 developer personas (gonka_developer_personas.md), Phase 17 messaging (gonka_message_house.md, gonka_objection_playbook.md)
 **Requirement:** GTM-01
@@ -19,6 +19,8 @@ Key decisions:
 - **P0 channels are ecosystem channels:** OpenClaw GitHub, OpenClaw Discord, and the OpenClaw provider directory are where the target developers already are. Gonka must be present where developers make provider decisions, not where Gonka wishes they were.
 - **Content leads with heartbeat cost reduction (73%)** per the Phase 17 message house positioning, not decentralization or token economics.
 - **Anti-metrics are explicitly tracked** to prevent vanity metric theater from replacing adoption measurement.
+- **A third-party broker/gateway retail layer now fronts developer access** (GonkaBroker, GonkaGate, JoinGonka, OpenGNK, gonka.to) with fixed-USD pricing. Treat these as distribution partners and attribution sources, and keep Gonka's own cost claims consistent with their published rates.
+- **Security-first posture in all OpenClaw channels.** The early-2026 ClawHavoc supply-chain attack (1,184 malicious ClawHub skills per Antiy CERT -- characterized in current security write-ups as roughly one in five packages in the ecosystem at time of discovery -- ~247K confirmed installs, ~$2.3M in reported crypto theft, payloads including Atomic macOS Stealer and VMProtect-packed Windows infostealers; Koi Security's initial Feb 1, 2026 audit found 341 malicious skills, later revised upward to 824 before Antiy CERT's fuller 1,184+ count) plus the Clawdbot→Moltbot→OpenClaw rename churn left the community applying crypto-scam-level scrutiny to any new OpenClaw-adjacent tool -- especially anything crypto-adjacent. And the problem is not contained: despite ClawHub's VirusTotal/ClawScan integration, Unit 42's Feb-May 2026 analysis found malicious skills persistent and actively evading scanning (including a Base64 curl-pipe-bash dropper padded with 22 MB of filler to exceed content-analysis size limits). Every Gonka touchpoint in these channels must lead with provenance, open source, and verifiable claims -- a signed, provenance-verified Gonka skill/MCP listing is a trust asset precisely because registry scanning alone is demonstrably insufficient.
 
 ---
 
@@ -70,6 +72,7 @@ Summary of all channels with priority tiers, personas, and success metrics.
 | OpenClaw Provider Directory | P0 | All | Provider listing, config docs | Always available | Direct to all OpenClaw users | Listed provider status; config page views | AI/Dev |
 | OpenClaw GitHub (issues, discussions, PRs) | P0 | Weekend Builder, Startup CTO | PRs, issue responses, discussion posts | Daily monitoring | Direct to active OpenClaw contributors | Mentions in issues; PR for built-in support merged | AI/Dev |
 | OpenClaw Discord | P0 | Weekend Builder | Help answers, config snippets, presence | Daily | Direct to active OpenClaw community | API key signups attributed to Discord | AI/Dev |
+| MCP Registry (Gonka MCP server listing) | P1 | Startup CTO, Weekend Builder | MCP server + registry listing, integration docs | Always available | All major agent hosts (ChatGPT, Gemini, Copilot, VS Code, Cursor) | Registry-listing-to-signup conversion; MCP-originated API keys | AI/Dev |
 | Technical Blog (docs.gonka.ai/blog) | P1 | Startup CTO | Tutorials, benchmarks, comparisons | Weekly | SEO + social sharing | Blog-to-signup conversion rate | AI/Dev |
 | Twitter/X AI Developer Community | P1 | All | Benchmark results, cost comparisons, launch posts | 3-5x/week | Broad AI dev audience | Referral traffic to docs.gonka.ai | AI/Dev |
 | Reddit (r/LocalLLaMA, r/OpenClaw) | P1 | Weekend Builder | Comparison posts, launch threads, help responses | 2-3x/week | Engaged AI dev community | Upvotes + API key signups from Reddit referrals | AI/Dev |
@@ -93,7 +96,7 @@ P0 channels are where OpenClaw developers already make provider decisions. Gonka
 ### OpenClaw Provider Directory
 
 **Platform:** OpenClaw documentation site / provider configuration docs
-**URL:** openclaw.dev/docs (or equivalent official docs)
+**URL:** docs.openclaw.ai
 
 **Why P0:** The provider directory is where developers go when they decide to add, change, or evaluate inference providers. If Gonka is not listed with a working configuration snippet, it does not exist to the OpenClaw developer. This is the single highest-leverage channel -- zero marginal cost, permanent presence, direct access to the moment of provider decision.
 
@@ -101,7 +104,7 @@ P0 channels are where OpenClaw developers already make provider decisions. Gonka
 
 **Content types:**
 - Provider listing page with `openclaw.json` configuration snippet (3 fields: `baseUrl`, `apiKey`, `api: "openai-completions"`)
-- Model card for `gonka/kimi-k2.5` with capabilities, context window (131K), and benchmark summary
+- Model cards for the current Kimi lineup: `gonka/kimi-k2.6` (workhorse tier) and `gonka/kimi-k2.7-code` (coding/agent tier), each with 256K context window and benchmark summary; add `gonka/kimi-k3` once open weights land (promised ~July 27, 2026)
 - Troubleshooting guide addressing the two-step provider gotcha (provider definition + model allowlisting)
 
 **Cadence:** Always available; updated with each Gonka feature release.
@@ -117,7 +120,9 @@ P0 channels are where OpenClaw developers already make provider decisions. Gonka
 **Platform:** GitHub -- github.com/openclaw (organization repos)
 **URL:** OpenClaw main repository issues, discussions, and PRs
 
-**Why P0:** OpenClaw's GitHub is where active developers report issues, request features, and discuss provider options. Developers who search "custom provider" or "cheaper inference" in GitHub issues will find (or not find) Gonka. A merged PR adding Gonka as a built-in provider would eliminate the manual configuration barrier that currently makes OpenRouter the path of least resistance.
+**Why P0:** OpenClaw's GitHub is where active developers report issues, request features, and discuss provider options (375K+ stars as of mid-July 2026 -- re-pull the live count before citing -- GitHub's most-starred project and the fastest-growing repository in history, passing React's ~243K in ~60 days; 2,500+ contributors; the foundation's own July 2026 metrics report 4.5M new claws per week and ~30,000 ClawCon registrations across 34 events in 16 countries; the older ~3.2M monthly-active-user figure was an April 2026 estimate). A fork ecosystem is emerging around the repo -- sandboxed-execution security forks, Chinese adaptations wired to DeepSeek models and WeChat, and OpenClaw-based commercial services from Tencent and Z.ai (relevant because Z.ai's GLM-5.2 runs on Gonka's network) -- meaning "OpenClaw developers" increasingly includes fork and downstream-distribution users. Developers who search "custom provider" or "cheaper inference" in GitHub issues will find (or not find) Gonka. A merged PR adding Gonka as a built-in provider would eliminate the manual configuration barrier; built-in coverage now spans 18+ providers, and onboarding defaults to openrouter/auto (mediated by ClawRouter), which makes OpenRouter the path of least resistance.
+
+**Governance reality check:** The OpenClaw Foundation formally launched July 8, 2026 as a 501(c)(3) (chaired by Dave Morin with Peter Steinberger; first full-time team of ten), with published leadership, paid maintainers, and an MIT-license commitment. Per the foundation's own launch post, the published major donors are Offline Holdings, Lobster Computer Company, University of Michigan (reported largest), and OpenAI, with more "in the pipeline" -- no "lead sponsor" is designated. Microsoft (Microsoft Scout) and NVIDIA (NemoClaw) are partners, not major donors; partners also include Tencent, GitHub, Red Hat (enterprise open source and supply-chain security), Atlassian, Vercel, Cloudflare, Blacksmith, and Convex. The conflicted-gatekeeper concern stands, stated precisely: OpenAI is a published major donor, employs the project's creator (Steinberger runs "Claw Labs" inside OpenAI), supports inference, and shipped Codex Security hardening -- and partner-maintainers ship their own OpenClaw distributions (NVIDIA NemoClaw, Microsoft Scout, Tencent maintaining security/stability/ClawHub). The built-in-provider PR path therefore still runs through a foundation whose largest corporate backers operate rival inference businesses. Plan for a slow or blocked PR: keep the custom-provider config path and the MCP server as parallel routes that need no gatekeeper approval. One new opening: the foundation is convening vendor-neutral standards councils on agent identity, agent profiles, evals, and enterprise deployment -- council participation (agent identity in particular intersects wallet-authenticated x402 payments) is an engagement route that does not run through the conflicted PR path.
 
 **Primary persona(s):** Weekend Builder (searches for cost solutions in issues), Startup CTO (evaluates providers through GitHub discussions and PR quality).
 
@@ -138,7 +143,7 @@ P0 channels are where OpenClaw developers already make provider decisions. Gonka
 ### OpenClaw Discord
 
 **Platform:** Discord
-**URL:** OpenClaw community Discord server
+**URL:** Official OpenClaw Discord ("Friends of the Crustacean") -- discord.com/invite/clawd, ~175K members as of July 2026 (crossed 100K within ~6 weeks of its January 2026 founding)
 
 **Why P0:** OpenClaw Discord is the real-time community where developers ask for help, share configurations, and discuss provider experiences. The Weekend Builder who is frustrated with their OpenRouter bill at 11pm on a Saturday asks for help here, not on Hacker News. Presence in this channel means being part of the conversation when provider decisions happen organically.
 
@@ -154,13 +159,32 @@ P0 channels are where OpenClaw developers already make provider decisions. Gonka
 
 **Success metric:** API key signups attributed to Discord conversations; number of developers who mention using Gonka in Discord.
 
-**Example content piece:** Response to "my agent costs $40/month on OpenRouter and it only handles 50 messages/day": "Half your bill is heartbeats -- your agent resends full context every 30 minutes. Gonka keeps context server-side, so heartbeats send only new data. Same agent, same code, one config change -- your bill drops to ~$13/month. Here is the config: [snippet]."
+**Example content piece:** Response to "my agent bill on OpenRouter keeps climbing and it only handles 50 messages/day": "Half your bill is heartbeats -- your agent resends full context every 30 minutes. Gonka keeps context server-side, so heartbeats send only new data. Same agent, same code, one config change. Gonka is currently the cheapest tracker-listed provider for K2.6/K2.7 [link to pricepertoken.com/endpoints/gonka] -- current rates reflect network subsidy and utilization and may change. Here is the config: [snippet]." Do not quote fixed dollar-per-month savings figures (the April 2026 "$40 to $13/month" scenario numbers are banned per pricing analysis v2.0); competitor baselines must be cached-adjusted since OpenRouter passes through prompt caching at 10-20% of input price.
 
 ---
 
 ## P1 Channels
 
 P1 channels have broad reach into AI developer communities but require content creation investment. These channels build awareness beyond the OpenClaw ecosystem and establish Gonka's credibility through technical content.
+
+---
+
+### MCP Registry (Gonka MCP Server)
+
+**Platform:** Official MCP Registry + Gonka-hosted MCP server
+**URL:** MCP Registry listing (registry.modelcontextprotocol.io)
+
+**Why P1:** MCP has become the de facto agent interoperability standard -- 110M monthly SDK downloads (per co-creator David Soria Parra, April 2026), 41% of surveyed software orgs in limited-or-broad production with MCP servers (Stacklok 2026), and first-party support across ChatGPT, Gemini, Microsoft Copilot, VS Code, Cursor, and GitHub. (The 110M downloads figure was presented at the 2026 MCP Dev Summit, up from 97M in December 2025.) MCP was donated to the Agentic AI Foundation (Linux Foundation) in December 2025 with multi-vendor governance (Anthropic, OpenAI, Block), and AAIF reported reaching 170 member organizations within four months of the donation -- so a registry listing gives Gonka discoverability inside every major agent host, independent of OpenClaw Foundation gatekeeping, under demonstrably neutral governance. Three caveats for execution: (1) the official registry is still pre-GA (preview since Sept 2025, API frozen at v0.1, no durability guarantees) and published server counts conflict (one May 2026 source says 8,400+ verified; re-pull from registry.modelcontextprotocol.io before citing); (2) most real-world discovery happens via larger third-party registries (as of July 2026: Glama 57,013 -- now by far the largest third-party directory and the top listing priority -- PulseMCP 18,240+, mcp.so ~20,200, Smithery 7,000+; one aggregate tracker counts 76,803 across all five as of Jul 17, 2026) -- list Gonka on those too; (3) build the Gonka MCP server against the 2026-07-28 spec revision (RC locked May 21, 2026; the FINAL spec ships July 28 -- ten days out -- with Tier 1 SDK support expected within the validation window). It is the largest revision since launch: stateless protocol core (runs behind plain round-robin load balancers), Extensions framework, Tasks for long-running work, MCP Apps (server-rendered UIs), OAuth/OIDC-aligned authorization hardening, and a formal deprecation policy -- the stateless core and Tasks features are directly relevant to an inference+sessions server design. This was ranked a nice-to-have in earlier planning (v1.4 backlog); as of mid-2026 it is a primary distribution channel.
+
+**Primary persona(s):** Startup CTO (evaluates via standard tooling), Weekend Builder (discovers through host-native MCP browsers).
+
+**Content types:**
+- Gonka MCP server (inference + sessions tools) with registry listing and provenance/signing metadata
+- Integration docs per host (Cursor, VS Code, ChatGPT)
+
+**Cadence:** Always available; updated with each Gonka API release.
+
+**Success metric:** Registry-listing-to-signup conversion; API keys created via MCP-originated flows.
 
 ---
 
@@ -177,7 +201,7 @@ P1 channels have broad reach into AI developer communities but require content c
 - Cost comparison posts: "OpenClaw Inference Costs: Gonka vs OpenRouter vs Together AI" with heartbeat savings calculator
 - Quickstart guides: "OpenClaw + Gonka in 5 Minutes"
 - Deep-dive technical posts: "Agent Sessions: Why Your Agent Pays for Context Twice"
-- Benchmark results: K2.5 performance on SWE-Bench, tool calling stability, latency measurements
+- Benchmark results: K2.7-Code performance (+21.8% on Kimi Code Bench v2 vs K2.6, ~30% fewer reasoning tokens), tool calling stability, latency measurements; K3 coverage once weights land
 
 **Cadence:** Weekly (1 post per week minimum).
 
@@ -192,12 +216,12 @@ P1 channels have broad reach into AI developer communities but require content c
 **Platform:** Twitter/X
 **URL:** twitter.com/gonka_ai (or equivalent)
 
-**Why P1:** Twitter/X has the largest concentration of AI developers discussing inference providers, model benchmarks, and agent frameworks in real time. The AI developer Twitter community (accounts like @_philschmid, @kaboroevich, @laboroai) drives conversations about model quality and infrastructure costs that reach tens of thousands of developers. Gonka's benchmark results and cost comparisons are shareable Twitter content by nature.
+**Why P1:** Twitter/X has the largest concentration of AI developers discussing inference providers, model benchmarks, and agent frameworks in real time. The AI developer Twitter community (verified AI-infra voices such as @_philschmid; build a vetted list before outreach -- earlier drafts named accounts that turned out to be corporate or unverifiable) drives conversations about model quality and infrastructure costs that reach tens of thousands of developers. Gonka's benchmark results and cost comparisons are shareable Twitter content by nature.
 
 **Primary persona(s):** All three personas discover content on Twitter, but Weekend Builder and Privacy-First Builder are most likely to engage with cost and privacy threads respectively.
 
 **Content types:**
-- Benchmark result graphics: K2.5 vs GPT-4o vs Claude on SWE-Bench, tool calling, agent tasks
+- Benchmark result graphics: Kimi K2.7-Code / K3 vs GPT-5.x vs Claude Fable 5 / Opus 4.8 on coding and agent benchmarks -- the models K3 is itself benchmarked against (AA Index: K3 57, Opus 4.8 56, Fable 5 ~60). GPT-4o was retired from ChatGPT April 2026 and Opus 4.5 is superseded -- comparisons against either read as stale
 - Cost comparison threads: heartbeat overhead breakdown with specific dollar amounts
 - Launch announcements: new features, new blog posts, partnership milestones
 - Community engagement: replies to developer questions about inference costs, provider comparisons
@@ -215,7 +239,7 @@ P1 channels have broad reach into AI developer communities but require content c
 **Platform:** Reddit
 **URL:** reddit.com/r/LocalLLaMA, reddit.com/r/OpenClaw (and related subreddits)
 
-**Why P1:** Reddit is where OpenClaw developers discover new providers through organic community discussion. r/LocalLLaMA (1M+ subscribers) is the largest community of developers interested in open-source model inference. r/OpenClaw hosts direct provider comparison discussions. The Weekend Builder persona's primary adoption trigger is seeing a cost comparison post on Reddit (developer personas: Weekend Builder, Adoption Triggers).
+**Why P1:** Reddit is where OpenClaw developers discover new providers through organic community discussion. r/LocalLLaMA (~775K members as of July 2026) is the largest community of developers interested in open-source model inference. r/OpenClaw hosts direct provider comparison discussions (a smaller r/OpenClawInstall also exists; member counts for both are unverified -- pull from Reddit directly before citing). The Weekend Builder persona's primary adoption trigger is seeing a cost comparison post on Reddit (developer personas: Weekend Builder, Adoption Triggers).
 
 **Primary persona(s):** Weekend Builder (primary -- discovers through cost comparison posts), Privacy-First Builder (secondary -- discusses privacy in technical subreddits).
 
@@ -223,13 +247,13 @@ P1 channels have broad reach into AI developer communities but require content c
 - Provider comparison posts: "I compared OpenRouter, Together AI, and Gonka for my OpenClaw agent -- here are the real costs"
 - Launch posts: "Show r/LocalLLaMA: Gonka -- agent-native inference with server-side sessions"
 - Help responses: answers to "how do I reduce my OpenClaw inference costs?" threads
-- AMA or Q&A posts addressing developer questions about K2.5, sessions, privacy
+- AMA or Q&A posts addressing developer questions about the Kimi model lineup (K2.6/K2.7-Code/K3), sessions, privacy
 
 **Cadence:** 2-3 posts/responses per week; daily monitoring for relevant threads.
 
 **Success metric:** Upvotes (indicates community validation) plus API key signups from Reddit referral links.
 
-**Example content piece:** Post in r/LocalLLaMA: "I tracked my OpenClaw agent costs for a month -- heartbeats were 51% of my bill. Switching to a provider with session persistence dropped my Active tier cost from $218/month to $59/month. Here is the config and full cost breakdown: [link]."
+**Example content piece:** Post in r/LocalLLaMA: "I tracked my OpenClaw agent costs for a month -- heartbeats were 51% of my bill. Switching to a provider with session persistence cut the heartbeat share to near zero; Gonka is currently the cheapest listed provider for K2.6/K2.7 on the public trackers [link], though current rates reflect network subsidy and utilization. Here is the config and full cost breakdown: [link]." (Use tracker-verified relative claims, not the April 2026 "$218 to $59/month" scenario figures, which are banned from external use per pricing analysis v2.0.)
 
 ---
 
@@ -313,6 +337,10 @@ P2 channels have meaningful reach but higher production cost or lower conversion
 
 **Why P2:** Crypto-native communities reach GPU hosts (supply side) and GNK token holders (ecosystem stakeholders). These audiences matter for network growth but are not the primary developer adoption channel. Content here uses Phase 17 vocabulary guidelines -- no developer-facing language; focus on host economics and network growth. This is the primary channel for the 30% crypto allocation.
 
+Several 2026 developments give this channel concrete material: (1) Gonka's funding story -- ~$80M raised as of early 2026, including Bitfury's $12M strategic round (Nov 2025) and its $50M commitment (Dec 2025, first draw from Bitfury's $1B ethical-AI fund); (2) the GAIB × Gonka "GAIC" enrollment, now open to the public market -- GAIB handles GPU procurement (H100/H200/B200), node ops, and reward routing, with a 10%-of-mined-GNK insurance pool; (3) a third-party GPU-rental partner ecosystem: Spheron runs dedicated Gonka bare-metal pages and Gcore has a Gonka GPU rental landing page; (4) planned Asia expansion (Japan, South Korea) by end of 2026. All are credibility anchors for host recruitment.
+
+**Watchlist -- agent-native payments (x402):** The x402 Foundation (Coinbase + Linux Foundation, announced April 2026) reached formal operational launch on July 14, 2026 with 40 member organizations across tiers -- premier members now span the card networks and major PSPs: Visa, Mastercard, American Express, Stripe, Adyen, Fiserv, plus AWS, Google, Cloudflare, Coinbase, Circle, Ripple, Shopify, MoonPay, and the Monad/Solana/Stellar foundations. Volume is no longer small: in the 30 days ending ~July 15, 2026 the protocol processed ~75M transactions moving ~$24M (~$800K/day) between ~94K buyers and ~22K sellers, and Chainalysis reports 95% of payment value is now in transactions above $1 -- the earlier "mostly testing/gamed micropayments" caveat is outdated. Settlement is predominantly USDC (all-USDC on Base; ~56.7% Base / ~37.1% Solana split by volume). x402 has also shipped at the edge: AWS added GA x402 support in CloudFront and AWS WAF (~late June 2026), and Cloudflare opened a waitlist for its Monetization Gateway -- meaning an x402-gated Gonka inference endpoint becomes deployable behind commodity edge infra. BlockRunAI's ClawRouter already sells OpenClaw inference via USDC micropayments over x402. Note that x402 is now one of three layers in the 2026 agentic-payments stack: x402 handles machine-to-machine execution/micropayments, AP2 -- originated by Google, donated to the FIDO Alliance in July 2026, so now community-led rather than Google-stewarded -- handles authorization via signed mandates (60+ partners; in production with Gemini Spark since May 2026), and OpenAI/Stripe's ACP handles agent checkout (live in ChatGPT). AP2 v0.2's "Human Not Present" payments let agents execute autonomously, which blurs the x402=execution / AP2=authorization line somewhat. For agent-procured inference, x402 is still the correct layer, but position the Gonka x402 story within this stack -- enterprise buyers will ask about AP2/ACP. The "API keys only, never crypto" rule stays absolute for human developer channels, but Gonka -- already a crypto network -- has a natural x402 story for the agent-as-customer segment. Track as a near-term channel, not just a watchlist item; a competitor is already occupying the "agent-native payments for OpenClaw" position.
+
 **Primary persona(s):** Privacy-First Builder (overlaps with crypto-native privacy communities).
 
 **Content types:**
@@ -359,8 +387,10 @@ P3 channels are expensive, slow to convert, or dependent on prerequisites (publi
 
 ### AI/Web3 Conferences
 
-**Platform:** Token2049, ETHDenver, AI Engineer Summit, NeurIPS Industry Day
+**Platform:** Token2049, ETHDenver, AI Engineer events, NeurIPS Industry Day, and the Agentic AI Foundation's 2026 events program -- AGNTCon and MCP Dev Summit / MCPCon North America and Europe
 **URL:** Various conference venues
+
+**Timing note:** AI Engineer World's Fair 2026 already ran June 29 - July 2, 2026 in San Francisco (Moscone West, ~6,000 attendees, 29 tracks). CFP targeting should aim at fall-2026 events and the 2027 cycle. Given this document elevates the MCP Registry to a primary distribution channel, AAIF's AGNTCon/MCPCon events (announced via Linux Foundation press, 2026) are the most directly on-target venues -- talks, hackathons, and registry visibility -- and belong at the top of the CFP list alongside AI Engineer events. Note the event ran pre-fair hackathons starting June 28 -- hackathon presence is now a standard low-cost devrel motion at AI Engineer events and fits the Weekend Builder persona better than a booth; include it in the fall-2026/2027 plan.
 
 **Why P3:** Conferences provide high-quality networking with Startup CTOs and enterprise decision-makers, but cost $5,000-50,000+ per event (travel, sponsorship, booth). ROI is uncertain until Gonka has published pricing, case studies, and a production track record to present. P3 because prerequisites are not met.
 
@@ -375,7 +405,7 @@ P3 channels are expensive, slow to convert, or dependent on prerequisites (publi
 
 **Success metric:** Conference-to-API-key conversion within 30 days (not badge scans or booth traffic).
 
-**Example content piece:** 20-minute talk at AI Engineer Summit: "The Hidden Cost of Agent Heartbeats" with live demo showing session persistence reducing costs in real time.
+**Example content piece:** 20-minute talk at an AI Engineer event (2027 cycle): "The Hidden Cost of Agent Heartbeats" with live demo showing session persistence reducing costs in real time.
 
 ---
 
@@ -419,7 +449,7 @@ P3 channels are expensive, slow to convert, or dependent on prerequisites (publi
 
 **Success metric:** Host signup conversion rate (supply-side metric, not demand-side).
 
-**Example content piece:** "Gonka Host Guide: Earn GNK by serving K2.5 inference on your H100" -- a guide targeting GPU operators in DePIN communities, using crypto-native vocabulary per Phase 17 context rules.
+**Example content piece:** "Gonka Host Guide: Earn GNK by serving Kimi inference on your H100/H200/B200" -- a guide targeting GPU operators in DePIN communities, using crypto-native vocabulary per Phase 17 context rules and referencing the GAIB partnership as the managed-hardware onramp.
 
 ---
 
@@ -431,7 +461,7 @@ Gonka's channel investment follows a 70/30 split: 70% of effort on AI/developer 
 
 | Category | Channels | % of P0+P1 Investment | Rationale |
 |----------|---------|----------------------|-----------|
-| **AI/Developer (70%)** | OpenClaw Provider Directory, OpenClaw GitHub, OpenClaw Discord, Technical Blog, Twitter/X AI Community, Reddit, dev.to/Hashnode | ~75% of P0+P1 channels | These channels reach the developers who will become API-active users. Developer adoption drives inference demand, which drives network value, which attracts GPU hosts. The flywheel starts with developers. |
+| **AI/Developer (70%)** | OpenClaw Provider Directory, OpenClaw GitHub, OpenClaw Discord, MCP Registry, Technical Blog, Twitter/X AI Community, Reddit, dev.to/Hashnode | ~75% of P0+P1 channels | These channels reach the developers who will become API-active users. Developer adoption drives inference demand, which drives network value, which attracts GPU hosts. The flywheel starts with developers. |
 | **Crypto (30%)** | Crypto Twitter/DePIN Communities, AI/Web3 Conferences, DePIN/Web3 Dev Forums | ~25% of P0+P1+P2+P3 channels | Crypto channels reach GPU hosts and token holders. Host supply is necessary for network reliability, but supply without demand is empty infrastructure. Crypto channel content focuses on host economics and network growth, not developer acquisition. |
 
 ### Why 70/30 and Not 50/50
@@ -506,7 +536,7 @@ Every content piece maps to an AAARRRP journey stage, a content theme from the m
 | AAARRRP Stage | Content Theme | Content Type | Primary Channel | Cadence | Persona Focus |
 |---------------|--------------|-------------|----------------|---------|---------------|
 | **Awareness** | "Why Gonka exists" -- heartbeat overhead costs developers 44-85% of their bill | Comparison blog posts, benchmark graphics, Reddit threads | Blog, Reddit, Twitter/X | Weekly | All personas |
-| **Awareness** | K2.5 agent performance -- 76.8% SWE-Bench, 200-300 tool calls stable | Benchmark result graphics, comparison tables | Twitter/X, Blog | Bi-weekly | Weekend Builder, Startup CTO |
+| **Awareness** | Current Kimi agent performance -- K2.7-Code (+21.8% on Kimi Code Bench v2 vs K2.6), K3 once weights land | Benchmark result graphics, comparison tables | Twitter/X, Blog | Bi-weekly | Weekend Builder, Startup CTO |
 | **Awareness** | Privacy without self-hosting -- no content filtering, no central logging | Privacy architecture deep-dive, honest limitations | Blog, Privacy Forums, Lobsters | Monthly | Privacy-First Builder |
 | **Acquisition** | "Add Gonka in 90 seconds" -- 3 fields in openclaw.json, no wallet, no tokens | Quickstart guide, config snippet with copy button | Docs, OpenClaw Discord, dev.to | Always available | Weekend Builder |
 | **Acquisition** | Architecture for reliability-focused evaluation -- redundant nodes, health-checked routing | Architecture overview, staging deployment guide | Docs, Blog | Always available | Startup CTO |
@@ -544,7 +574,7 @@ The launch quarter prioritizes making developers aware Gonka exists and removing
 | 3-4 | Comparison post: "Gonka vs OpenRouter vs Together AI" | Reddit, Blog | Awareness |
 | 5-6 | Video tutorial: config + first agent call | YouTube, Twitter/X | Activation |
 | 5-6 | Session persistence deep-dive | Blog | Retention |
-| 7-8 | Benchmark results: K2.5 agent performance | Twitter/X, Blog | Awareness |
+| 7-8 | Benchmark results: current Kimi (K2.7-Code/K3) agent performance | Twitter/X, Blog | Awareness |
 | 7-8 | Privacy architecture post | Blog, Lobsters | Awareness (Privacy-First) |
 | 9-10 | Cost calculator tool launch | Docs site | Retention |
 | 9-10 | Reddit AMA / community Q&A | Reddit | Awareness + Acquisition |
@@ -560,7 +590,7 @@ Q2 shifts focus to converting acquired developers into API-active users and reta
 - Bi-weekly deep-dive blog posts on sessions, tiering, memory API, webhooks
 - Monthly developer spotlights and cost savings case studies
 - Launch pricing page and ROI calculator
-- Begin conference evaluation (submit CFPs for Q3 events)
+- Begin conference evaluation (submit CFPs for fall-2026 and 2027-cycle events; AI Engineer World's Fair 2026 has already passed)
 - Cross-post best-performing blog content to dev.to/Hashnode
 
 ### Q3+: Maturity Quarters
@@ -589,15 +619,15 @@ Every piece of Gonka developer-facing content must follow these rules, derived f
 
 4. **Include an OpenClaw config snippet in every tutorial and guide.** The "product" in every content piece is the 3-field `openclaw.json` configuration: `baseUrl`, `apiKey`, `api: "openai-completions"`. If the content does not show how to use Gonka with OpenClaw, it is not actionable.
 
-5. **Address at least one objection from the playbook** (gonka_objection_playbook.md) in every comparison post. Use the ACE framework (Acknowledge, Counter, Evidence). The most common objections to address: "never heard of Gonka" (universal), "is this a crypto thing?" (universal), "decentralized = unreliable" (Startup CTO).
+5. **Address at least one objection from the playbook** (gonka_objection_playbook.md) in every comparison post. Use the ACE framework (Acknowledge, Counter, Evidence). The most common objections to address: "never heard of Gonka" (universal), "is this a crypto thing?" / "is this a scam?" (universal -- amplified post-ClawHavoc and the Clawdbot→Moltbot→OpenClaw rename churn; the community now applies scam-level scrutiny to any new OpenClaw-adjacent tool), "decentralized = unreliable" (Startup CTO).
 
 6. **Each content piece targets one primary persona and one AAARRRP stage.** This is not optional. If a content piece tries to address all three personas simultaneously, it addresses none effectively. The Content-Journey Matrix above specifies which persona and stage each content type targets.
 
 ### Quality Standards
 
 - All cost claims cite specific pricing analysis data (Section 3 for tier costs, Section 5 for Gonka hidden cost analysis, Section 6 for monthly projections)
-- All benchmark claims cite competitive feature matrix (Section 3 for K2.5, Section 7 for uptime)
-- Honest concessions are included for Gonka's known weaknesses: single model (K2.5), no published SLA, no published pricing, TEE not yet built
+- All benchmark claims cite competitive feature matrix (Section 3 for model benchmarks, Section 7 for uptime) -- the matrix was re-baselined July 2026 (GPT-5.4/5.5/5.6 GA, Opus 4.8/Sonnet 5/Fable 5 pricing, GPT-4o retirement, Together K2.6/K2.7-Code pricing) and is safe to cite as-is
+- Honest concessions are included for Gonka's known weaknesses: narrow model lineup (Kimi family, plus Z.ai GLM-5.2), no published SLA, no published pricing, TEE not yet built
 - Content that looks like a DeFi protocol page instead of a cloud platform page is rejected and rewritten
 - Visual style reference: Vercel, Supabase, Cloudflare blog -- clean, developer-friendly, no crypto aesthetics
 
@@ -610,7 +640,7 @@ For each P0 and P1 channel, the top 3 content pieces to produce first (prioritiz
 ### P0 Channels
 
 **OpenClaw Provider Directory**
-1. Provider configuration page with copy-paste `openclaw.json` snippet and model card for `gonka/kimi-k2.5`
+1. Provider configuration page with copy-paste `openclaw.json` snippet and model cards for `gonka/kimi-k2.6` and `gonka/kimi-k2.7-code` (add `gonka/kimi-k3` once weights land)
 2. Troubleshooting guide for the two-step provider gotcha (provider definition + model allowlisting per STACK.md)
 3. "Why Gonka?" comparison table on the provider page (sessions, tiering, cost savings -- no crypto language)
 
@@ -633,7 +663,7 @@ For each P0 and P1 channel, the top 3 content pieces to produce first (prioritiz
 
 **Twitter/X AI Developer Community**
 1. Launch thread: heartbeat overhead problem + session persistence solution + cost comparison graphic + config snippet
-2. Benchmark graphic: K2.5 vs GPT-4o vs Claude on SWE-Bench and tool calling, with per-token cost comparison
+2. Benchmark graphic: Kimi K2.7-Code / K3 vs GPT-5.x vs Claude Fable 5 / Opus 4.8 on coding and tool calling, with per-token cost comparison
 3. "90-second setup" video clip: screen recording of adding Gonka to openclaw.json and making first call
 
 **Reddit (r/LocalLLaMA, r/OpenClaw)**
@@ -675,6 +705,6 @@ For each P0 and P1 channel, the top 3 content pieces to produce first (prioritiz
 
 ---
 
-*Document: gonka_channel_strategy.md | Version 1.0 | 2026-04-01*
+*Document: gonka_channel_strategy.md | Version 1.3 | 2026-07-18*
 *Dependencies: gonka_developer_personas.md (Phase 16), gonka_message_house.md (Phase 17), gonka_objection_playbook.md (Phase 17)*
 *Sources: ARCHITECTURE.md (Component 4), PITFALLS.md, gonka_competitive_feature_matrix.md, gonka_agent_pricing_analysis.md*

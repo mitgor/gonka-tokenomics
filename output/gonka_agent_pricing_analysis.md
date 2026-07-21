@@ -1,7 +1,7 @@
 # Gonka Agent Workload Pricing Analysis
 
-**Version:** 1.0
-**Date:** 2026-04-01
+**Version:** 2.0
+**Date:** 2026-07-18 (supersedes v1.0, 2026-04-01)
 **Classification:** Internal -- for leadership decision-making
 **Requirement:** COMP-02
 
@@ -11,16 +11,22 @@
 
 OpenClaw agent workloads cost 3-10x more than equivalent chatbot interactions due to three compounding factors: heartbeat context resending (full system prompt + workspace context resent every 30 minutes = 48 calls/day minimum), multi-step tool call chains (3-10 tool calls per user message), and always-on operation (agents run 24/7, not on-demand). **The dominant cost driver is heartbeats, not message volume.** A single agent with 30-minute heartbeats consumes 461K tokens/day on heartbeats alone -- nearly equal to 50 user messages worth of tokens.
 
-This analysis models three realistic OpenClaw agent workload tiers (Casual, Active, Heavy) across five providers: Together AI, DeepInfra, OpenRouter, OpenAI, and Anthropic. Three hypothetical Gonka pricing scenarios (A/B/C) are modeled to show leadership where cost advantages emerge at different price points.
+This analysis models three realistic OpenClaw agent workload tiers (Casual, Active, Heavy) across the current provider landscape: OpenRouter, DeepInfra, Together AI, DeepSeek, OpenAI, Anthropic, and Gonka.
 
-**Key findings:**
+**What changed since v1.0 (April 2026):**
 
-- At the Casual tier (~31.5M tokens/month), K2.5 providers cluster around $43-52/month. Gonka's session persistence could reduce effective cost to $10-17/month by eliminating heartbeat context resending -- a structural advantage no other provider offers.
-- At the Heavy tier (~2.94B tokens/month), heartbeat overhead accounts for 85% of total token consumption with 5-minute intervals. Gonka's session persistence advantage scales super-linearly: the more frequent the heartbeats, the larger the savings.
-- OpenAI and Anthropic's prompt caching partially mitigates heartbeat costs (reducing them by 50% and 90% respectively), but their premium model pricing ($2.50-$15.00/1M input) still results in 3-20x higher monthly spend than K2.5 providers for equivalent workloads.
-- **Gonka's pricing is TBD.** All Gonka cost projections in this document are HYPOTHETICAL scenarios. The cost advantage narrative depends entirely on final pricing decisions and the operability of server-side session persistence.
+- **Gonka pricing is now live and published -- but the network rate and the broker retail rate are very different numbers.** The v1.0 hypothetical Scenarios A/B/C ($0.25-$0.45 per 1M input) are obsolete. Gonka's network charges a single blended per-token rate recalculated every block from network utilization -- recently ~$0.0003 per 1M tokens on trackers, effectively near-zero because the network is underutilized and partly subsidized. That is NOT what developers pay: access is resold by third-party brokers (GonkaGate, JoinGonka, OpenGNK, GonkaBroker, Gonka24), and published broker retail now spans from JoinGonka's itemized $0.003 input / $0.009 output per 1M for Kimi K2.6, to Gonka24's model-specific rate card (MiniMax M2.7 $0.018/$0.072; Kimi K2.6 $0.055/$0.32; GLM-5.2 $0.095/$0.30 per 1M), to GonkaBroker's $0.30-$0.35 per 1M flat ($0.30 MiniMax M2 family, $0.35 Kimi K2 family, input=output, fixed at top-up). Note Gonka24's headline $0.018/$0.072 is the M2.7 "from" price only, not a network-wide rate. OpenGNK's earlier ~$0.00016 near-passthrough figure could not be re-verified in July and current gateway comparisons describe proxy.gonka.gg as ~133% more expensive than other Gonka gateways under a "temporary pricing adjustment" -- do not treat it as the floor. Gonka is still listed as the cheapest provider for Kimi K2.6 and MiniMax M2.7 on price trackers -- at broker rates, not at $0.0003.
+- **Gonka's model lineup churned hard in late June/July 2026.** Proposal 78 (Jun 25, 2026) removed BOTH Qwen3 235B (retired for good) and Kimi K2.6 (lost validation majority), making MiniMax M2.7 the sole PoC/base model. Proposal 79 (Jun 26) restored Kimi K2.6 at weight_scale_factor 0.9 (re-bootstrapped at epoch 311 on Jun 27) and approved GLM-5.2 (Z.ai; 1M context, open weights; weight factor 2.47, optional with no participation penalty) -- though GLM-5.2's serving status remains ambiguous as of mid-July: Gonka24 sells a rate card for it while GonkaBroker lists it "Coming soon" and Gonka's own updates page calls its status unclear. Kimi K2.6 then lost validation majority AGAIN in epochs 328-329 (concentrated guardian delegations plus provider failures), was removed via expedited Proposal 87 (Jul 15) and re-registered via Proposal 88 (Jul 16) for its second re-bootstrap, at epoch 331, keeping the 0.9 weight factor set in June. The live lineup as of Jul 18, 2026: **MiniMax M2.7 (sole PoC/base), GLM-5.2 (approved; rollout incomplete), and Kimi K2.6 (second re-bootstrap)**. Two K2.6 validation failures in three weeks: any "cheapest K2.6 provider" claim needs a reliability caveat until K2.6 stabilizes. Network volume ~100M tokens/day combined (tracker estimate, not re-verified in July).
+- **Prompt caching is now effectively universal.** OpenAI (90% cached-input discount), Anthropic (90%), Google, Together AI (default-on, 5-10x), DeepInfra, DeepSeek (cache-hit ~98% off), Moonshot's own API, and OpenRouter (passthrough) all discount cached input. The v1.0 narrative -- "heartbeat resending is unoptimized everywhere except Gonka sessions" -- no longer holds. Session persistence remains an architectural advantage, but its dollar delta versus cached competitors is much smaller than the 60-84% savings v1.0 claimed.
+- **The model landscape moved.** Kimi K2.5 has been superseded by K2.6 (Apr 20, 2026), K2.7-Code (Jun 12, 2026), and Kimi K3 (launched via app/API Jul 16, 2026; open weights due ~Jul 27, expected under Moonshot's Modified MIT license). K2.5 is now formally on the way out: Moonshot's platform docs close it to newly registered users, redirect K2.5 API traffic to K2.6, and schedule full platform sunset for August 31, 2026 -- Moonshot's first-party K2.5 rate is no longer a purchasable price, and third-party K2.5 hosting carries acute lifecycle risk. DeepSeek's Apr 24 "V4" was a Preview; the official V4 lands mid-July 2026 with China's first time-of-day API pricing -- rates DOUBLE during Beijing peak hours (9:00-12:00, 14:00-18:00) -- and legacy deepseek-chat/deepseek-reasoner endpoints retire after July 24, 2026 (see Section 4). MiniMax released M3 (Jun 1, 2026; downloadable weights on Hugging Face under the commercially restricted MiniMax Community License -- attribution required, prior authorization above $20M/yr revenue) as its new flagship above M2.7, keeping small-active-params serving economics (428B total / 23B active); mid-July reporting (The Information, single-sourced) says a 2.7T-parameter "M3 Pro" may open-source as early as Q3 2026. GPT-4o is retired; OpenAI's lineup is GPT-5.4/5.5/5.6, with GPT-5.6 GA since Jul 9, 2026 at published Sol/Terra/Luna tier pricing. Google added Gemini 3.5 Flash (May 19, 2026) at $1.50/$9.00 standard -- the $0.75/$4.50 rate widely reported as a "price cut" is the Batch/Flex tier (a standing 50%-off non-interactive tier), not the interactive rate; July coverage frames 3.5 Flash as ~3x the cost of the model it replaced. Anthropic's lineup is Opus 4.8, Sonnet 5, Haiku 4.5, and Claude Fable 5 -- with Opus-class pricing down 3x from the $15/$75 that v1.0 used, and a material reliability event: Fable 5 and Mythos 5 were offline June 12 - July 1, 2026 under a US Commerce Department export-control order.
 
-**Cross-reference:** See `output/gonka_competitive_feature_matrix.md` for the feature matrix comparing Gonka across agent-relevant dimensions including pricing model.
+**Key findings (July 2026):**
+
+- At published broker retail rates, Gonka is roughly 3-50x cheaper than the cheapest centralized hosts of the same models -- not the "2-3 orders of magnitude" a raw network-rate reading suggests. Heavy tier (~2.94B tokens/month) costs ~$132/month via Gonka24 if the workload runs on MiniMax M2.7, ~$550/month on Kimi K2.6 at Gonka24's model-specific rate, or ~$880-$1,030 via GonkaBroker, versus ~$2,800-$3,800 on cached centralized K2.6 hosts. Any figure built on the earlier "$0.018/$0.072 flat across all Gonka models" assumption understates K2.6 cost ~4x. The underlying network rate is utilization-driven and partly subsidized; it will rise as the network fills, and leadership should not market it as a stable rate.
+- K2.5 should no longer anchor any comparison: Moonshot has closed it to new users and scheduled platform sunset for Aug 31, 2026, so its former first-party rate ($0.60/$3.00) is not a current purchasable price. Third-party hosts still serve it (OpenRouter $0.375/$2.025, DeepInfra $0.45/$2.25) with ~6 weeks of shelf life and lifecycle risk. The current-generation anchor is K2.6: OpenRouter is cheapest at $0.66/$3.41 -- undercutting DeepInfra ($0.75/$3.50) on both input and output and Moonshot's first-party $0.95/$4.00 (cache-hit input ~$0.16/M). Any "cheapest centralized K2.6" anchor in Gonka savings math should use $0.66 input, not $0.75.
+- With caching universal, the session-persistence savings pitch must be recomputed against cached baselines, including Moonshot's own cached-input pricing (Kimi K3: $0.30/M cached vs $3.00/M uncached). The advantage shrinks substantially but does not disappear: sessions have no TTL, no cache-write premium (both Anthropic and now OpenAI charge write premiums on explicit caching -- 25% and 1.25x respectively), and eliminate resending entirely rather than discounting it.
+
+**Cross-reference:** See `output/gonka_competitive_feature_matrix.md` for the feature matrix comparing Gonka across agent-relevant dimensions including pricing model. (Note: the matrix's Memory/caching verdicts for Together AI and OpenRouter predate universal caching and need the same July 2026 re-run applied here.)
 
 ---
 
@@ -36,7 +42,7 @@ A chatbot sends a message and receives a response. An OpenClaw agent sends a mes
 
 Each inference call in an OpenClaw agent includes:
 
-1. **System prompt + workspace context:** ~9,600 tokens per turn. This includes the agent's personality configuration, tool definitions, workspace state, and conversation history. Source: OpenClaw pricing guides and community analysis (aicost.org, clawback.tools).
+1. **System prompt + workspace context:** ~9,600 tokens per turn. This includes the agent's personality configuration, tool definitions, workspace state, and conversation history. Source: OpenClaw pricing guides and community analysis (aicost.org, clawback.tools). (Feb 2026 community estimate; not re-verified for current OpenClaw releases.)
 2. **Heartbeat overhead:** OpenClaw agents send periodic "heartbeat" messages to maintain context and check for updates. Each heartbeat resends the full system prompt + context (~9,600 tokens). At 30-minute intervals, this is 48 heartbeats/day. At 5-minute intervals (for monitoring-heavy agents), this is 288 heartbeats/day.
 3. **Tool call chains:** Each user message triggers an average of 3-10 tool calls. Each tool call is a separate LLM inference request averaging ~500 tokens input + ~200 tokens output (700 tokens total). Source: LangChain State of Agent Engineering report; OpenClaw community benchmarks.
 
@@ -51,9 +57,9 @@ This analysis models three tiers representing real OpenClaw deployment patterns 
 ### Assumptions
 
 - **Input:output token ratio:** 1:1 blended unless provider-specific data indicates otherwise. Agent workloads tend to be input-heavy (large context, small responses), so actual costs may skew lower for providers with cheaper input tokens. Where this materially affects the analysis, it is noted.
-- **Heartbeat tokens:** Each heartbeat resends the full system prompt + workspace context (~9,600 tokens). No provider-specific caching is applied to the "raw" cost calculation; caching adjustments are applied separately in the Hidden Cost Analysis (Section 5).
+- **Heartbeat tokens:** Each heartbeat resends the full system prompt + workspace context (~9,600 tokens). Raw cost tables apply no caching; caching adjustments are applied separately in Sections 5-6.
 - **Tool call tokens:** Average 500 tokens input + 200 tokens output per tool call (700 tokens total). This is conservative; complex tool chains (web scraping, database queries) can be significantly higher.
-- **All prices as of April 2026.** Inference pricing is volatile; figures should be revalidated before use in external communications.
+- **All prices as of July 2026** unless marked otherwise. Inference pricing is volatile; figures should be revalidated before use in external communications. Gonka's rate in particular is recalculated every block and should be treated as a snapshot, not a quote.
 
 ---
 
@@ -146,44 +152,77 @@ This analysis models three tiers representing real OpenClaw deployment patterns 
 
 **Monthly total:** ~2.94B tokens (98,144,000 x 30 days)
 
-**Observation:** Heartbeats account for **84.5%** of all token consumption at this tier. The 5-minute heartbeat interval (6x more frequent than the 30-minute default) combined with 30 channel-agents creates massive overhead. This is the tier where Gonka's server-side session persistence would deliver the most dramatic cost savings -- and where the savings gap widens versus every other provider.
+**Observation:** Heartbeats account for **84.5%** of all token consumption at this tier. The 5-minute heartbeat interval (6x more frequent than the 30-minute default) combined with 30 channel-agents creates massive overhead. This is the tier where server-side session persistence and aggressive caching matter most.
 
 ---
 
 ## 4. Per-Provider Pricing Data
 
-All pricing data below was gathered from provider pricing pages, aggregator sites, and independent analyses. Every figure includes its source, date of access, and confidence level.
+All pricing data below was gathered from provider pricing pages, aggregator sites, and independent analyses. Every figure includes its source and confidence level.
 
-### K2.5 Pricing Across Providers (April 2026)
+### Kimi-Family Pricing Across Providers (July 2026)
 
-| Provider | Model | Input/1M tokens | Output/1M tokens | Blended/1M (1:1 ratio) | Source | Date | Confidence |
-|----------|-------|-----------------|-------------------|------------------------|--------|------|------------|
-| Together AI | Kimi K2.5 | $0.50 | $2.50 | $1.50 | together.ai/pricing | Apr 2026 | MEDIUM |
-| DeepInfra | Kimi K2.5 | $0.45 | $2.25 | $1.35 | Artificial Analysis (artificialanalysis.ai) | Apr 2026 | MEDIUM |
-| OpenRouter | Kimi K2.5 (via providers) | ~$0.60 | ~$2.50 | ~$1.55 | openrouter.ai + 5.5% credit markup | Apr 2026 | MEDIUM |
+Kimi K2.5 (released Jan 2026) is now three generations behind Moonshot's lineup (K2.6 -> K2.7-Code -> K3) and formally sunsetting: Moonshot discontinued older kimi-k2-series API models on May 25, 2026, closed K2.5 to newly registered users after the K3 launch (Jul 16), redirects K2.5 API traffic to K2.6, and has scheduled full platform sunset for August 31, 2026. Together AI no longer lists K2.5 on its serverless pricing page. K2.5 rows below are retained for continuity only; all worked examples and recommendations in this revision are based on K2.6.
 
-### Frontier Model Pricing (April 2026)
+| Provider | Model | Input/1M | Cached Input/1M | Output/1M | Blended/1M (1:1) | Source | Confidence |
+|----------|-------|----------|-----------------|-----------|------------------|--------|------------|
+| OpenRouter | Kimi K2.5 | $0.375 | passthrough (10-20% of input on supported upstreams) | $2.025 | $1.20 | openrouter.ai | HIGH |
+| DeepInfra | Kimi K2.5 | $0.45 | -- | $2.25 | $1.35 | Artificial Analysis | HIGH |
+| Moonshot (official) | Kimi K2.5 | $0.60 (closed to new users; sunset Aug 31, 2026) | $0.10 (cache hit) | $3.00 | $1.80 | benchlm.ai / platform.kimi.ai | HIGH (rate); model delisting |
+| SiliconFlow | Kimi K2.5 | $0.23 | -- | $3.00 | $1.62 | Artificial Analysis | MEDIUM |
+| OpenRouter | Kimi K2.6 | $0.66 | passthrough | $3.41 | $2.04 | openrouter.ai | HIGH |
+| DeepInfra | Kimi K2.6 | $0.75 | $0.15 | $3.50 | $2.13 | deepinfra.com | HIGH |
+| Moonshot (official) | Kimi K2.6 | $0.95 | ~$0.16 (cache hit) | $4.00 | $2.48 | benchlm.ai / platform.kimi.ai | HIGH |
+| Fireworks | Kimi K2.6 | $0.95 | -- | $4.00 | $2.48 | fireworks.ai | HIGH |
+| Together AI | Kimi K2.6 | $1.20 | $0.20 | $4.50 | $2.85 | together.ai/pricing | HIGH |
+| Together AI | Kimi K2.7-Code | $0.95 | $0.19 | $4.00 | $2.48 | together.ai/pricing | HIGH |
+| Moonshot (official) | Kimi K2.7-Code | $0.95 | $0.19 | $4.00 | $2.48 | platform.kimi.ai | HIGH |
+| Moonshot (official) | Kimi K3 | $3.00 | $0.30 | $15.00 | $9.00 | platform.kimi.ai | HIGH |
 
-| Provider | Model | Input/1M tokens | Output/1M tokens | Blended/1M (1:1 ratio) | Source | Date | Confidence |
-|----------|-------|-----------------|-------------------|------------------------|--------|------|------------|
-| OpenAI | GPT-4o | $2.50 | $10.00 | $6.25 | openai.com/pricing | Apr 2026 | HIGH |
-| Anthropic | Claude Sonnet 4 | $3.00 | $15.00 | $9.00 | anthropic.com/pricing | Apr 2026 | HIGH |
-| Anthropic | Claude Opus 4 | $15.00 | $75.00 | $45.00 | anthropic.com/pricing | Apr 2026 | HIGH |
+Notes: On Artificial Analysis's 3:1 input:output blend, DeepInfra is the lowest-cost K2.5 option at ~$0.90 blended per 1M (from $0.45/$2.25); SiliconFlow's cheap input does not make it cheapest on either AA's mix or this document's 1:1 assumption. K2.5 is also served by CoreWeave, Novita, ModelRun ($0.40 input), Azure, and Amazon Bedrock (fastest, ~113-185 tok/s per AA) -- all with the Aug 31 sunset lifecycle risk noted above. Together AI also serves GLM-5.2 and GLM-5.1 at $1.40/$4.40 ($0.26 cached input, identical to Z.ai's official rate) and MiniMax M3 and M2.7 at $0.30/$1.20 ($0.06 cached) -- Together belongs in any GLM-5.2 or M2.7 centralized-host comparison set.
 
-### Gonka Pricing Scenarios (HYPOTHETICAL)
+### Budget and Frontier Model Pricing (July 2026)
 
-Gonka's per-token pricing has not been set. The following three scenarios are modeled to show leadership how different price points affect competitive positioning. **None of these are actual prices.**
+| Provider | Model | Input/1M | Cached Input/1M | Output/1M | Blended/1M (1:1) | Source | Confidence |
+|----------|-------|----------|-----------------|-----------|------------------|--------|------------|
+| DeepSeek | V4 Flash | ~$0.14 off-peak (~$0.28 Beijing peak) | $0.0028 (cache hit) | ~$0.28 off-peak (~$0.56 peak) | $0.21 off-peak | api-docs.deepseek.com / TechNode | HIGH |
+| DeepSeek | V4 Pro | ~$0.42 off-peak (~$0.84 Beijing peak) | ~¥0.025 (cache hit) | ~$0.84 off-peak (~$1.68 peak) | $0.63 off-peak | api-docs.deepseek.com / TechNode | HIGH |
+| MiniMax (official) | MiniMax M2.7 | $0.30 | $0.06 (write $0.375) | $1.20 | $0.75 | platform.minimax.io | HIGH |
+| Groq | Llama 3.3 70B | $0.59 | -- | $0.79 | $0.69 | groq.com/pricing | HIGH |
+| Groq | Llama 3.1 8B Instant | $0.05 | -- | $0.08 | $0.07 | groq.com/pricing | HIGH |
+| Google | Gemini 3.1 Flash-Lite | $0.25 | -- | $1.50 | $0.88 | ai.google.dev | HIGH |
+| Google | Gemini 3.5 Flash | $1.50 (Batch/Flex $0.75) | $0.15 | $9.00 (Batch/Flex $4.50) | $5.25 ($2.63 batch) | ai.google.dev | HIGH |
+| Google | Gemini 3.1 Pro | $2.00 (<=200K ctx; $4.00 above) | -- | $12.00 (<=200K; $18.00 above) | $7.00 | ai.google.dev | HIGH |
+| OpenAI | GPT-5.4 | $2.50 | $0.25 (90% off) | $15.00 | $8.75 | developers.openai.com | HIGH |
+| OpenAI | GPT-5.4 mini | $0.75 | -- | $4.50 | $2.63 | developers.openai.com | HIGH |
+| Anthropic | Claude Haiku 4.5 | $1.00 | 90% read discount | $5.00 | $3.00 | platform.claude.com | HIGH |
+| Anthropic | Claude Sonnet 5 | $3.00 (intro $2.00 through Aug 31, 2026) | 90% read discount | $15.00 (intro $10.00) | $9.00 ($6.00 intro) | platform.claude.com | HIGH |
+| Anthropic | Claude Opus 4.8 | $5.00 | 90% read discount | $25.00 | $15.00 | platform.claude.com | HIGH |
+| Anthropic | Claude Fable 5 | $10.00 | 90% read discount | $50.00 | $30.00 | platform.claude.com | HIGH |
 
-| Scenario | Model | Input/1M tokens | Output/1M tokens | Blended/1M (1:1 ratio) | Basis | Confidence |
-|----------|-------|-----------------|-------------------|------------------------|-------|------------|
-| Gonka Scenario A | Kimi K2.5 | $0.25 | $1.25 | $0.75 | HYPOTHETICAL -- 50% below DeepInfra | SCENARIO |
-| Gonka Scenario B | Kimi K2.5 | $0.35 | $1.75 | $1.05 | HYPOTHETICAL -- 30% below DeepInfra | SCENARIO |
-| Gonka Scenario C | Kimi K2.5 | $0.45 | $2.25 | $1.35 | HYPOTHETICAL -- price match DeepInfra | SCENARIO |
+Notes: GPT-4o -- the OpenAI anchor in v1.0 -- was retired from ChatGPT on April 3, 2026, and chatgpt-4o-latest left the API in February 2026. GPT-5.5 (~$5/M input class) and GPT-5.6 sit above GPT-5.4 in the lineup; GPT-5.6 went GA July 9, 2026 with published tiers Sol $5/$30, Terra $2.50/$15, Luna $1/$6 per 1M in/out, 1M-token context on all three (Terra $1.25/$7.50 in Batch or Flex). Gemini 3.5 Flash's standard rate is $1.50/$9 (launched May 19, 2026; $0.15/M cached input, 1M context); the $0.75/$4.50 sometimes reported as a price cut is the Batch/Flex tier -- a standing 50%-off non-interactive tier -- so interactive agent workloads pay $1.50/$9, roughly 3x the model it replaced. Gemini 3.1 Pro's $2/$12 applies only up to 200K context ($4/$18 above); it is still labeled Preview and left Google's API free tier April 1, 2026. MiniMax M2.7 runs $0.24/$0.96 via OpenRouter and is served by ~12 providers (Together, Fireworks, GMI, Novita FP8, SambaNova, etc.); Fireworks also lists DeepSeek V4 Flash $0.14/$0.28, V4 Pro $1.74/$3.48, Qwen 3.6 Plus $0.50/$3.00, and MiniMax M2.7 $0.30/$1.20. Anthropic Opus-class pricing fell ~3x from the $15/$75 v1.0 used. OpenAI, Anthropic, and Google all offer Batch APIs at ~50% off all tokens, stackable with caching -- relevant to any non-latency-sensitive agent workload. Groq (previously absent from this analysis) serves open-weight models (Llama, Qwen, DeepSeek distills, Gemma) at $0.05-$0.90/1M input on LPU hardware at 500+ tokens/sec -- the fastest inference available as of mid-2026, with a free tier -- and is a direct competitor for latency-sensitive agent tool-call chains, though it does not host Kimi or MiniMax models. MiniMax's first-party M3 pricing is $0.30/$1.20 per 1M for inputs up to 512K tokens, rising to $0.60/$2.40 above 512K (displayed rates are a labeled permanent 50% discount from list); 1M-context agent workload modeling on M3 should use the $0.60/$2.40 tier.
 
-**Scenario rationale:**
-- **Scenario A (aggressive):** 50% below the cheapest verified provider (DeepInfra at $0.45/$2.25). This would require Gonka's decentralized compute cost advantage to be near the upper end of claimed savings (60-80% cheaper than centralized). Risks: margin pressure, unsustainability if compute costs are higher than projected.
-- **Scenario B (moderate):** 30% below DeepInfra. This is the recommended target -- competitive on raw price while leaving margin for network sustainability. When combined with session persistence savings, total cost becomes lower than any competitor.
-- **Scenario C (conservative):** Price match with DeepInfra. Gonka competes on features (sessions, memory, privacy) rather than price. This scenario tests whether non-price differentiators alone justify adoption.
+### Gonka Pricing (LIVE)
+
+Gonka's inference pricing is now published at two layers that must not be conflated:
+
+1. **Network rate:** a single blended per-token rate recalculated every block from network utilization -- tracker snapshots show ~**$0.0003 per 1M tokens** (GonkaGate-quoted), effectively near-zero because the network is underutilized and partly subsidized by GNK emissions. This is a raw network snapshot, not a retail price.
+2. **Broker retail rate:** what developers actually pay. Access is resold by third-party brokers (GonkaGate, JoinGonka, OpenGNK, GonkaBroker, Gonka24). Three now have publicly itemized pricing -- Gonka24, GonkaBroker, and JoinGonka -- and Gonka24's rates are **model-specific**, not flat: MiniMax M2.7 $0.018/$0.072 (the cheapest, "from" price), Kimi K2.6 $0.055/$0.32, GLM-5.2 $0.095/$0.30 per 1M. JoinGonka now publishes itemized rates of $0.003 input / $0.009 output per 1M for Kimi K2.6. GonkaBroker charges $0.30 (MiniMax M2 family) / $0.35 (Kimi K2 family) per 1M flat (input=output, fixed at top-up time); GonkaBroker lists GLM-5.2 as "Coming soon" with no price. OpenGNK (proxy.gonka.gg) was previously the near-network passthrough at ~$0.00016 per 1M, but that figure could not be re-verified in July -- current gateway comparisons describe proxy.gonka.gg as ~133% more expensive than other Gonka gateways under a "temporary pricing adjustment" from the network. Broker retail therefore spans from thousandths of a cent (JoinGonka) to ~$0.35 per 1M (GonkaBroker) -- and even the top of the range sits well below any centralized provider for the same models.
+
+Price trackers list Gonka as the cheapest provider for Kimi K2.6 and MiniMax M2.7.
+
+| Item | Value | Source | Confidence |
+|------|-------|--------|------------|
+| Network rate (blended, per 1M tokens) | ~$0.0003 (per-block, utilization-driven; not a retail price) | pricepertoken.com/endpoints/gonka | MEDIUM (snapshot; volatile by design) |
+| Broker retail: OpenGNK | Earlier ~$0.00016/1M passthrough not re-verifiable (Jul 2026); gateway comparisons now rank proxy.gonka.gg ~133% above other Gonka gateways ("temporary pricing adjustment") | pricepertoken.com; proxy.gonka.gg | MEDIUM (volatile; re-verify before publication) |
+| Broker retail: JoinGonka | $0.003 input / $0.009 output per 1M (Kimi K2.6, itemized) | joingonka.ai/en/gateway | HIGH |
+| Broker retail: Gonka24 (per model) | M2.7 $0.018/$0.072; K2.6 $0.055/$0.32; GLM-5.2 $0.095/$0.30 per 1M | gonka24.com | HIGH |
+| Broker retail: GonkaBroker | $0.30 (MiniMax M2) / $0.35 (Kimi K2) per 1M flat, fixed at top-up | gonkabroker.com | HIGH |
+| Models served (as of Jul 16, 2026) | MiniMax M2.7 (sole PoC/base since Jun 25, Proposal 78 -- Qwen3 235B retired); GLM-5.2 (live Jun 26, Proposal 79, weight 2.47, optional); Kimi K2.6 (re-bootstrapping from epoch 331 per Proposals 87/88) | gonka.ai/docs/network-updates | HIGH |
+| Network volume | ~100M tokens/day across served models (spring 2026 estimate, not re-verified) | price tracker / release notes | MEDIUM |
+| Access path | Third-party brokers; only GonkaGate and JoinGonka fee schedules remain unitemized | broker sites | HIGH |
+
+**Interpretation for leadership:** the v1.0 Scenario A/B/C question ("should Gonka price 30-50% below DeepInfra?") is moot -- even the highest broker retail rate ($0.35 flat) undercuts every scenario and every centralized K2.6/M2.7 host. The strategic questions are now: (1) how fast the network rate rises as utilization grows, (2) the near-zero-to-1,000x spread between network rate and broker retail -- the broker margin is where the user's bill actually forms, and OpenGNK's near-passthrough shows how thin that margin can go; and (3) whether the subsidy is sustainable (see Section 7 on token inflation risk). Cost comparisons in this document use broker retail rates, not the network rate, and use Gonka24's per-model rates rather than a single blended figure. **Availability caveat:** Kimi K2.6 on Gonka is mid-re-bootstrap (removed via expedited Proposal 87 on Jul 15 after losing validation majority in epochs 328-329; re-registered via Proposal 88 on Jul 16 with weight factor raised 0.78 -> 0.9). Gonka K2.6 pricing should not be quoted externally without that reliability disclosure until re-bootstrap completes.
 
 ---
 
@@ -193,176 +232,170 @@ Headline per-token rates tell an incomplete story. Each provider has structural 
 
 ### OpenRouter
 
-**5.5% credit markup on all usage.** When a developer buys $100 in OpenRouter credits, they receive $94.50 in inference value. This markup applies on top of the underlying provider's per-token rate.
+v1.0 described a "5.5% credit markup on all usage" and "no prompt caching." Both are wrong as of July 2026:
 
-- **Impact on Casual tier:** $49/month raw becomes ~$52/month after markup
-- **No prompt caching.** Every heartbeat resends the full context at full price. OpenRouter routes to underlying providers, and caching is not exposed through the routing layer. This means heartbeat costs are fully unoptimized.
-- **Free tier degradation.** Free-tier requests are queued behind paid users. Models may become unavailable or switch to lower-quality providers during peak demand. For always-on agents, this creates unpredictable availability.
-- **Rate limiting on high volume.** High-volume agent workloads can trigger rate limits, causing throttled requests. Throttled requests create agent idle time -- the agent waits for a response that never comes, then retries. This wasted time is not billed in tokens but costs developer productivity and agent reliability.
-- **Net hidden cost: +5.5% on raw token spend, plus unquantifiable reliability costs.**
+- **The 5.5% is a payment-processing fee on credit-card credit purchases** ($0.80 minimum per transaction; crypto payments are 5.0% flat). Per-token catalog rates are provider passthrough with no inference markup. BYOK fees are request-based as of July 2026: the first 1M BYOK requests/month are free on standard plans, then 5% of what the call would have cost on OpenRouter's platform (Enterprise: 5M free requests/month).
+- **Prompt caching passes through automatically** from underlying providers, with cached input billed at roughly 10-20% of standard input rates on many models. OpenRouter heartbeat costs are NOT "fully unoptimized."
+- **OpenRouter's K2.5 listing ($0.375/$2.025) is currently the cheapest K2.5 access in this analysis** -- it undercuts the direct providers it routes to.
+- **Free tier degradation and rate limiting** remain real: free-tier requests queue behind paid users, and high-volume agent workloads can hit throttling, creating agent idle time that costs reliability rather than tokens.
+- **Net hidden cost: ~5-5.5% at credit purchase (card/crypto), zero per-token markup, caching passthrough. Materially cheaper than v1.0 assumed.**
 
 ### OpenAI
 
-**Prompt caching: automatic, 50% discount on cached tokens.** OpenAI automatically caches prompts longer than 1,024 tokens. Since OpenClaw system prompts are ~9,600 tokens, heartbeats benefit significantly -- the system prompt portion is cached, and only the delta (new messages since last call) incurs full price.
+**Prompt caching: automatic, cached input billed at 10% of the input rate (90% discount)** -- not the 50% v1.0 used. OpenAI automatically caches prompts longer than 1,024 tokens; OpenClaw's ~9,600-token system prompt qualifies.
 
-- **Impact on heartbeats:** The ~9,600 token system prompt is cached after the first call. Subsequent heartbeats pay 50% on the cached portion. Estimated heartbeat cost reduction: ~50% of the system prompt portion (roughly 40-50% of total heartbeat cost, since workspace context may vary).
-- **Volume discounts:** Available through enterprise agreements but require minimum commitments. Not accessible to Casual or Active tier users.
-- **No markup:** Direct API access, no intermediary fees.
-- **Premium model pricing:** GPT-4o at $2.50/$10.00 is 5-8x more expensive per token than K2.5 on Together AI or DeepInfra. Even with caching, absolute costs remain significantly higher than budget K2.5 providers.
-- **Net hidden cost adjustment: -40% on heartbeat costs (prompt caching), but base price is 4-5x higher than K2.5.**
+- **Impact on heartbeats:** the cacheable system-prompt portion of every heartbeat after the first costs 10% of list input price. Combined with input-heavy heartbeat traffic, heartbeat costs drop roughly 60-70% (estimate; depends on cacheable share).
+- **Explicit caching (new):** OpenAI now also offers explicit cache writes billed at 1.25x uncached input, with extended ~24h cache retention. Automatic cache reads keep the 90% discount.
+- **Batch API:** ~50% off all tokens for non-interactive workloads, stackable with caching.
+- **Premium base price:** GPT-5.4 at $2.50/$15.00 blended is still ~6-7x the cheapest K2.5 access. Caching narrows but does not close the gap.
+- **Net adjustment: roughly -60-70% on heartbeat costs (estimate), premium base price remains.**
 
 ### Anthropic
 
-**Prompt caching: 90% discount on cache reads, 25% write premium on first fill.** Anthropic's caching is more aggressive than OpenAI's but has an initial write penalty.
+**Prompt caching: 90% discount on cache reads, 25% write premium on first fill.** Unchanged mechanics from v1.0; the pricing around it changed dramatically.
 
-- **Impact on heartbeats:** First heartbeat in a session costs 25% more (cache write premium). Subsequent heartbeats within the cache TTL cost 90% less on cached portions. For always-on agents with consistent system prompts, the net effect is dramatic savings after the first call.
-- **Effective heartbeat cost (steady state):** ~10% of uncached price for the system prompt portion. With ~80% of heartbeat tokens being cacheable system prompt, steady-state heartbeat cost drops by approximately 70-75%.
-- **Rate limits tighter than OpenAI.** Anthropic imposes stricter concurrent request limits, which can bottleneck Heavy tier workloads with many simultaneous agents. Rate limit overages may require waiting or enterprise tier negotiation.
-- **Premium model pricing:** Claude Sonnet 4 at $3.00/$15.00 is competitive with GPT-4o but still 6-10x more per token than K2.5. Claude Opus 4 at $15.00/$75.00 is the most expensive option in this analysis.
-- **Net hidden cost adjustment: -70% on heartbeat costs after initial fill, but base price is 6-30x higher than K2.5.**
+- **Opus-class pricing fell 3x:** Opus 4.8 is $5/$25 versus the $15/$75 Opus 4 rate v1.0 used. Every "Opus is 30x more expensive" claim in v1.0-era GTM material is now wrong by roughly 3x.
+- **Impact on heartbeats:** steady-state cached heartbeat cost is ~10% of list on the cached portion; net heartbeat reduction ~70% (same mechanics as v1.0).
+- **Batch API:** additional 50% off, stackable with caching.
+- **Rate limits** remain tighter than OpenAI's and can bottleneck Heavy tier concurrency.
+- **Availability:** Claude Fable 5 and Mythos 5 were offline June 12 - July 1, 2026 under a US Commerce Department export-control order -- a ~3-week flagship outage across Claude.ai, the Claude Platform, Claude Code, and Cowork. Regulatory rather than infrastructural, but from an agent operator's perspective it is an outage, and it argues for multi-provider fallback in any Anthropic-anchored agent stack.
+- **Subscription billing tightened for agents:** effective June 15, 2026, Anthropic split subscription usage into two pools, following an April 2026 restriction on third-party tools consuming flat-rate plans -- explicitly closing the "always-on agent on a flat subscription" arbitrage (reported effective subsidies of 12-175x). GitHub Copilot similarly moved to AI Credits June 1, 2026. Agent workloads are being pushed onto metered API pricing industry-wide, which is the pricing basis this analysis already uses.
+- **Net adjustment: ~-70% on heartbeats; base price now 2.5-12x K2.5-class rates (Haiku 4.5 to Fable 5), no longer "6-30x."**
 
 ### Together AI
 
-**No markup, no caching, straightforward per-token pricing.** Together AI operates its own GPU clusters and passes compute costs directly to users without intermediary fees.
+v1.0 scored Together "no caching -- heartbeats at full price." Wrong as of July 2026:
 
-- **No credit markup:** $100 spent = $100 of inference.
-- **No prompt caching:** Every request pays full per-token rates. Heartbeats resend full context at full price. This is the same limitation as OpenRouter, but without the 5.5% markup.
-- **Lowest verified K2.5 pricing:** $0.50/$2.50 (input/output) is the second-cheapest after DeepInfra ($0.45/$2.25).
-- **Rate limits:** No reported rate limit concerns at current usage scales. Together AI's infrastructure handles high-volume inference well.
-- **Net hidden cost adjustment: none. What you see is what you pay.**
+- **Prompt caching is enabled by default** (the disable flags are deprecated), with 5-10x cached-input discounts on select models: Kimi K2.6 $1.20 -> $0.20 cached, K2.7-Code $0.95 -> $0.19, DeepSeek V4 Pro $1.74 -> $0.20.
+- **K2.5 is gone from the serverless pricing page.** Together's Kimi lineup is K2.6 and K2.7-Code. The "$0.50/$2.50 lowest verified K2.5 price" benchmark used throughout v1.0-era docs no longer exists.
+- **No markup; no reported rate limit concerns.**
+- **Net adjustment: cached heartbeats at roughly 1/5 to 1/6 of list input price on Kimi models (est. -60-70% heartbeat cost).**
 
-### Gonka (HYPOTHETICAL)
+### DeepSeek (new in v2.0)
 
-Gonka's architecture provides structural cost advantages that go beyond per-token pricing. These advantages are real technical capabilities built in v1.2, though their impact depends on final pricing and production deployment.
+Omitted from v1.0; it is the aggressive price floor of the centralized market and belongs in any Gonka cost comparison. Note the April 24 release was the V4 *Preview*; the official V4 (announced Jun 30) lands mid-July 2026 with China's first **time-of-day API pricing**.
 
-**Server-side session persistence eliminates context resending.** Gonka's session API maintains conversation state server-side. Instead of resending the full ~9,600 token context on every heartbeat, agents send only the delta (new messages or state changes since the last call). This is architecturally equivalent to "permanent prompt caching" -- but without TTL expiration and without the initial cache write premium.
+- **V4 Flash: ~$0.14 input / ~$0.28 output regular (¥1.00/¥2.00), cache-hit input $0.0028** (98% off). Heartbeat-dominated workloads are nearly free on cache hits.
+- **V4 Pro: ¥3.00/¥6.00 regular (~$0.42/$0.84), ¥0.025 cache hit -- and rates DOUBLE during Beijing peak hours (9:00-12:00 and 14:00-18:00 CST).** A 24/7 agent workload cannot dodge the peak windows: any flat-rate DeepSeek cost model understates cost by up to 2x during Beijing business hours. Conversely, "no rush-hour pricing" is a new positioning lever for Gonka.
+- **Legacy deepseek-chat/deepseek-reasoner endpoints retire after July 24, 2026 -- forced migration** onto the V4 time-of-day schedule.
+- **Net position: still the cheapest centralized option off-peak; peak-hour doubling and the forced migration make its 24/7 agent economics worse than the headline rate suggests.**
 
-- **Impact on heartbeats:** If sessions reduce heartbeat token overhead by 80% (sending only ~1,920 tokens of delta instead of 9,600 tokens of full context), monthly token consumption drops dramatically:
-  - Casual tier: 31.5M tokens drops to ~12.6M tokens/month
-  - Active tier: 161.5M tokens drops to ~56.3M tokens/month
-  - Heavy tier: 2.94B tokens drops to ~0.61B tokens/month
+### Gonka
 
-- **Tiered routing:** Gonka's multi-model routing sends 70% of requests to lite quantization (cheaper, faster) and 30% to full-precision when quality demands it. This reduces effective per-token cost without sacrificing quality on complex tasks.
-- **No markup:** Decentralized network, no intermediary. GNK tokenomics may introduce different cost dynamics but no credit markup structure.
-- **Session caveat (v1.2 tech debt):** Current implementation uses in-memory sessions, which are lost on server restart. This must be resolved (migrated to Redis or persistent storage) before the session persistence advantage can be marketed as production-ready.
-- **Net hidden ADVANTAGE: ~60-80% reduction in heartbeat token overhead via sessions (contingent on production implementation), plus tiered routing savings.**
+Gonka's structural advantages now sit on top of a near-zero network rate resold at published broker retail.
+
+**Server-side session persistence eliminates context resending.** Gonka's session API maintains conversation state server-side; agents send only the delta since the last call. Architecturally this is "permanent prompt caching" without TTL expiration and without a cache-write premium.
+
+- **Impact on heartbeats:** if sessions cut heartbeat token overhead by 80%, effective monthly tokens drop to ~12.6M (Casual), ~56.3M (Active), ~0.61B (Heavy). At Gonka24's M2.7 rate ($0.045/1M blended) this saves cents to tens of dollars per month -- the session advantage is presently mostly about latency, bandwidth, and future-proofing against rate normalization -- but at Gonka24's K2.6 rate (~$0.19/1M blended) the Heavy-tier session saving is ~$440/month, and at GonkaBroker's $0.30-0.35 flat rates it reaches ~$700/month.
+- **Competitive context:** with caching universal -- including Moonshot's own API (K3 cached input $0.30/M vs $3.00/M) -- "sessions vs. no caching" is no longer the frame. The honest frame is "sessions vs. caching": no TTL, no write premium (Anthropic charges +25% and OpenAI 1.25x on explicit cache writes), no client-side resend, works identically across all served models.
+- **Broker fees:** the user's bill forms at the broker layer, anywhere from near-passthrough to ~1,000x above the network rate. Three brokers (Gonka24, GonkaBroker, OpenGNK) now have publicly visible pricing; only GonkaGate and JoinGonka remain unitemized. A broker-fee comparison table can now be built from public data.
+- **Session caveat (v1.2 tech debt, status unverified as of July 2026):** the v1.2 implementation used in-memory sessions lost on server restart. Confirm whether persistent storage shipped before marketing sessions as production-ready.
+- **Net position: broker retail at ~$0.00016-$0.35/1M depending on broker and model -- 3-50x below cached centralized rates for the same models at the mainstream Gonka24/GonkaBroker rates (network rate itself unsustainable as a permanent assumption) -- plus a genuine session architecture advantage whose full dollar value materializes if/when rates normalize.**
 
 ### Hidden Cost Summary
 
 | Provider | Markup | Prompt Caching | Session Persistence | Rate Limits | Net Effect on Agent Workloads |
 |----------|--------|---------------|---------------------|-------------|-------------------------------|
-| OpenRouter | +5.5% | None | None | Moderate | +5.5% above raw cost; no heartbeat optimization |
-| OpenAI | None | 50% on cached (auto) | None | Lenient | -40% on heartbeats; still premium base price |
-| Anthropic | None | 90% reads / +25% writes | None | Strict | -70% on heartbeats (steady state); highest base price |
-| Together AI | None | None | None | Lenient | No adjustment; clean per-token pricing |
-| DeepInfra | None | None | None | Lenient | No adjustment; cheapest K2.5 base price |
-| Gonka | None | N/A (sessions instead) | Yes (80% reduction) | TBD | -60-80% token reduction via sessions (HYPOTHETICAL) |
+| OpenRouter | 5-5.5% at credit purchase only | Passthrough (10-20% of input) | None | Moderate | Cheapest K2.5 access; caching passthrough |
+| OpenAI | None | 90% off cached reads (auto); explicit writes 1.25x | None | Lenient | ~-60-70% on heartbeats (est.); premium base |
+| Anthropic | None | 90% reads / +25% writes | None | Strict | ~-70% on heartbeats; Opus-class now 3x cheaper than v1.0 figures; Fable 5 offline Jun 12 - Jul 1 (export-control) |
+| Together AI | None | Default-on, 5-10x on select models | None | Lenient | ~-60-70% on Kimi heartbeats (est.); K2.5 delisted |
+| DeepInfra | None | K2.6 cached $0.15 | None | Lenient | Cheap K2.5 base; caching on K2.6 |
+| DeepSeek | None | Cache-hit ~98% off | None | Lenient | Centralized price floor |
+| Gonka | Broker retail: ~$0.00016 passthrough (OpenGNK) to $0.30-0.35 flat (GonkaBroker); Gonka24 per-model | N/A (sessions instead) | Yes (~80% token reduction) | TBD | Cheapest listed K2.6/M2.7 access + sessions |
 
 ---
 
 ## 6. Monthly Cost Projections
 
-The following tables show monthly cost per provider for each workload tier. "Raw Monthly Cost" uses headline per-token rates applied to total monthly tokens. "Hidden Cost Adjustment" applies the provider-specific factors from Section 5. "Adjusted Monthly Cost" is the realistic total.
+The following tables show monthly cost per provider for each workload tier. "Raw Monthly Cost" applies headline blended rates to total monthly tokens with no caching. "Cached-Adjusted Cost" applies an estimated caching discount of ~65% to the heartbeat portion of tokens for providers with 90%-class cached-input pricing (~90% for DeepSeek cache hits). **The adjusted column is an estimate** -- caching applies to input tokens only and actual cacheable share varies; treat these as directional, not quotable.
 
-**Blended rate formula:** (Input tokens x input price + Output tokens x output price). With 1:1 input:output assumption: Monthly tokens x (input price + output price) / 2 = Monthly tokens x blended rate.
+Heartbeat share of tokens: Casual 44%, Active 51%, Heavy 84.5%.
+
+**Blended rate formula:** Monthly tokens x (input price + output price) / 2.
 
 ### Casual Tier (~31.5M tokens/month)
 
-**Worked example (Together AI):** 31.5M tokens x ($0.50 + $2.50) / 2 / 1M = 31.5 x $1.50 = $47.25/month
+**Worked example (DeepInfra K2.5):** 31.5M x $1.35/1M = $42.53/month
 
-| Provider | Model | Blended Rate/1M | Raw Monthly Cost | Hidden Cost Adjustment | Adjusted Monthly Cost |
-|----------|-------|-----------------|-----------------|----------------------|----------------------|
-| Together AI | K2.5 | $1.50 | $47.25 | None | **$47.25** |
-| DeepInfra | K2.5 | $1.35 | $42.53 | None | **$42.53** |
-| OpenRouter | K2.5 | $1.55 | $48.83 | +5.5% markup | **$51.51** |
-| OpenAI | GPT-4o | $6.25 | $196.88 | -40% on heartbeats (~$35 saved) | **~$161** |
-| Anthropic | Sonnet 4 | $9.00 | $283.50 | -70% on heartbeats (~$92 saved) | **~$192** |
-| Anthropic | Opus 4 | $45.00 | $1,417.50 | -70% on heartbeats (~$458 saved) | **~$960** |
-| Gonka (A) | K2.5 | $0.75 | $23.63 | -80% heartbeat tokens (12.6M effective) | **~$9.45** |
-| Gonka (B) | K2.5 | $1.05 | $33.08 | -80% heartbeat tokens (12.6M effective) | **~$13.23** |
-| Gonka (C) | K2.5 | $1.35 | $42.53 | -80% heartbeat tokens (12.6M effective) | **~$17.01** |
+| Provider | Model | Blended/1M | Raw Monthly | Cached-Adjusted (est.) |
+|----------|-------|------------|-------------|------------------------|
+| Gonka (broker retail) | MiniMax M2.7 / K2.6 / GLM-5.2 | $0.045 (M2.7) / ~$0.19 (K2.6) via Gonka24; $0.30-0.35 (GonkaBroker) | **~$1.42 (M2.7) - ~$5.90 (K2.6) - $11** | same (broker rates are all-in) |
+| DeepSeek | V4 Flash | $0.21 | $6.62 | **~$4** |
+| OpenRouter | K2.5 | $1.20 | $37.80 | ~$27 (upstream-dependent) |
+| DeepInfra | K2.5 | $1.35 | $42.53 | $42.53 (no K2.5 caching) |
+| OpenRouter | K2.6 | $2.04 | $64.26 | ~$46 (upstream-dependent) |
+| DeepInfra | K2.6 | $2.13 | $66.94 | **~$48** |
+| Together AI | K2.6 | $2.85 | $89.78 | **~$64** |
+| OpenAI | GPT-5.4 | $8.75 | $275.63 | **~$197** |
+| Anthropic | Sonnet 5 | $9.00 | $283.50 | **~$202** (~$135 at intro pricing) |
+| Anthropic | Opus 4.8 | $15.00 | $472.50 | **~$337** |
 
-**Gonka adjusted cost calculation (Scenario B):** Sessions reduce heartbeat tokens from 13.8M to 2.8M/month (80% reduction). Remaining tokens: 14.4M (messages) + 2.8M (heartbeats) + 3.15M (tool calls) = 20.35M tokens. Subtract the tool call and message tokens which stay the same: total effective = ~12.6M tokens. 12.6M x $1.05 = $13.23/month.
-
-**Casual Tier Takeaway:** K2.5 providers cluster at $42-52/month. OpenAI and Anthropic cost 3-20x more even with caching. Gonka scenarios range from $9-17/month with sessions -- a 60-75% reduction versus the cheapest verified competitor. **However, this advantage is entirely contingent on Gonka's session persistence working in production and on the hypothetical pricing being achievable.**
+**Casual Tier Takeaway:** Centralized K2.5/K2.6 access clusters at roughly $38-90/month; DeepSeek undercuts everything centralized at ~$4-7. Gonka's published broker retail lands at ~$1.42/month (Gonka24, M2.7) to ~$5.90 (Gonka24, K2.6) to ~$11/month (GonkaBroker) -- cheapest in the table, but on the same order as DeepSeek at the high end, not "approximately nothing." Frontier models cost 3-8x the Kimi-class hosts even with caching, not the 3-20x spread v1.0 reported (Opus-class prices fell 3x).
 
 ### Active Tier (~161.5M tokens/month)
 
-**Worked example (DeepInfra):** 161.5M tokens x $1.35/1M = $218.03/month
+**Worked example (DeepInfra K2.5):** 161.5M x $1.35/1M = $218.03/month
 
-Note: Active tier uses multi-model routing (70% budget, 30% strong). For K2.5 providers, this means 70% at lite quantization pricing (assumed same rate) and 30% at full-precision (assumed same rate since K2.5 has one price tier on external providers). For Gonka, tiered routing is built-in and may offer additional savings -- not quantified here due to lack of pricing data for Gonka's quantization tiers.
+| Provider | Model | Blended/1M | Raw Monthly | Cached-Adjusted (est.) |
+|----------|-------|------------|-------------|------------------------|
+| Gonka (broker retail) | MiniMax M2.7 / K2.6 / GLM-5.2 | $0.045 (M2.7) / ~$0.19 (K2.6) via Gonka24; $0.30-0.35 (GonkaBroker) | **~$7 (M2.7) - ~$30 (K2.6) - $57** | same (broker rates are all-in) |
+| DeepSeek | V4 Flash | $0.21 | $33.92 | **~$18** |
+| OpenRouter | K2.5 | $1.20 | $193.80 | ~$131 (upstream-dependent) |
+| DeepInfra | K2.5 | $1.35 | $218.03 | $218.03 |
+| OpenRouter | K2.6 | $2.04 | $329.46 | ~$223 (upstream-dependent) |
+| DeepInfra | K2.6 | $2.13 | $343.19 | **~$229** |
+| Together AI | K2.6 | $2.85 | $460.28 | **~$308** |
+| OpenAI | GPT-5.4 | $8.75 | $1,413.13 | **~$945** |
+| Anthropic | Sonnet 5 | $9.00 | $1,453.50 | **~$972** |
+| Anthropic | Opus 4.8 | $15.00 | $2,422.50 | **~$1,620** |
 
-| Provider | Model | Blended Rate/1M | Raw Monthly Cost | Hidden Cost Adjustment | Adjusted Monthly Cost |
-|----------|-------|-----------------|-----------------|----------------------|----------------------|
-| Together AI | K2.5 | $1.50 | $242.25 | None | **$242.25** |
-| DeepInfra | K2.5 | $1.35 | $218.03 | None | **$218.03** |
-| OpenRouter | K2.5 | $1.55 | $250.33 | +5.5% markup | **$264.09** |
-| OpenAI | GPT-4o | $6.25 | $1,009.38 | -40% on heartbeats (~$207 saved) | **~$802** |
-| Anthropic | Sonnet 4 | $9.00 | $1,453.50 | -70% on heartbeats (~$525 saved) | **~$929** |
-| Anthropic | Opus 4 | $45.00 | $7,267.50 | -70% on heartbeats (~$2,627 saved) | **~$4,641** |
-| Gonka (A) | K2.5 | $0.75 | $121.13 | -80% heartbeat tokens (56.3M effective) | **~$42.23** |
-| Gonka (B) | K2.5 | $1.05 | $169.58 | -80% heartbeat tokens (56.3M effective) | **~$59.12** |
-| Gonka (C) | K2.5 | $1.35 | $218.03 | -80% heartbeat tokens (56.3M effective) | **~$75.99** |
-
-**Gonka adjusted cost calculation (Scenario B):** Sessions reduce heartbeat tokens from 82.9M to 16.6M/month. Effective tokens: 57.6M (messages) + 16.6M (heartbeats) + 21.0M (tool calls) = ~56.3M effective tokens (rounded to account for partial overlap). 56.3M x $1.05 = $59.12/month.
-
-**Active Tier Takeaway:** The gap widens. DeepInfra costs $218/month vs Gonka Scenario B at $59/month -- a 73% reduction. Heartbeats now account for 51% of tokens, so session persistence captures more absolute savings. Even Gonka Scenario C (price-matched with DeepInfra) costs only $76/month -- 65% cheaper than DeepInfra's $218 -- purely on the strength of session persistence.
+**Active Tier Takeaway:** With heartbeats at 51% of tokens, caching now does for every major provider a version of what v1.0 claimed only Gonka sessions could do. The v1.0 comparison ("DeepInfra $218 vs Gonka Scenario B $59") is obsolete in both directions: Gonka's broker retail runs ~$7-$57 depending on model and broker -- below even Scenario B -- and competitors' cached rates are 30-35% below their raw rates.
 
 ### Heavy Tier (~2.94B tokens/month)
 
-**Worked example (Together AI):** 2,943M tokens x $1.50/1M = $4,414.50/month
+**Worked example (DeepInfra K2.5):** 2,943M x $1.35/1M = $3,973.05/month
 
-| Provider | Model | Blended Rate/1M | Raw Monthly Cost | Hidden Cost Adjustment | Adjusted Monthly Cost |
-|----------|-------|-----------------|-----------------|----------------------|----------------------|
-| Together AI | K2.5 | $1.50 | $4,414.50 | None | **$4,414.50** |
-| DeepInfra | K2.5 | $1.35 | $3,973.05 | None | **$3,973.05** |
-| OpenRouter | K2.5 | $1.55 | $4,561.65 | +5.5% markup | **$4,812.54** |
-| OpenAI | GPT-4o | $6.25 | $18,393.75 | -40% on heartbeats (~$6,221 saved) | **~$12,173** |
-| Anthropic | Sonnet 4 | $9.00 | $26,487.00 | -70% on heartbeats (~$15,689 saved) | **~$10,798** |
-| Anthropic | Opus 4 | $45.00 | $132,435.00 | -70% on heartbeats (~$78,443 saved) | **~$53,992** |
-| Gonka (A) | K2.5 | $0.75 | $2,207.25 | -80% heartbeat tokens (612M effective) | **~$459.00** |
-| Gonka (B) | K2.5 | $1.05 | $3,090.15 | -80% heartbeat tokens (612M effective) | **~$642.60** |
-| Gonka (C) | K2.5 | $1.35 | $3,973.05 | -80% heartbeat tokens (612M effective) | **~$826.20** |
+| Provider | Model | Blended/1M | Raw Monthly | Cached-Adjusted (est.) |
+|----------|-------|------------|-------------|------------------------|
+| Gonka (broker retail) | MiniMax M2.7 / K2.6 / GLM-5.2 | $0.045 (M2.7) / ~$0.19 (K2.6) via Gonka24; $0.30-0.35 (GonkaBroker) | **~$132 (M2.7) - ~$550 (K2.6) - $1,030** | same (broker rates are all-in) |
+| DeepSeek | V4 Flash | $0.21 | $618.03 | **~$148** |
+| OpenRouter | K2.5 | $1.20 | $3,531.60 | ~$2,000 (upstream-dependent) |
+| DeepInfra | K2.5 | $1.35 | $3,973.05 | $3,973.05 |
+| OpenRouter | K2.6 | $2.04 | $6,003.72 | ~$3,400 (upstream-dependent) |
+| DeepInfra | K2.6 | $2.13 | $6,253.88 | **~$2,820** |
+| Together AI | K2.6 | $2.85 | $8,387.55 | **~$3,783** |
+| OpenAI | GPT-5.4 | $8.75 | $25,751.25 | **~$11,614** |
+| Anthropic | Sonnet 5 | $9.00 | $26,487.00 | **~$11,946** |
+| Anthropic | Opus 4.8 | $15.00 | $44,145.00 | **~$19,909** |
 
-**Gonka adjusted cost calculation (Scenario B):** The Heavy tier has 5-minute heartbeats, making heartbeats 84.5% of all tokens (2.49B out of 2.94B monthly). Sessions reduce heartbeat tokens from 2,488M to 498M/month. Effective tokens: 288M (messages) + 498M (heartbeats) + 168M (tool calls) = ~612M effective tokens (rounded conservatively). Subtracted 80% of heartbeat overhead. 612M x $1.05 = $642.60/month.
-
-**Heavy Tier Takeaway:** This is where the analysis becomes transformative. DeepInfra costs $3,973/month. Gonka Scenario B costs $643/month -- an **84% reduction**. Even Scenario C (price-matched) costs $826/month -- a 79% reduction. The 5-minute heartbeat interval means heartbeats dominate token consumption at 84.5%, and session persistence eliminates most of that overhead. **At this tier, session persistence is worth more than any per-token price discount a competitor could offer.**
-
-Note: Anthropic's prompt caching makes Sonnet 4 ($10,798/month) cheaper than OpenAI GPT-4o ($12,173/month) at this tier despite higher per-token rates, because Anthropic's 90% cache read discount is more aggressive. However, both remain 12-16x more expensive than K2.5 providers.
+**Heavy Tier Takeaway:** With heartbeats at 84.5% of tokens, caching cuts every cached provider's bill roughly in half -- and Gonka broker retail serves the entire workload for ~$132 (Gonka24, only if the workload runs on MiniMax M2.7), ~$550 (Gonka24 on K2.6), or ~$880-$1,030 (GonkaBroker), versus ~$2,800-$3,800 on cached centralized K2.6. Three caveats keep this from being an unqualified marketing headline: (1) a Heavy-tier customer at 2.94B tokens/month would roughly double Gonka's entire current network volume (~100M tokens/day = ~3B/month), which would itself move the per-block price; (2) the near-zero underlying network rate is subsidy- and idle-capacity-driven, not a cost floor; (3) at the GonkaBroker end of the retail range, DeepSeek's cache-hit pricing (~$148) is actually cheaper. The honest Heavy-tier claim is "3-20x cheaper than centralized hosts of the same models today, with price discovery risk as utilization grows."
 
 ---
 
 ## 7. At-Scale Economics
 
-What happens when an organization scales beyond the Heavy tier to 100+ agents? The cost dynamics shift in important ways.
+What happens when an organization scales beyond the Heavy tier to 100+ agents?
 
-### Linear Scaling (No Volume Discounts)
+### Linear Scaling (Centralized Providers)
 
-**OpenRouter:** Cost scales linearly with agent count. 100 agents = 100x Heavy tier cost. No volume discount mechanism exists -- each token costs the same whether it is the first or the billionth. At 100 agents, monthly spend exceeds $481,000. The 5.5% markup compounds: at $481K/month, that is $26,500/month in markup alone.
+**OpenRouter / Together AI / DeepInfra / DeepSeek:** cost scales linearly with agent count -- each token costs the same whether it is the first or the billionth. 100 Heavy-tier agents lands at roughly $200K-$400K/month on cached Kimi-class rates, or ~$15K/month on DeepSeek V4 Flash cache-hit-heavy workloads (estimates from Section 6 adjusted figures x100). Enterprise agreements may discount committed spend, but the linear structure holds.
 
-**Together AI:** Also linear scaling, but at lower base rates. 100 agents at Heavy tier = ~$441,000/month. Together AI has not publicly advertised volume discounts for serverless inference, though enterprise agreements may be available for committed spend.
-
-**DeepInfra:** Similar to Together AI. Linear scaling at $3,973/agent/month. 100 agents = ~$397,000/month. DeepInfra's cost advantage over Together AI (10-15% cheaper) becomes meaningful at scale: $44K/month saved at 100 agents.
-
-### Enterprise Agreements
-
-**OpenAI:** Offers enterprise pricing through committed-use agreements. Exact discounts are not public, but industry reports suggest 20-40% reductions on committed annual spend above $100K. However, even with a 40% discount, GPT-4o at $7,304/agent/month (adjusted) x 100 agents = $730,400/month. Scale does not solve the fundamental premium pricing problem.
-
-**Anthropic:** Similar enterprise agreement structure. Rate limits are the binding constraint at scale -- Anthropic's concurrent request limits may require enterprise tier negotiation before 100 agents are viable. Monthly cost with enterprise discount (estimated 30%) and caching: ~$7,559/agent/month x 100 agents = ~$755,900/month.
+**OpenAI / Anthropic:** enterprise committed-use agreements reportedly discount 20-40% above ~$100K annual spend (industry estimate, unverified). Even with a 40% discount and caching, 100 Heavy-tier agents on GPT-5.4 or Sonnet 5 exceeds $700K/month. Anthropic's rate limits are the binding constraint before pricing is: concurrent-request caps likely require enterprise negotiation before 100 always-on agents are viable. Nor is there a subscription escape hatch: Anthropic's June 15, 2026 billing restructure (two usage pools; April 2026 third-party-tool restriction) and Copilot's June 1 move to AI Credits closed the flat-rate-plan arbitrage for always-on agents -- at-scale agent workloads pay metered API rates.
 
 ### Decentralized Network Economics
 
-**Gonka (HYPOTHETICAL):** Gonka's decentralized model introduces a fundamentally different scaling dynamic. As the Gonka network grows (more GPU miners join), aggregate inference supply increases. If supply growth outpaces demand growth, per-token costs could decrease over time rather than remaining flat. Additionally, GNK token incentives subsidize early inference costs -- miners earn GNK block rewards in addition to inference fees, effectively lowering the break-even price they need to charge.
+**Gonka:** the per-block utilization pricing creates a fundamentally different scaling dynamic -- in both directions. Today's ~$0.0003/1M network rate exists because supply vastly exceeds demand; brokers retail it at ~$0.00016-$0.35/1M depending on broker and model. A 100-agent Heavy deployment (~294B tokens/month) would cost ~$13K/month at Gonka24's M2.7 rate (~$55K on K2.6) -- the M2.7 figure competitive with DeepSeek's ~$15K cache-hit floor -- but would be ~100x the network's entire current volume; the per-block price (and broker rate cards built on it) would reprice long before that demand landed. Conversely, as more GPU miners join, supply growth can hold prices down.
 
-However, several caveats apply:
+Caveats that still apply:
 
-1. **Token inflation risk:** If GNK mining rewards subsidize inference pricing, the cost advantage is partially funded by token inflation, which may not be sustainable long-term (see v1.0 research on emission decay).
-2. **Network size assumptions:** Cost decreases require network growth. If Gonka's miner count stagnates, the cost advantage does not materialize.
-3. **Centralized providers are also getting cheaper.** NVIDIA Blackwell GPUs enable up to 10x cost-per-token reduction for providers using new hardware (source: NVIDIA GTC 2026 blog). This narrows Gonka's structural compute cost advantage.
+1. **Token inflation risk:** the near-zero rate is partly funded by GNK emissions subsidizing miners. If emissions decay (see v1.0 research) without matching fee revenue, either prices rise or supply exits.
+2. **Price discovery risk:** no large agent deployment has yet tested what Gonka's rate does under sustained load. Leadership should not extrapolate today's rate to at-scale commitments.
+3. **Centralized budget tiers keep getting cheaper -- but frontier open-weight pricing is now rising.** Blackwell-class hardware enables up to 10x cost-per-token reduction for centralized providers (NVIDIA, 2026), and DeepSeek has pushed budget prices to $0.14/M input. Token prices industry-wide fell ~280x over two years. But the trend has partially reversed above the budget tier: Gemini 3.5 Flash's $1.50/$9 standard rate is ~3x the model it replaced (the $0.75/$4.50 figure is batch-only), Kimi K3's $3/$15 is ~3x K2.6's official $0.95/$4.00, and industry coverage frames K3 as "signaling the end of super cheap Chinese AI" (The Decoder, Jul 2026). The floor is still falling at the workhorse tier Gonka serves; the frontier tier is drifting toward closed-model pricing.
 
-**At 100 agents with Scenario B pricing and session persistence:** ~$64,260/month. Compared to DeepInfra at ~$397,000/month, this is an 84% reduction. Even if Gonka's actual pricing settles at Scenario C (price match), session persistence alone would yield $82,620/month vs $397,000 -- a 79% reduction.
+Demand-side context (replacing the forecast-only Goldman/Deloitte citations): OpenRouter's Series B announcement (Businesswire, May 26, 2026) puts weekly volume at **25T tokens** -- up from ~5T six months prior, ~100T tokens/month (a ~28T/week mid-2026 figure circulates but is unofficial); agentic workloads now generate more than half of all output tokens, surpassing human usage; 67% of enterprises consume >1B tokens/month (Deloitte 2026); and Chinese open-source models capture ~61% of global OpenRouter token usage -- directly supportive of Gonka's Kimi/Qwen/MiniMax strategy.
 
-**Scaling verdict:** Gonka's session persistence advantage compounds at scale. The more agents deployed, the more heartbeat overhead is eliminated, and the larger the absolute dollar savings. This is a structural advantage that per-token pricing competition cannot replicate without implementing equivalent session persistence technology.
+**Scaling verdict:** Gonka's current advantage is real but reflexive -- it is cheap because it is empty. The durable at-scale advantages are session persistence (heartbeat elimination that compounds with agent count) and decentralized supply growth, not today's headline rate.
 
 ---
 
@@ -370,64 +403,55 @@ However, several caveats apply:
 
 ### Where Gonka Wins
 
-**Agent workloads with frequent heartbeats.** This is Gonka's strongest competitive position. Server-side session persistence eliminates the dominant cost driver (heartbeat context resending) in a way that no other provider architecturally supports. OpenAI and Anthropic offer prompt caching, which partially addresses the problem, but caching has TTL expiration and requires the client to resend the full context -- the server decides what to cache. Gonka's sessions are persistent by design: the context lives server-side and never needs resending.
+**Price, today, by a wide margin.** At published broker retail of ~$0.00016-$0.35/1M, Gonka is the cheapest listed provider for Kimi K2.6 and MiniMax M2.7 on price trackers -- versus $0.66-$1.20/1M input on the cheapest centralized K2.6 hosts (OpenRouter $0.66/$3.41 is now the centralized floor) and MiniMax's official $0.30/$1.20 for M2.7. For cost-driven experimentation and hobbyist agent workloads, nothing centralized matches the Gonka broker rates. The caveats -- utilization-driven underlying rate, subsidy-backed, broker- and model-dependent (quote the per-model broker retail, never the ~$0.0003 network snapshot, and never Gonka24's M2.7 "from" price as a network-wide rate), and K2.6's mid-July re-bootstrap (below) -- belong in every external claim.
 
-**Budget-conscious Casual and Active tier users (if pricing is aggressive).** At Scenario A or B pricing, Gonka offers the cheapest K2.5 inference available. Combined with session savings, the effective cost is 60-80% below the next cheapest option. This is a compelling acquisition message for price-sensitive solo developers and small teams.
+**Agent workloads with frequent heartbeats.** Session persistence eliminates heartbeat context resending rather than discounting it. Versus caching it has no TTL, no cache-write premium (Anthropic charges +25%, and OpenAI's explicit caching now bills writes at 1.25x uncached input), and no client-side full-context resend. Note the frame changed: with caching universal (OpenAI, Anthropic, Google, Together, DeepInfra, DeepSeek, Moonshot's own API, OpenRouter passthrough), the pitch is "better than caching," not "the cost no one else can touch." The dollar delta versus a well-cached competitor is far smaller than the 60-84% v1.0 claimed and should be recomputed against cached baselines before external use.
 
-**Privacy-sensitive workloads.** Decentralized inference means no single entity (including Gonka) stores conversation data centrally. For agents handling sensitive information (financial data, medical queries, private community management), this is a meaningful differentiator over centralized providers that log and may inspect API traffic.
+**Multi-model coverage of strong open-weight models -- with churn.** The v1.0 "single-model K2.5 network" weakness is gone, but the lineup moved again in late June/July: Qwen3 235B was retired June 25 (Proposal 78), MiniMax M2.7 is now the sole PoC/base model, GLM-5.2 (open agent-benchmark leader, 1M context) went live June 26 (Proposal 79, weight 2.47, optional), and Kimi K2.6 is re-bootstrapping from epoch 331 after Proposals 87/88. Three families, one of them mid-recovery. The open-weight SWE-bench Verified leader is now DeepSeek V4 Pro (Apr 24, 2026; 1.6T MoE, MIT license, 1M context) at 80.6% in Think Max mode, tied with Gemini 3.1 Pro and displacing MiniMax M2.5's 80.2%. Kimi K3's open weights (2.8T MoE, 1M context, due ~Jul 27, 2026) are the obvious next addition. MiniMax M3 (weights since ~Jun 7, 2026; 428B/23B active, 1M context, native multimodal, vendor-reported 59.0% SWE-Bench Pro; first-party pricing $0.30/$1.20 up to 512K input, $0.60/$2.40 above) is attractive on serving economics but ships under the commercially restricted MiniMax Community License (attribution; prior authorization above $20M/yr revenue) -- a material constraint for a decentralized hosting network that must be resolved before Gonka can serve it. Watch item: The Information reports (mid-Jul 2026, single-sourced) MiniMax is preparing "M3 Pro," a 2.7T-parameter model rivaling K3's 2.8T, with possible open-source release as early as Q3 2026; active-parameter count and license unannounced -- the license question is decisive for Gonka hosting.
 
-**Token-aligned users.** For crypto-native users who already hold or earn GNK, paying for inference with tokens they mine or stake creates a closed economic loop. This is a niche advantage but a real one for the DePIN ecosystem.
+**Privacy-sensitive workloads.** Decentralized inference means no single entity (including Gonka) stores conversation data centrally. For agents handling sensitive information, this remains a meaningful differentiator over centralized providers.
+
+**Token-aligned users.** For crypto-native users who hold or earn GNK, paying for inference with tokens they mine or stake creates a closed economic loop. Niche, but real for the DePIN ecosystem.
 
 ### Where Gonka Does Not Win
 
-**Users who need multiple models.** Gonka currently offers only K2.5 (in 3 quantization levels). OpenRouter offers 500+ models. OpenAI offers GPT-4o, o1, o3, DALL-E. Anthropic offers Claude Opus, Sonnet, Haiku. A developer who wants to use GPT-4o for reasoning and K2.5 for simple tasks cannot do so on Gonka alone. This is the single largest competitive gap.
+**Users who need broad model choice.** Gonka's 3 model families (one mid-re-bootstrap) versus OpenRouter's 400+ catalog (OpenRouter's own docs: 400+ active models on 70+ providers; avoid the old "500+"/"losing 499 models" phrasing). A developer wanting GPT-5.6 or Claude Fable 5 for hard reasoning plus a cheap open model for simple tasks cannot do it on Gonka alone. This remains the largest gap, though far narrower than the v1.0 "one model vs. 500" framing.
 
-**Users who need enterprise SLAs.** Gonka has no published SLA, no guaranteed uptime, and no enterprise support tier. OpenAI and Anthropic offer 99.9% uptime SLAs with contractual credits for downtime. For production workloads where reliability is non-negotiable, Gonka cannot yet compete on trust.
+**Latency-sensitive tool-call chains.** Groq serves open-weight models on LPU hardware at 500+ tokens/sec -- the fastest inference available as of mid-2026 -- at $0.05-$0.90/1M input with a free tier. For agent workloads where tool-call chain latency compounds (the core workload in this analysis), a decentralized network cannot match dedicated-silicon speed, and Groq competes on price too at the small-model end.
 
-**Users already invested in OpenAI/Anthropic prompt caching ecosystems.** Developers who have optimized their agent architectures around OpenAI's or Anthropic's caching (structuring prompts to maximize cache hits, using cache-aware batching) would need to re-architect for Gonka's session-based approach. The switching cost is real, even if the destination is cheaper.
+**Users who need enterprise SLAs.** No published SLA, no guaranteed uptime, no enterprise support tier -- unchanged from v1.0. OpenAI and Anthropic offer contractual uptime SLAs. Additionally, per-block price volatility is itself an SLA problem: an enterprise cannot budget against a rate that reprices every block. (Counterweight: SLAs do not cover regulatory action -- Anthropic's Fable 5 was offline June 12 - July 1, 2026 under a US export-control order, a 3-week flagship outage that modestly strengthens the multi-provider/decentralization argument. And Gonka's own K2.6 removal/re-registration in July shows decentralized governance produces model-level outages too.)
 
-**Cost-sensitive users if Gonka prices at or above DeepInfra (Scenario C).** Without a price advantage, Gonka's appeal rests entirely on session persistence and privacy. While these are genuine differentiators, they may not overcome the friction of manual configuration (Gonka is not a built-in OpenClaw provider) and lack of established reputation. At price parity, the path of least resistance is to stay with DeepInfra or Together AI.
+**Users who need price stability.** New since v1.0: the same mechanism that makes Gonka near-free today makes its price unpredictable tomorrow. Centralized providers publish fixed rate cards; Gonka publishes a formula. For CFO-approved production budgets, "cheap but floating" can lose to "10x more but fixed."
 
-**Users who need zero-config OpenClaw integration.** OpenRouter is built into OpenClaw. Setting up Gonka requires manual JSON configuration in the OpenClaw provider config. This friction is small in absolute terms but disproportionately affects adoption -- developers choose the path of least resistance, especially when evaluating a new provider for the first time.
+**Users already optimized for a provider's caching ecosystem.** Developers who structured prompts around OpenAI/Anthropic/Moonshot cache behavior face real switching costs to re-architect for sessions -- and with 90% cached-input discounts, their incentive to switch on cost alone is weaker than v1.0 assumed.
 
-### Where It Depends on Pricing
-
-Everything in the "cost advantage" narrative hinges on Gonka setting pricing below Together AI and DeepInfra. The competitive analysis changes dramatically across the three scenarios:
-
-- **Scenario A ($0.25/$1.25):** Gonka wins on cost at every tier, even without session persistence. Sessions make it overwhelmingly cheaper. Risk: margins may be unsustainable.
-- **Scenario B ($0.35/$1.75):** Gonka wins on adjusted cost (with sessions) at every tier. Raw cost is competitive but not cheapest. This is the sweet spot: competitive pricing + session advantage creates a strong value proposition without sacrificing margin.
-- **Scenario C ($0.45/$2.25):** Gonka's raw cost matches DeepInfra. Without sessions, there is no cost advantage. With sessions, Gonka is significantly cheaper on adjusted cost. The value proposition narrows to "same price, but sessions make it cheaper in practice."
+**Users who need zero-config OpenClaw integration.** OpenRouter is built into OpenClaw; Gonka requires manual provider configuration, plus choosing a broker. The broker layer adds a second decision (and a second fee) that centralized providers do not impose.
 
 ---
 
-## 9. Pricing Recommendations for Leadership
+## 9. Recommendations for Leadership
 
-Based on the analysis above, the following recommendations are offered for Gonka's pricing strategy.
+The v1.0 recommendation set (pick Scenario B, publish a pricing page, add a free tier) is largely overtaken by events: pricing is live, published, and near-zero. The July 2026 recommendations:
 
-### Recommended Target: Scenario B ($0.35/$1.75 per 1M tokens)
+### 1. Market the price honestly: "cheapest today," not "cheapest forever"
 
-Scenario B positions Gonka 30% below DeepInfra on headline rates while leaving margin for network sustainability. When combined with session persistence savings, effective cost for agent workloads drops to 60-84% below competitors depending on tier. This creates a two-part value proposition:
+Gonka's tracker-verified position as the cheapest K2.6/M2.7 provider is a legitimate acquisition headline. But the rate is utilization-driven and partly emission-subsidized. External messaging should cite tracker listings ("cheapest listed provider for Kimi K2.6") rather than quoting $0.0003/1M as a stable rate, and should disclose the per-block repricing mechanism. Until K2.6's re-bootstrap (epoch 331, Proposals 87/88) completes and holds, "cheapest K2.6 provider" claims also need a reliability disclosure -- the model was removed from the network for a day in mid-July. Overclaiming a subsidy-driven price invites a painful correction when utilization rises.
 
-1. **Headline:** "30% cheaper than the cheapest K2.5 provider"
-2. **Depth:** "80% cheaper for agent workloads because sessions eliminate heartbeat overhead"
+### 2. Publish the broker-fee comparison -- the public data now exists
 
-The headline gets developers to look. The depth gets them to stay.
+At near-zero network rates, the user's actual bill is dominated by broker fees. Three brokers (Gonka24, GonkaBroker, OpenGNK) now have publicly visible pricing -- from OpenGNK's ~$0.00016/1M near-passthrough to GonkaBroker's $0.35 flat -- so the recommended broker-fee comparison table can be built today from public data; only GonkaGate and JoinGonka remain unitemized. Publish it (or a first-party access path) before competitors or reviewers do it unfavorably. "Near-free network, opaque middlemen" is a bad story to let others write -- and it is now only half true.
 
-### Publish Pricing Before Any GTM Activity
+### 3. Recompute and reposition the session story against cached baselines
 
-Every competitor analyzed in this document has a public pricing page. Gonka cannot credibly claim cost advantages without published prices. The absence of a pricing page is currently the single most damaging competitive gap for GTM messaging. A developer evaluating Gonka will search for pricing, find nothing, and move on. Publish Scenario B pricing immediately, even as "early access" or "beta" pricing that may change.
+The "heartbeats cost $0 on Gonka; everywhere else they're your biggest expense" message is no longer structurally true -- cached heartbeats cost ~10-30% of list nearly everywhere, including on Moonshot's own API. The defensible version: sessions beat caching (no TTL, no write premium, no resend, uniform across models), and they future-proof agent costs against Gonka's own rate normalization. Recompute all savings deltas against cached competitor rates before any external use; the v1.0-era 60-84% figures must not be cited.
 
-### Consider a Free Tier
+### 4. Stabilize K2.6, then add Kimi K3 weights when they arrive (~Jul 27, 2026)
 
-A free tier of 1-2M tokens/month (approximately $1-2 at Scenario B rates) would eliminate signup friction for Casual tier users. At 1M free tokens/month, a Casual user could run a basic agent for 1-2 days before needing to pay. This is enough to evaluate Gonka's session persistence advantage firsthand. Together AI, OpenAI, and Anthropic all offer free tier credits; Gonka should match this table stakes expectation.
+GLM-5.2 has landed (live June 26, Proposal 79) and Gonka's lineup -- MiniMax M2.7 (sole PoC/base), GLM-5.2, K2.6 (re-bootstrapping) -- covers the workhorse tier, minus the retired Qwen3 235B. The immediate priority is completing K2.6's re-bootstrap cleanly: the epoch 328-329 validation failure (concentrated guardian delegations plus provider failures) is a governance/operations lesson that will recur as models are added. Next: K3's open weights -- 2.8T MoE, 1M context, debuting #3 on Artificial Analysis behind Claude Fable 5 and GPT-5.6 -- would give Gonka a frontier-tier offering and a news hook. K2.7-Code is the nearer-term coding-agent addition; DeepSeek V4 Pro (open-weight SWE-bench Verified leader at 80.6%, MIT license) is worth evaluating too. MiniMax M3 requires resolving its Community License restrictions first. Any remaining K2.5- or Qwen-anchored GTM material should be retired.
 
-### Lead with Session Savings, Not Per-Token Rates
+### 5. Resolve and verify session persistence productionization
 
-The pricing analysis reveals that Gonka's most defensible advantage is not per-token cost (which competitors can undercut by adjusting margin) but session persistence (which requires architectural changes competitors have not made). Marketing should lead with:
-
-> "Your OpenClaw agent's heartbeats cost $0 on Gonka. On other providers, heartbeats are your biggest expense."
-
-This message is specific, quantifiable, verifiable, and structurally true. It shifts the competitive conversation from "who has the lowest $/1M tokens" (a race to the bottom) to "who understands agent workloads" (a durable advantage).
+The v1.2 in-memory session caveat predates this revision; verify whether persistent session storage has shipped. The session advantage cannot be marketed until it survives a server restart.
 
 ---
 
@@ -439,7 +463,7 @@ This message is specific, quantifiable, verifiable, and structurally true. It sh
 Monthly Cost = Monthly Tokens x (Input Price/1M + Output Price/1M) / 2
 ```
 
-Assumes 1:1 input:output ratio. Actual agent workloads are typically 60-70% input / 30-40% output, which would reduce costs for providers with cheaper input tokens (all K2.5 providers). The 1:1 assumption is conservative.
+Assumes 1:1 input:output ratio. Actual agent workloads are typically 60-70% input / 30-40% output, which would reduce costs for providers with cheaper input tokens. The 1:1 assumption is conservative.
 
 ### Session Persistence Adjustment
 
@@ -447,53 +471,61 @@ Assumes 1:1 input:output ratio. Actual agent workloads are typically 60-70% inpu
 Effective Monthly Tokens = Message Tokens + (Heartbeat Tokens x 0.20) + Tool Call Tokens
 ```
 
-The 0.20 factor assumes 80% of heartbeat tokens are eliminated by sessions (only delta context sent instead of full resend). This is conservative -- if system prompt is 80%+ of heartbeat context, sessions could reduce heartbeat overhead by 85-90%.
+The 0.20 factor assumes 80% of heartbeat tokens are eliminated by sessions (only delta context sent instead of full resend). If the system prompt is 80%+ of heartbeat context, sessions could reduce heartbeat overhead by 85-90%.
 
-### Prompt Caching Adjustment (OpenAI)
-
-```
-Adjusted Heartbeat Cost = Heartbeat Tokens x (Cacheable% x 0.50 + Non-cacheable% x 1.00) x Rate
-```
-
-Assumes ~80% of heartbeat tokens are cacheable (system prompt), 20% are non-cacheable (recent context delta). Net effect: ~40% reduction in heartbeat costs.
-
-### Prompt Caching Adjustment (Anthropic)
+### Prompt Caching Adjustment (90%-class providers: OpenAI, Anthropic, Moonshot, Together/DeepInfra Kimi models)
 
 ```
-First Heartbeat Cost = Heartbeat Tokens x (Cacheable% x 1.25 + Non-cacheable% x 1.00) x Rate
-Subsequent Heartbeat Cost = Heartbeat Tokens x (Cacheable% x 0.10 + Non-cacheable% x 1.00) x Rate
+Adjusted Heartbeat Cost ~= Heartbeat Cost x (1 - Cacheable% x InputShare x 0.90)
 ```
 
-The 25% write premium on first fill amortizes quickly: after 2 heartbeats, the net saving exceeds the initial premium. For always-on agents, the steady-state cost is ~10% of uncached rate on the cached portion, yielding ~70% overall heartbeat cost reduction.
+Section 6 tables use a flat ~65% heartbeat-cost reduction as the working estimate (80% cacheable share, input-heavy heartbeat traffic, 90% cached-input discount). Anthropic adds a 25% cache-write premium on first fill, which amortizes within two heartbeats. DeepSeek cache hits (~98% off) use ~90%. These are estimates; actual savings depend on cacheable share and input:output mix.
 
 ---
 
 ## Sources
 
-### Pricing Data (MEDIUM-HIGH confidence)
-- [Together AI Pricing](https://www.together.ai/pricing) -- K2.5 at $0.50/$2.50 per 1M tokens. Accessed April 2026.
-- [Artificial Analysis: K2.5 Providers](https://artificialanalysis.ai/models/kimi-k2-5/providers) -- DeepInfra at $0.45/$2.25. Accessed April 2026.
-- [OpenRouter Pricing](https://openrouter.ai/pricing) -- K2.5 passthrough pricing + 5.5% credit markup. Accessed April 2026.
-- [OpenAI Pricing](https://openai.com/pricing) -- GPT-4o at $2.50/$10.00. Prompt caching details. Accessed April 2026.
-- [Anthropic Pricing](https://anthropic.com/pricing) -- Claude Sonnet 4 at $3.00/$15.00, Opus 4 at $15.00/$75.00. Caching details. Accessed April 2026.
+### Pricing Data (HIGH confidence unless noted; accessed July 2026)
+- [Gonka network pricing](https://pricepertoken.com/endpoints/gonka) -- live blended per-block rate ~$0.0003/1M; model list; OpenGNK ~$0.00016/1M passthrough listing.
+- [Gonka24 rate card](https://gonka24.com/) -- per-model discount rates: M2.7 $0.018/$0.072, K2.6 $0.055/$0.32, GLM-5.2 $0.095/$0.30.
+- [GonkaBroker pricing](https://gonkabroker.com/gonka-api-pricing/) -- broker access and fee structure.
+- [OpenGNK proxy](https://proxy.gonka.gg/) -- near-network-rate passthrough broker.
+- [JoinGonka](https://joingonka.ai/en/knowledge/what-is-gonka/) -- advertised ~$0.003/1M for K2.6-class inference (marketing figure).
+- [Gonka network updates](https://gonka.ai/docs/network-updates/) -- Proposal 78 (Qwen3 235B retired, M2.7 sole PoC, Jun 25), Proposal 79 (GLM-5.2 live, Jun 26), Proposals 87/88 (K2.6 removal and re-registration, Jul 15-16).
+- [Groq pricing](https://groq.com/pricing) -- Llama 3.1 8B Instant $0.05/M input, Llama 3.3 70B $0.59/$0.79; LPU 500+ tok/s; free tier.
+- [MiniMax M3 pricing](https://minimax-ai.chat/models/minimax-m3/) -- $0.30/$1.20 up to 512K input, $0.60/$2.40 above; permanent 50%-off framing.
+- [OpenRouter](https://openrouter.ai/pricing), [K2.5 listing](https://openrouter.ai/moonshotai/kimi-k2.5) -- $0.375/$2.025; 5.5% card / 5.0% crypto credit-purchase fee; caching passthrough.
+- [Together AI Pricing](https://www.together.ai/pricing) -- K2.6 $1.20/$0.20 cached/$4.50; K2.7-Code $0.95/$0.19/$4.00; default-on caching.
+- [DeepInfra K2.6 guide](https://deepinfra.com/blog/kimi-k2-6-pricing-guide-deployment-tradeoffs) -- K2.6 $0.75/$3.50, cached $0.15.
+- [Artificial Analysis: K2.5 Providers](https://artificialanalysis.ai/models/kimi-k2-5/providers) -- DeepInfra $0.45/$2.25; SiliconFlow, CoreWeave, Bedrock comparisons.
+- [OpenAI Pricing](https://developers.openai.com/api/docs/pricing) -- GPT-5.4 $2.50/$15, cached input 10% of list; GPT-4o retirement.
+- [Anthropic Pricing](https://platform.claude.com/docs/en/about-claude/pricing) -- Opus 4.8 $5/$25, Sonnet 5 $3/$15 (intro $2/$10), Haiku 4.5 $1/$5, Fable 5 $10/$50; caching and Batch API.
+- [DeepSeek Pricing](https://api-docs.deepseek.com/quick_start/pricing/) -- V4 Flash $0.14/$0.28, cache-hit $0.0028.
+- [Google Gemini Pricing](https://ai.google.dev/gemini-api/docs/pricing) -- Gemini 3.1 Pro $2/$12, 3.1 Flash-Lite $0.25/$1.50.
+- [Moonshot platform pricing](https://platform.kimi.ai/docs/pricing/chat-k26) -- K2.7-Code and K3 rates; kimi-k2-series deprecation (May 25, 2026).
 
-### Agent Workload Data (MEDIUM confidence)
+### Model Landscape (July 2026)
+- [Kimi K3 announcement coverage](https://www.cnbc.com/2026/07/17/moonshot-ai-kimi-k3-model-openai-anthropic-china.html) -- 2.8T MoE, 1M context, $3/$15, weights ~Jul 27.
+- [Kimi K2.7-Code](https://huggingface.co/moonshotai/Kimi-K2.7-Code) -- coding model, 256K context, Modified MIT.
+- [Gonka releases](https://github.com/gonka-ai/gonka/releases) -- K2.6 validation fix (v0.2.13), MiniMax M2.7 route support (devshard v3, Jul 9, 2026).
+
+### Agent Workload Data (MEDIUM confidence; Feb 2026 community estimates, not re-verified)
 - [OpenClaw Token Costs 2026](https://aicost.org/blog/openclaw-ai-token-costs-2026-pricing-breakdown-optimization) -- 9,600 tokens/turn system prompt overhead.
 - [OpenClaw Pricing Guide](https://clawback.tools/openclaw-pricing) -- Heartbeat cost analysis, 30-min and 5-min intervals.
-- [OpenClaw API Costs 2026](https://runmyclaw.ai/blog/openclaw-api-costs) -- Per-task cost analysis, $0.30-420/month range.
 - LangChain State of Agent Engineering -- Tool call multiplier (3-10x) for agent vs chatbot workloads.
 
 ### Market Context (MEDIUM confidence)
 - [NVIDIA Blackwell Inference Cost Blog](https://blogs.nvidia.com/blog/inference-open-source-models-blackwell-reduce-cost-per-token/) -- 10x cost reduction for providers using Blackwell GPUs.
-- [AI Inference Cost Crisis 2026](https://oplexa.com/ai-inference-cost-crisis-2026/) -- 85% of AI budget goes to inference.
-- [DePIN Compute Wars 2026](https://cryptollia.com/articles/decentralized-ai-infrastructure-race-depin-tokenomics-compute-wars-2026) -- Decentralized provider landscape dynamics.
+- Deloitte 2026 TMT Predictions -- inference ~two-thirds of AI compute in 2026; token prices fell ~280x over two years while enterprise AI spend rose ~320%; 67% of enterprises consume >1B tokens/month.
+- [OpenRouter State of AI (with a16z, May 2026)](https://openrouter.ai/state-of-ai) -- 100T-token study: ~4x YoY throughput growth to ~28T tokens/week; agentic workloads >50% of output tokens; Chinese open-source models ~61% of token usage.
+- [The Decoder on Kimi K3 pricing](https://the-decoder.com/kimis-open-model-k3-nears-gpt-5-6-sol-and-fable-5-while-signaling-the-end-of-super-cheap-chinese-ai/) -- K3 $3/$15 as end of "super cheap Chinese AI" at the flagship tier.
 
 ### Internal References
 - `.planning/research/STACK.md` -- OpenClaw architecture, provider ecosystem
 - `.planning/research/FEATURES.md` -- Feature landscape, competitive dimensions
 - `.planning/research/PITFALLS.md` -- GTM pitfalls, trust barriers
-- `output/gonka_competitive_feature_matrix.md` -- Feature matrix (COMP-01 cross-reference)
+- `output/gonka_competitive_feature_matrix.md` -- Feature matrix (COMP-01 cross-reference; needs the same July 2026 caching re-run)
 
 ---
 
-*This analysis uses HYPOTHETICAL pricing for Gonka. All Gonka cost projections are scenario-based and contingent on final pricing decisions. Leadership should not cite specific Gonka cost savings externally until actual pricing is published.*
+*Gonka's live rate is a per-block, utilization-driven snapshot, not a stable quote. Cached-adjusted competitor figures in Section 6 are estimates. Leadership should not cite specific dollar savings externally until session savings are recomputed against cached competitor baselines and broker fee schedules are verified.*

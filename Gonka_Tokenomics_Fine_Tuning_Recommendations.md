@@ -1,27 +1,42 @@
 # Gonka Network: Tokenomics Fine-Tuning Recommendations
 
-**Version:** 1.0 (Final)
-**Date:** February 5, 2026
+**Version:** 1.4 (Updated)
+**Date:** July 18, 2026 (original: February 5, 2026)
 **Status:** Decision-Ready
 **Prepared by:** Phase 1 Deep Macro-Tokenomics Research Program
 
 ---
 
+## July 2026 Update Note
+
+This document was written in February 2026 against Q1-2026 market assumptions. Key facts have changed materially and are corrected inline throughout:
+
+- **GNK price:** GNK now has a live tracked price of ~$0.13 (July 17-18, 2026; market cap ~$13.9M, ~106M of 1B circulating), after an all-time high of $2.61 (January 16, 2026) and all-time low of $0.1258 (July 17, 2026) -- a ~95% drawdown. GNK is still not listed on a major CEX; it trades OTC on HEX Exchange, on SafeTrade (GNK/USDT), and as wrapped GNK. All $1.00-GNK-anchored figures in this document are modeling assumptions, not market prices.
+- **Market regime:** Crypto is in a pronounced bear phase (total market cap ~$2.26T, down ~43% from the October 2025 high; BTC ~$64,000 with sustained ETF outflows). The "severe bear" contingency scenario in Recommendation 7 is approximately the live base case.
+- **Competitive moat:** Akash activated Burn-Mint Equilibrium (March 23, 2026) and io.net's Incentive Dynamic Engine went live (June 11, 2026) -- though independent analysis of io.net's own explorer indicates its burn is currently emission-funded rather than the marketed revenue buyback, with demand-driven emissions still switched off. Buyback-and-burn is no longer a marketing differentiator, but *revenue-funded* value return -- and especially yield distribution to lockers -- still is.
+- **GPU market:** B200 shipped at the start of 2025, not Q3 2026, and H100 rental deflation stalled and partially reversed in 2026 (AI memory supercycle). The supercycle is decelerating from Q2's ~60% QoQ pace but the deceleration is being revised upward: TrendForce raised its Q3/Q4 forecasts on July 8-9, 2026 (PC DRAM Q3 now +15-20% QoQ, up from 8-13%; server DRAM +13-18% with US CSP long-term agreements capping increases), and module maker ADATA reportedly sees Q3 DRAM up 20-30% and NAND up 35-40%. The 13-18% figure is now the conservative end, not the consensus -- GPU-hardware-cost relief in 2027 looks less likely. GPU pricing sections are corrected inline.
+- **Network size:** Live ecosystem sources now publish real-time network stats (gonka.gg with a free public API, gonkascan.com, gonkahub.com, tracker.gonka.vip). As of July 18, 2026, joingonka.ai's live counter shows ~1,178 GPUs active, consistent with tracker.gonka.vip's ~1,214 -- far below the April 2026 snapshot of ~4,648 GPUs (~113 participants, ~582 MLNodes) and CoinMarketCap's static "~5,000 H100" project description (stale marketing text; the announced February 2026 peak was ~14,000). The ~1,200 live figure is the correct active-mining denominator. The February 2026 figures used in this document's baseline modeling (6,000 GPUs, 448 hosts) match no live source; per-GPU emission share at ~1,200 GPUs is ~5x the 6,000-GPU baseline, which lowers host break-even GNK price by the same factor.
+- **Protocol security:** A security hotfix, v0.2.13-post7 (July 6, 2026), patched a PoC-v2 weight-validation vulnerability; per the official network-updates feed, host gonka1w7s4pharl5qs2lupxkuw2c0gzcls8chehwafg3 was detected exploiting the flaw before the fix deployed -- the network's first publicly disclosed live exploit attempt. The v0.2.14 chain upgrade is still an open PR (since July 8, 2026) and is not just "in preparation": it adds PoC duplicate-artifact protection and deprecates the classic API -- disabling billing on /v1/chat/completions -- routing all paid inference through the devshard/broker path, which changes the fee-infrastructure picture modeled here (see Appendix, Network Parameters).
+- **Regulatory:** The 2026 SEC "Project Crypto" posture (staff taxonomy statement, token safe-harbor direction) materially lowers the securities-risk differential assigned to direct veGNK yield. The SEC's "Regulation Crypto" proposal is confirmed for its July 2026 rulemaking slot -- a time-limited "Innovation Exemption" allowing raises up to $75M in any 12-month period, a 12-36 month safe harbor, and an exit-from-securities mechanism -- but it is still under White House OIRA review, and an operative rule is quarters away (proposal, comment period, final rule, compliance dates). Reported eligibility criteria target early-stage projects (valuation under $5M within the first four years), which Gonka (mcap ~$14M, launched 2025) may not satisfy. The CLARITY Act sits at Senate Calendar No. 423 with no cloture motion and, as of July 17-18, no floor vote actually scheduled: bipartisan talks on ethics/law-enforcement provisions collapsed, prediction-market odds of passage fell from the low 70s to roughly 43%, and the July 17 event was only a House Financial Services field hearing (messaging, not legislation). The bill still needs ~7 Democratic votes for cloture, with Aug 7 the final session day before recess -- treat passage as a coin-flip, not imminent. Separately, July 18, 2026 was the statutory deadline for six federal agencies (OCC, FDIC, Treasury, FinCEN, et al.) to finalize stablecoin implementing rules under the GENIUS Act -- relevant to treasury/POL planning (USDC pairing legality and yield treatment) and to the stablecoin-yield dispute that is one of the blocks on CLARITY.
+- **Timelines:** Calendar targets set in February 2026 (e.g., "Q2 2026") that have passed without implementation should be read as offsets from adoption, not fixed dates.
+
+---
+
 ## 1. Executive Summary
 
-This document delivers 10 prioritized, parameterized recommendations for fine-tuning Gonka Network's tokenomics. The recommendations synthesize findings from five parallel deep research investigations covering protocol-owned liquidity, real yield mechanisms, vote-escrowed governance, fee transition stress testing, and GPU market economics -- drawing on 50+ sources, 12 protocol analyses, and academic research current to February 2026.
+This document delivers 10 prioritized, parameterized recommendations for fine-tuning Gonka Network's tokenomics. The recommendations synthesize findings from five parallel deep research investigations covering protocol-owned liquidity, real yield mechanisms, vote-escrowed governance, fee transition stress testing, and GPU market economics -- drawing on 50+ sources, 12 protocol analyses, and academic research originally current to February 2026, with market facts updated to July 18, 2026.
 
 **Top 3 Critical Recommendations:**
 
-1. **Fee Transition Monitoring & Contingency Framework** (CRITICAL, immediate) -- Deploy a real-time dashboard tracking the emission-to-fee crossover ratio and host profitability. Under conservative growth (10% annual developer growth), fee revenue does not exceed emission value until Year 4 at $1.00 GNK. If Year 4 fee revenue falls below $50M, activate tail emission contingency. This is the single largest existential risk to network sustainability.
+1. **Fee Transition Monitoring & Contingency Framework** (CRITICAL, immediate) -- Deploy a real-time dashboard tracking the emission-to-fee crossover ratio and host profitability. Under conservative growth (10% annual developer growth), fee revenue does not exceed emission value until Year 4 at a modeled $1.00 GNK; at the actual July 2026 price of ~$0.13, hosts earn well below the document's own ~$0.85 breakeven estimate (a Feb 2026 figure computed on a 6,000-GPU baseline; the live network runs ~1,200 active GPUs as of July 18, 2026, so per-GPU emission share is ~5x higher and breakeven correspondingly lower -- roughly ~$0.17 on the same math -- meaning ~$0.13 GNK sits only modestly below breakeven for active hosts, though still short of rental parity). If Year 4 fee revenue falls below $50M, activate tail emission contingency. This is the single largest existential risk to network sustainability.
 
-2. **Protocol-Owned Liquidity Deployment** (HIGH, Q2 2026) -- Allocate 22M GNK (18.3% of Community Pool) to Uniswap v3 concentrated liquidity positions: 13.2M GNK paired with $13.2M USDC (60%) and 8.8M GNK paired with ~2,933 ETH (40%). Target: $40-45M total liquidity depth, <1% slippage on $40K trades, $550K-$1.1M annual LP fee revenue. Cost efficiency: $0.50 deployed per $1 TVL versus $10 spent per $1 retained under traditional liquidity mining.
+2. **Protocol-Owned Liquidity Deployment** (HIGH, upon adoption) -- Allocate 22M GNK (18.3% of Community Pool) to Uniswap v3 concentrated liquidity positions, 60% GNK/USDC and 40% GNK/ETH. The original sizing (13.2M GNK paired with $13.2M USDC; $40-45M total depth) assumed $1.00 GNK; at ~$0.13 GNK (July 2026), 22M GNK is worth ~$2.9M and all dollar targets, paired-asset amounts, and price ranges must be rebased to the live price before the governance vote. The structural case is unchanged: <1% slippage at the 95th-percentile trade size and cost efficiency of $0.50 deployed per $1 TVL versus $10 spent per $1 retained under traditional liquidity mining.
 
-3. **Enhanced Revenue Allocation with Real Yield** (HIGH, Q3 2026) -- Restructure the current 10% unallocated inference revenue into 5% continuous TWAP buyback-and-burn plus 5% real yield distribution to veGNK stakers. At $25M annual inference revenue, this generates $1.25M in buyback pressure and $1.25M+ in staker yield. No competing AI compute network (Akash, Render, Bittensor) offers genuine real yield distribution -- this is a first-mover competitive moat.
+3. **Enhanced Revenue Allocation with Real Yield** (HIGH, upon adoption) -- Restructure the current 10% unallocated inference revenue into 5% continuous TWAP buyback-and-burn plus 5% real yield distribution to veGNK stakers. At $25M annual inference revenue, this generates $1.25M in buyback pressure and $1.25M+ in staker yield. Buyback-and-burn is no longer unique among AI compute networks -- Akash activated Burn-Mint Equilibrium in March 2026 and io.net's IDE buyback-and-burn went live in June 2026 (though io.net's burn is currently emission-funded, not revenue-funded) -- but direct distribution of real revenue to lockers remains rare, and is now the moat to emphasize.
 
-**Decision Framework:** Implement Phase A (quick wins) immediately to establish monitoring and demand-side growth. Phase B (core enhancements) requires smart contract development and governance votes -- begin Q2 2026. Phase C (advanced features) builds on Phase B infrastructure -- target Q4 2026 through 2027.
+**Decision Framework:** Implement Phase A (quick wins) immediately to establish monitoring and demand-side growth. Phase B (core enhancements) requires smart contract development and governance votes. Phase C (advanced features) builds on Phase B infrastructure. Calendar targets from the February 2026 draft have slipped; read phase timelines as offsets from adoption.
 
-**Fee Transition Risk Summary:** Gonka's exponential emission decay (halving every ~4 years) means epoch rewards drop from 323,000 GNK/day at launch to 71,929 GNK/day by Year 8. Under conservative growth, fee revenue crosses over epoch reward value at Year 4 ($1 GNK) to Year 8-9 ($5 GNK). The critical danger zone is Year 8-12 when emissions become negligible but fee revenue may not yet dominate. Mitigation: aggressive developer onboarding (targeting 25% annual growth), oracle-based USD pricing to stay competitive, and governance-activated tail emissions as a backstop.
+**Fee Transition Risk Summary:** Gonka's exponential emission decay (halving every ~4 years) means epoch rewards drop from 323,000 GNK/day at launch to 71,929 GNK/day by Year 8. Under conservative growth, fee revenue crosses over epoch reward value at Year 4 (modeled $1 GNK) to Year 8-9 (modeled $5 GNK); at the actual ~$0.13 GNK (July 2026), the crossover sits beyond even the conservative case. The critical danger zone is Year 8-12 when emissions become negligible but fee revenue may not yet dominate. Mitigation: aggressive developer onboarding (targeting 25% annual growth), oracle-based USD pricing to stay competitive, and governance-activated tail emissions as a backstop.
 
 ---
 
@@ -39,7 +54,7 @@ This document delivers 10 prioritized, parameterized recommendations for fine-tu
 
 **Synthesis:** Findings integrated into three updated reference documents (Macro Research v2.0, Deep Analysis v3.0, Stakeholder Guide v3.0) before distillation into these recommendations.
 
-**Date of Research:** February 2026. All pricing data, protocol parameters, and market conditions reflect Q1 2026 state.
+**Date of Research:** February 2026, with a fact-check pass on July 18, 2026. GNK price, GPU market pricing, competitor tokenomics, regulatory posture, and protocol-version facts are updated to July 2026 where verified; modeled figures (crossover years, POL sizing at $1.00 GNK, budget estimates) remain February 2026 estimates and are labeled as such.
 
 ---
 
@@ -58,7 +73,7 @@ This document delivers 10 prioritized, parameterized recommendations for fine-tu
 | 9 | GPU Pricing Competitive Tracking | MEDIUM | LOW | MEDIUM | Immediate | Off-chain infrastructure |
 | 10 | veGNK Advanced Features (Phase 2-3) | LOW-MEDIUM | HIGH | MEDIUM | 2027 | veGNK Phase 1 live |
 
-**Reading the matrix:** Priority reflects urgency and risk mitigation value. Complexity reflects implementation effort. Impact reflects expected effect on network health, token value, and sustainability.
+**Reading the matrix:** Priority reflects urgency and risk mitigation value. Complexity reflects implementation effort. Impact reflects expected effect on network health, token value, and sustainability. Timeline entries are the original February 2026 calendar targets; those already passed (Q2 2026) should be re-planned as offsets from adoption.
 
 ---
 
@@ -72,7 +87,7 @@ This document delivers 10 prioritized, parameterized recommendations for fine-tu
 
 #### Current State
 
-Gonka's emission schedule decays exponentially at rate 0.000475 per epoch from 323,000 GNK/day initial. No monitoring infrastructure exists to track the emission-to-fee crossover ratio, host profitability thresholds, or early warning indicators. The network has no contingency plan if fee revenue growth lags projections.
+Gonka's emission schedule decays exponentially at rate 0.000475 per epoch from 323,000 GNK/day initial. Live explorers now publish real-time participant/GPU counts (gonka.gg with a free public API, gonkascan.com, gonkahub.com, tracker.gonka.vip), but no monitoring infrastructure exists to track the emission-to-fee crossover ratio, host profitability thresholds, or early warning indicators. The network has no contingency plan if fee revenue growth lags projections. The proposed dashboard should build on the existing explorer APIs rather than new data collection.
 
 #### Proposed Enhancement
 
@@ -144,11 +159,13 @@ Gonka has a 120M GNK Community Pool with no protocol-owned liquidity. All market
 
 **Allocate 22M GNK from Community Pool to concentrated Uniswap v3 positions.**
 
-**Pair Structure:**
+> **July 2026 recalibration:** The pair structure below was sized at a modeled $1.00 GNK. At the live ~$0.13 GNK price, 22M GNK is worth ~$2.9M, so the dollar amounts of paired assets, the absolute price ranges, and the depth/fee-revenue targets in this recommendation must be rebased to the prevailing price before the governance vote. The allocation percentages, fee tiers, and range widths (relative +-25/+35%) remain the recommendation.
+
+**Pair Structure (February 2026 sizing at $1.00 GNK):**
 
 | Pair | Allocation | GNK Amount | Paired Asset | Fee Tier | Range | Capital Efficiency |
 |---|---|---|---|---|---|---|
-| GNK/USDC | 60% | 13,200,000 GNK | $13,200,000 USDC | 0.3% | $0.75-$1.35 (+-25/+35%) | 4.2x vs. full range |
+| GNK/USDC | 60% | 13,200,000 GNK | $13,200,000 USDC | 0.3% | -25%/+35% around spot ($0.75-$1.35 at $1.00) | 4.2x vs. full range |
 | GNK/ETH | 40% | 8,800,000 GNK | ~2,933 ETH (~$8.8M) | 0.3% | +-35% from current ratio | 3.8x vs. full range |
 
 **GNK/USDC rationale:** Primary pair for price discovery and host cashouts. Hosts earn GNK and need USDC to cover GPU electricity and hardware costs. Lower IL exposure for the protocol treasury.
@@ -168,7 +185,7 @@ Gonka has a 120M GNK Community Pool with no protocol-owned liquidity. All market
 |---|---|---|---|
 | Protocol revenue (first 6 months) | $2-5M | Months 1-6 | Accumulate from early inference fees |
 | OTC negotiation with Bitfury | $5-10M | Pre-deployment | Negotiate USDC/ETH from strategic partner |
-| Governance-approved Community Pool sale | $5-10M | If needed | Sell 5-10M GNK OTC for paired assets |
+| Governance-approved Community Pool sale | $5-10M | If needed | Sell 5-10M GNK OTC for paired assets; the SEC's Innovation Exemption (raises up to $75M per 12 months) might eventually open a compliant public-sale route, but the rule is still at OIRA (operative rule quarters away) and reported eligibility limits (valuation under $5M within four years) may exclude Gonka -- do not plan around it |
 | Phase 1 partial deployment | Deploy with available assets | Immediate | Start with whatever paired assets exist |
 
 **Governance Proposal (GIP-001) Structure:**
@@ -180,9 +197,9 @@ Gonka has a 120M GNK Community Pool with no protocol-owned liquidity. All market
 
 #### Expected Impact
 
-- $40-45M total liquidity depth across both pairs
-- <1% slippage on $40K trades (95th percentile trade size)
-- $550K-$1.1M annual LP fee revenue (3-6% APR on deployed capital)
+- $40-45M total liquidity depth across both pairs (Feb 2026 sizing at $1.00 GNK; ~$5.8M at $0.13 GNK unless the allocation is enlarged)
+- <1% slippage on $40K trades (95th percentile trade size, Feb 2026 estimate)
+- $550K-$1.1M annual LP fee revenue (3-6% APR on deployed capital; scales with rebased TVL)
 - 100% liquidity retention (vs. 15-25% for mercenary capital)
 - Cost efficiency: $0.50 per $1 TVL (20x cheaper than traditional LM)
 
@@ -269,7 +286,7 @@ Base Fee: 100% BURNED (UNCHANGED -- EIP-1559 mechanism)
 | $100M | $70M | $20M | $5M | $5M |
 | $500M | $350M | $100M | $25M | $25M |
 
-**Competitive Advantage:** Among decentralized AI compute networks (Akash, Render, Bittensor, io.net), none have implemented genuine real yield distribution. Akash has a 4% take rate with no holder distribution. Render uses burn-mint equilibrium. Bittensor is purely emission-based. Gonka's real yield creates a first-mover moat in attracting long-term capital.
+**Competitive Advantage (updated July 2026):** Buyback-and-burn is no longer a marketing differentiator. Akash activated Burn-Mint Equilibrium via Mainnet 17 on March 23, 2026 -- all on-chain compute spend triggers a market buy-and-burn of AKT. io.net's Incentive Dynamic Engine went live June 11, 2026 (announced alongside an $8M enterprise deal, ~$650K/month), marketed as committing at least 50% of surplus revenue to IO buyback-and-burn and targeting >=12M IO removed in year one -- but independent analysis of io.net's own explorer indicates the burn is currently emission-funded rather than revenue-funded, with demand-driven emissions still switched off. Render has long used burn-mint equilibrium; Bittensor remains purely emission-based. What remains genuinely rare is *routing real revenue to lockers*: none of these networks pay protocol revenue to token lockers, and the largest marketed "revenue" burn is not yet revenue-backed. Gonka's 5% veGNK yield pool funded by actual inference revenue -- not the 5% burn -- is the moat, and messaging should lead with it.
 
 #### Expected Impact
 
@@ -289,7 +306,7 @@ Base Fee: 100% BURNED (UNCHANGED -- EIP-1559 mechanism)
 
 | Risk | Probability | Impact | Mitigation |
 |---|---|---|---|
-| Regulatory classification as security | Low | High | Position as governance participation reward, not passive income; buyback-burn has lowest regulatory risk |
+| Regulatory classification as security | Low (further reduced by 2026 SEC posture) | High | 2026 SEC "Project Crypto" (Jan 28 staff taxonomy statement, Mar 17 token safe-harbor direction) largely classifies governance/utility tokens sold for use as "digital tools," not securities. The SEC's July 2026 "Regulation Crypto" rulemaking (Innovation Exemption up to $75M/12mo, 12-36 month safe harbor, exit-from-securities mechanism) would further de-risk direct veGNK yield, but is still at OIRA with an operative rule quarters away, and its early-stage eligibility criteria may exclude Gonka. CLARITY Act: no floor vote scheduled as of July 17-18 after ethics-provision talks collapsed; passage odds ~43% with Aug 7 the last session day -- maintain conservative positioning until rules or statute are final. Note also the GENIUS Act stablecoin implementing rules (six-agency finalization deadline July 18, 2026), which bear on USDC yield treatment |
 | Buyback front-running | Low | Low | Continuous TWAP with 15-min intervals makes front-running unprofitable |
 | AI Training Fund underfunded | Low | Medium | 6-month runway threshold ensures operational reserves before any distribution |
 | Revenue too low for meaningful buyback | Medium (early) | Low | Mechanism scales automatically; even small burns compound over time |
@@ -311,7 +328,7 @@ Base Fee: 100% BURNED (UNCHANGED -- EIP-1559 mechanism)
 
 #### Current State
 
-Gonka has ~2,200 active developers. Fee transition analysis reveals that 15-25% annual developer growth is required to maintain host profitability as emissions decay. The OpenAI-compatible API reduces migration friction to near-zero (change 2 lines of code), but no structured onboarding program exists.
+Gonka has ~2,200 active developers (Feb 2026 estimate; not verifiable against July 2026 live sources). Fee transition analysis reveals that 15-25% annual developer growth is required to maintain host profitability as emissions decay. The OpenAI-compatible API reduces migration friction to near-zero (change 2 lines of code), but no structured onboarding program exists.
 
 #### Proposed Enhancement
 
@@ -394,7 +411,7 @@ Gonka has ~2,200 active developers. Fee transition analysis reveals that 15-25% 
 
 #### Current State
 
-Gonka prices inference in GNK terms via EIP-1559 dynamic pricing. This creates a dual volatility problem: GPU prices deflate 30-50% annually while GNK price fluctuates with market sentiment. When GNK appreciates, Gonka becomes uncompetitive in USD terms. When GNK depreciates, hosts earn less in USD terms.
+Gonka prices inference in GNK terms via EIP-1559 dynamic pricing. This creates a dual volatility problem: GPU rental prices move independently of GNK, which fluctuates with market sentiment. (The Feb 2026 assumption of 30-50% annual GPU deflation no longer holds -- H100 rental deflation stalled and partially reversed in 2026 amid the AI memory supercycle, with centralized clouds raising prices. Volatility now cuts both ways, which strengthens rather than weakens the case for USD-denominated pricing.) When GNK appreciates, Gonka becomes uncompetitive in USD terms. When GNK depreciates -- as through mid-2026, with GNK at ~$0.13 -- hosts earn less in USD terms.
 
 #### Proposed Enhancement
 
@@ -420,22 +437,24 @@ Developer Request -> Gonka Pricing Engine:
 | Floor Defense Price Feed | Chainlink (primary) + Pyth (confirmation) | 1hr + deviation-triggered | Trigger evaluation |
 | Competitive Benchmark | UMA Optimistic Oracle | Weekly | Governance pricing decisions |
 
-**Target Pricing (H100-equivalent, USD/hr):**
+**Target Pricing (H100-equivalent, USD/hr, July 2026 market):**
 
 | Position | Target $/hr | Rationale |
 |---|---|---|
-| Aggressive growth | $1.50-2.00 | Maximize developer acquisition |
-| Balanced (recommended) | $2.00-2.50 | Competitive pricing with host profitability |
+| Aggressive growth | $1.50-2.00 | Undercuts the July 2026 market median ($2.29-3.12); maximizes developer acquisition |
+| Balanced (recommended) | $2.00-2.50 | At/just below market median with host profitability |
 | Premium decentralized | $2.50-3.00 | Emphasize reliability and API quality |
 
-**Competitive Positioning:**
+**Competitive Positioning (July 2026 H100 market):**
 
 ```
-Hyperscalers ($11-12/hr)      <- Enterprise, compliance-heavy
-Specialized Cloud ($2.50-3.50) <- AI-focused startups
-[GONKA TARGET] ($2.00-2.50)   <- Cost-optimized, API-compatible, censorship-resistant
-Decentralized Low ($0.80-1.50) <- Spot/best-effort, unreliable
+Hyperscaler on-demand ($7-8/hr, Azure/AWS) <- Enterprise, compliance-heavy
+Market median ($2.29-3.12/hr)              <- Specialized clouds, mainstream supply
+[GONKA TARGET] ($2.00-2.50)                <- Cost-optimized, API-compatible, censorship-resistant
+Budget decentralized ($1.40-1.99/hr)       <- Spot/best-effort (floor: Thunder Compute ~$1.40)
 ```
+
+Note: the Feb 2026 draft targeted the same $2.00-2.50 band against a then-deflating market. With deflation stalled and the latest cohort median at ~$3.15/hr (AIMultiple, July 2026) -- mild firming, not just stabilization -- this band is now at-to-below market, and the aggressive tier may be needed to preserve a clear cost advantage.
 
 #### Expected Impact
 
@@ -513,6 +532,8 @@ Gonka uses 1-token-1-vote governance. The 200M founder allocation (20% of supply
 
 **Mitigation:** Encourage broad GNK distribution before veGNK launch. Implement delegation so community can aggregate voting power. Monitor governance concentration; consider voluntary founder lock caps.
 
+> **July 2026 -- delegation concentration is now a demonstrated risk, not a theoretical one.** The July 15, 2026 network update issued explicit guidance "Do not delegate to guardian nodes" after concentrated guardian delegations caused Kimi K2.6 to lose validation majority (epochs 328-329). Guardians are now positioned as fallback-only, and the protocol team is pushing delegation distribution across independent hosts as a systemic-risk mitigation. Any veGNK delegation design (here and in Rec #10) must inherit this constraint: cap or disincentivize delegation to guardian/genesis entities and monitor delegate concentration from day one.
+
 **Governance Changes:**
 
 | Parameter | Current | With veGNK |
@@ -563,19 +584,19 @@ Gonka uses 1-token-1-vote governance. The 200M founder allocation (20% of supply
 
 #### Current State
 
-Bitfury purchased $12M GNK at $0.60 (20M GNK), establishing a psychological Schelling point. No programmatic floor defense mechanism exists. In a sustained bear market, GNK price could breach the Schelling point, triggering host exodus and network contraction.
+Bitfury purchased $12M GNK at $0.60 (20M GNK) as the first tranche of a $50M total investment commitment announced December 1, 2025 (framed publicly as the opening of a ~$1B plan to decentralize AI compute). The $0.60 purchase price created a psychological Schelling point -- which has since decisively failed: GNK fell through $0.60, through both proposed trigger levels ($0.45, $0.30), to an all-time low of $0.1258 on July 17, 2026. No programmatic floor defense mechanism exists, and the sustained bear market this recommendation treated as a tail scenario is now the live base case. All absolute trigger levels below must be reset against current market conditions, and the remaining ~$38M of Bitfury's commitment should be factored into treasury and defense planning.
 
 #### Proposed Enhancement
 
 **Deploy a treasury-managed, rules-based TWAP buyback mechanism with tiered triggers.**
 
-**Trigger Architecture:**
+**Trigger Architecture** (absolute levels are Feb 2026 values, already breached; reset relative to prevailing price at deployment -- the TWAP-relative triggers remain valid as designed):
 
 | Tier | Trigger Condition | Daily Buyback Rate | Max Duration |
 |---|---|---|---|
 | Tier 1 | GNK < 75% of 30-day TWAP | 0.5% of defense treasury/day | 30 days |
-| Tier 2 | GNK < $0.45 absolute OR < 60% of 30-day TWAP | 1.0% of defense treasury/day | 60 days |
-| Tier 3 | GNK < $0.30 absolute (crisis) | 2.0% of defense treasury/day | 90 days |
+| Tier 2 | Absolute floor (was $0.45; reset at deployment) OR < 60% of 30-day TWAP | 1.0% of defense treasury/day | 60 days |
+| Tier 3 | Crisis floor (was $0.30; reset at deployment) | 2.0% of defense treasury/day | 90 days |
 | Emergency | Governance vote | Up to 5% of total treasury | As voted |
 
 **Treasury Allocation:**
@@ -601,12 +622,12 @@ Bitfury purchased $12M GNK at $0.60 (20M GNK), establishing a psychological Sche
 
 - Mild correction (-20%): Defense holds, treasury spends $50-100K, price recovers
 - Moderate bear (-40%): Defense slows decline, treasury spends $300-500K
-- Severe bear (-60%+, 6+ months): Treasury depleted, defense fails -- fundamental must improve
+- Severe bear (-60%+, 6+ months): Treasury depleted, defense fails -- fundamentals must improve. **This is the live scenario as of July 2026** (GNK ~95% off its January 2026 high; total crypto market cap down ~43% year-over-year); treasury-depletion estimates must be recalibrated against it before deployment
 - Stop conditions: Treasury < 20% of initial allocation, or buyback spending > 3 months of revenue
 
 #### Expected Impact
 
-- Reinforces $0.60 Schelling point with programmatic backing
+- Replaces the failed $0.60 Schelling point with programmatic, transparent backing at recalibrated levels
 - Slows price declines during market stress, providing time for fundamentals to recover
 - On-chain transparency builds market confidence
 - Purchased GNK is burned, creating permanent supply reduction during downturns
@@ -632,7 +653,7 @@ Bitfury purchased $12M GNK at $0.60 (20M GNK), establishing a psychological Sche
 |---|---|---|
 | Floor defense deployed | Contract live | Q3 2026 |
 | Treasury funded | >$2M USDC | Q3 2026 |
-| GNK price above $0.45 | 100% of time | Ongoing |
+| GNK price above recalibrated Tier 2 floor | 100% of time post-deployment | Ongoing |
 | Defense activations per year | <4 | Year 1 |
 
 ---
@@ -671,7 +692,7 @@ Gonka's EIP-1559 implementation uses +-2% per-block adjustment with a 40-60% sta
 #### Expected Impact
 
 - 50% faster fee market convergence during demand spikes
-- Better responsiveness to GPU price deflation (EIP-1559 adjusts faster to competitive pressure)
+- Better responsiveness to GPU market price moves in either direction (EIP-1559 adjusts faster to competitive pressure)
 - Acceptable volatility increase (within Ethereum Foundation's stable range)
 
 #### Implementation Complexity
@@ -703,7 +724,7 @@ Gonka's EIP-1559 implementation uses +-2% per-block adjustment with a 40-60% sta
 
 #### Current State
 
-No systematic tracking of competitor GPU pricing exists. H100 pricing has collapsed 64-81% over 24 months. B200 launch in Q3 2026 will further compress H100 pricing. Without competitive tracking, Gonka risks being priced out of the market without realizing it.
+No systematic tracking of competitor GPU pricing exists -- and 2026 has shown why it matters: after collapsing 64-81% over 2023-2025, H100 rental deflation stalled and partially reversed. As of July 2026 the H100 market median is $2.29-3.12/hr (range ~$1.40 budget to ~$7-8 hyperscaler on-demand), with the most recent cohort data (AIMultiple GPU index, July 2026) putting the median at ~$3.15/hr -- at or slightly above the top of the band, i.e., mild firming rather than pure stabilization. Drivers: the AI memory supercycle (decelerating from Q2's ~60% QoQ, but TrendForce raised its Q3/Q4 DRAM forecasts on July 8-9, so the 13-18% floor is now the conservative end) and surging inference demand. B200 -- which shipped at the start of 2025, not Q3 2026 as the original draft assumed -- rents for $2.69-16.11/hr (median ~$6.25); H200 cohort median is ~$4.11/hr ($2.30 FluidStack to $13.78 Azure). Blackwell accounts for >70% of NVIDIA high-end shipments (led by GB300/B300). Vera Rubin is slightly delayed (KeyBanc, mid-July 2026: thermal heat-lid issues and SK Hynix HBM4 qualification; Rubin's share of 2026 shipments cut from ~29% to ~22%, and the four-die Rubin Ultra reportedly cancelled/scaled back), though standard Rubin mass shipments to eight cloud partners remain on track for this summer -- less 2026 Rubin supply supports continued firmness in H100/H200/B200 rental prices. Without competitive tracking, Gonka risks being mispriced in either direction without realizing it.
 
 #### Proposed Enhancement
 
@@ -808,7 +829,7 @@ veGNK Phase 1 (Rec #6) provides basic locking and voting. Advanced features (boo
 | Risk | Probability | Impact | Mitigation |
 |---|---|---|---|
 | Boost gaming | Medium | Low | veGNK/staked ratio prevents easy manipulation |
-| Delegation centralization | Medium | Medium | Monitor delegate concentration; cap maximum delegated power |
+| Delegation centralization | Medium-High (demonstrated: July 2026 guardian-delegation incident, epochs 328-329) | Medium | Monitor delegate concentration; cap maximum delegated power; exclude or cap guardian/genesis entities as delegates per the July 15, 2026 network guidance |
 | Quadratic voting Sybil attack | Low (host-gated) | Medium | GPU hardware requirement makes Sybil expensive |
 | Complexity deters users | Medium | Low | Excellent documentation, phased rollout, simple UI |
 
@@ -901,7 +922,7 @@ veGNK Phase 1 (Rec #6) provides basic locking and voting. Advanced features (boo
 | 2 | POL | Impermanent loss in bear market | Medium | Medium | Concentrated ranges, diversified pairs, fee revenue offsets IL |
 | 2 | POL | Paired asset shortage (USDC/ETH) | Medium-High | Medium | Phased deployment, OTC negotiation, partial start |
 | 2 | POL | Governance rejects POL allocation | Low | High | ROI analysis: 100% retention vs 15-25%, $0.50 vs $10 per $1 |
-| 3 | Revenue | Regulatory classification as security | Low | High | Emphasize buyback-burn (lowest risk); position yield as governance reward |
+| 3 | Revenue | Regulatory classification as security | Low (reduced by 2026 SEC "Project Crypto" posture and pending July 2026 safe-harbor rulemaking) | High | Position yield as governance/utility participation; track the SEC's July 2026 proposed rules (still at OIRA; operative rule quarters away) and the CLARITY Act (no vote scheduled as of July 17-18; passage odds ~43%) for final certainty |
 | 3 | Revenue | Revenue too low for meaningful impact | Medium (early) | Low | Mechanism scales automatically; compound over time |
 | 4 | Developers | Free tier abuse | Medium | Low | Rate limiting, progressive verification |
 | 4 | Developers | Growth targets missed | Medium | High | Multiple channels, adjust budgets, extend timeline |
@@ -1016,33 +1037,54 @@ Quick reference for decision-makers -- the most important numbers from all resea
 | Second halving | ~Year 8 (71,929 GNK/day) |
 | 90% emitted by | ~Year 10 |
 
+### GNK Market (July 17-18, 2026)
+
+| Item | Value |
+|---|---|
+| GNK price | ~$0.13 (CoinMarketCap: $0.1307, July 18; aggregators diverge -- Crypto.com $0.1334, Bitget $0.2755, Coinpaprika $0.44, CryptoRank $0.2756 with a conflicting ATL of $0.1462 on Jul 16 -- treat CMC as canonical given thin liquidity) |
+| Market cap | ~$13.85M |
+| Circulating supply | ~105.9M of 1B max |
+| All-time high | $2.61 (January 16, 2026) |
+| All-time low | $0.1258 (July 17, 2026) |
+| Drawdown from ATH | ~95% |
+| Venues | OTC on HEX Exchange; SafeTrade (GNK/USDT); wrapped GNK. No major CEX listing (planned MEXC/Gate listings did not materialize) |
+
+Caution: the fake "Gonka AI" token on Solana (~$0.00005, still live on Phantom/OKX as of July 2026) is unofficial and should not be cited.
+
 ### Network Parameters
 
 | Item | Value |
 |---|---|
-| Current hosts | 448 |
-| Current GPUs | 6,000 H100-equivalent |
-| Current developers | ~2,200 |
+| Participants | ~113 independent participants running ~582 MLNodes (joingonka.ai, April 2026 snapshot; the "448 hosts (Feb 2026)" figure matches no live source and should not be used in income models) |
+| GPUs | ~1,178 active (joingonka.ai live counter, July 18, 2026), consistent with tracker.gonka.vip's ~1,214 -- use ~1,200 as the active-mining denominator. April 2026 snapshot was ~4,648; CoinMarketCap's "~5,000 H100" is stale marketing text; announced Feb 2026 peak was ~14,000; Feb 2026 modeling baseline was 6,000 |
+| Live data sources | gonka.gg (free public API), gonkascan.com, gonkahub.com, tracker.gonka.vip |
+| Developers | ~2,200 (Feb 2026 estimate, unverified in July 2026) |
 | EIP-1559 stability zone | 40-60% utilization |
 | EIP-1559 adjustment | +-2% per block (current) |
 | Governance quorum | 33.4% |
 | Host collateral | 0.0625 GNK per nonce |
 
-### GPU Market (Q1 2026)
+**Protocol changes since February 2026** (not yet modeled in this document): chain releases v0.2.11 (Mar 19), v0.2.12 (Apr 27), and v0.2.13 (May 20, 2026) shipped the devshard escrow system (MaxEscrowsPerEpoch = 500,000; MaxNonce raised from a hardcoded 20,000 to 1,000,000; broker allowlist), reduced GenesisGuardianMultiplier to 0.33334 (genesis guardian voting power cut from ~34% to ~25%), and added a guardian-controlled emergency switch for devshard inference. Devshard runtime v2 (Jun 15) and v3.0.0 (Jul 9, 2026) introduced a new broker/gateway inference path. Security hotfix v0.2.13-post7 (Jul 6, 2026) -- the latest chain release -- patched a PoC-v2 weight-validation vulnerability after host gonka1w7s4pharl5qs2lupxkuw2c0gzcls8chehwafg3 was detected exploiting it, the network's first publicly disclosed live exploit attempt. The v0.2.14 chain upgrade (PR open for review since Jul 8, 2026) adds PoC duplicate-artifact protection and deprecates the classic API -- disabling billing on /v1/chat/completions -- so all paid inference flows through the devshard/broker path; fee-infrastructure assumptions in Recs #3, #5, and #8 should be re-checked against it once merged. Gonka has also begun regular GiP governance meetings. The July 15, 2026 network update added explicit guidance against delegating to guardian nodes after concentrated guardian delegations cost Kimi K2.6 its validation majority (epochs 328-329) -- guardians are now fallback-only, with delegation distribution across independent hosts pushed as a systemic-risk mitigation. The governance recommendations here (Recs #6, #10) should be re-checked against these live parameters before drafting proposals.
+
+### GPU Market (July 2026)
 
 | Item | Value |
 |---|---|
-| H100 on-demand (hyperscaler) | $11.20-12.29/hr |
-| H100 on-demand (specialized) | $2.49-3.49/hr |
-| H100 on-demand (decentralized) | $1.50-3.29/hr |
-| H100 24-month price decline | 64-81% |
-| B200 expected launch | Q3 2026 |
-| H100 projected 2028 pricing | $0.50-1.00/hr |
-| GPU market CAGR | 29.4% (to $33.9B by 2032) |
+| H100 market median | $2.29-3.12/hr; latest cohort median ~$3.15/hr (AIMultiple, Jul 2026) -- mild firming |
+| H100 hyperscaler on-demand (Azure/AWS) | ~$7-8/hr |
+| H100 budget decentralized/specialized | $1.40-3.50/hr (floor: Thunder Compute ~$1.40) |
+| H100 price decline, 2023-2025 | 64-81% (deflation stalled/partially reversed in 2026) |
+| H200 cohort median | ~$4.11/hr ($2.30 FluidStack to $13.78 Azure) |
+| B200 (shipped start of 2025) | $2.69-16.11/hr, median ~$6.25 (floor $3.20 Runcrate; spot $2.74 Spheron); expected ~$2.50-3.00 at majors by Q4 2026 (Feb 2026 estimate) |
+| NVIDIA high-end mix, 2026 | Blackwell >70% of shipments, led by GB300/B300; Vera Rubin slightly delayed (thermal heat-lid, HBM4 qualification; 2026 share cut ~29% -> ~22%, ~1.7-1.8M units; Rubin Ultra reportedly cancelled/scaled back), standard Rubin mass shipments still on track for summer 2026 |
+| Price drivers | AI memory supercycle, decelerating but revised upward (TrendForce Jul 8-9: PC DRAM Q3 +15-20% QoQ, server DRAM +13-18%; ADATA reportedly sees DRAM +20-30%, NAND +35-40%), plus surging inference demand and reduced 2026 Rubin supply |
+| GPU market CAGR | 29.4% to $33.9B by 2032 (Feb 2026 estimate, unverified) |
 
-### Fee Transition Crossover Points
+### Fee Transition Crossover Points (modeled scenarios, Feb 2026)
 
-| Scenario | GNK Price | Crossover Year |
+GNK prices below are scenario assumptions, not forecasts. At the actual ~$0.13 GNK (July 2026), crossover falls beyond even the conservative case.
+
+| Scenario | Assumed GNK Price | Crossover Year |
 |---|---|---|
 | Conservative (10% dev growth) | $1.00 | Year 4 |
 | Conservative | $5.00 | Year 8-9 |
@@ -1050,16 +1092,16 @@ Quick reference for decision-makers -- the most important numbers from all resea
 | Moderate | $5.00 | Year 3 |
 | Aggressive (50% dev growth) | Any | Year 1-2 |
 
-### POL Parameters
+### POL Parameters (Feb 2026 sizing at $1.00 GNK -- rebase to live price; see Rec #2)
 
 | Item | Value |
 |---|---|
-| Recommended allocation | 22M GNK (18.3% of Community Pool) |
+| Recommended allocation | 22M GNK (18.3% of Community Pool; ~$2.9M at $0.13 GNK) |
 | GNK/USDC split | 60% (13.2M GNK) |
 | GNK/ETH split | 40% (8.8M GNK) |
 | Fee tier | 0.3% (both pairs) |
-| Target liquidity depth | $40-45M |
-| Expected LP fee revenue | $550K-$1.1M/year |
+| Target liquidity depth | $40-45M (at $1.00 GNK) |
+| Expected LP fee revenue | $550K-$1.1M/year (at $1.00 GNK sizing) |
 | Rebalancing cost | ~$900/year |
 
 ### Revenue Allocation
@@ -1090,17 +1132,18 @@ Quick reference for decision-makers -- the most important numbers from all resea
 | Item | Value |
 |---|---|
 | Primary trigger | GNK < 75% of 30-day TWAP |
-| Absolute trigger | GNK < $0.45 |
-| Crisis trigger | GNK < $0.30 |
-| Bitfury Schelling point | $0.60 |
+| Absolute trigger | Was $0.45 (Feb 2026) -- breached; reset at deployment |
+| Crisis trigger | Was $0.30 (Feb 2026) -- breached; reset at deployment |
+| Bitfury Schelling point | $0.60 purchase price -- failed (GNK ATL $0.1258, Jul 17, 2026); Bitfury total commitment is $50M (Dec 1, 2025), of which the $12M purchase was the first tranche |
 | Treasury target | 2-5M USDC |
 | Annual allocation | Up to 6M GNK + 5-10% revenue |
 
-### Competitive Moats
+### Competitive Moats (updated July 2026)
 
 | Moat | Gonka | Competitors |
 |---|---|---|
-| Real yield distribution | 5% revenue + surplus to veGNK stakers | None (Akash: 4% take, no distribution. Render: burn-mint. Bittensor: emissions only) |
+| Yield distribution to lockers | 5% revenue + surplus to veGNK stakers | Still rare: no major AI compute network pays revenue to lockers |
+| Buyback/burn | 5% continuous TWAP burn (proposed, revenue-funded) | No longer unique in marketing: Akash BME live Mar 2026; io.net IDE live Jun 2026 (burn currently emission-funded, not revenue-funded); Render burn-mint; Bittensor emissions only |
 | OpenAI-compatible API | Full compatibility (2-line migration) | Partial or none |
 | Dynamic pricing (EIP-1559) | Automatic utilization-based adjustment | Static or manual pricing |
 | Censorship resistance | Decentralized, permissionless | Varies (some centralized) |
@@ -1108,4 +1151,4 @@ Quick reference for decision-makers -- the most important numbers from all resea
 
 ---
 
-*This document is the capstone deliverable of Phase 1: Deep Macro-Tokenomics Research. It is intended as a decision-ready strategy document for Gonka Network leadership. All recommendations have specific parameters, quantified impacts, and implementation timelines. For detailed research backing each recommendation, refer to the five Wave 1 research documents and three updated synthesis documents in the project archive.*
+*This document is the capstone deliverable of Phase 1: Deep Macro-Tokenomics Research, updated July 18, 2026 to reflect verified market, competitive, regulatory, and protocol changes since the February 2026 draft. It is intended as a decision-ready strategy document for Gonka Network leadership. All recommendations have specific parameters, quantified impacts, and implementation timelines. For detailed research backing each recommendation, refer to the five Wave 1 research documents and three updated synthesis documents in the project archive (note: those companion documents predate this update and retain February-April 2026 assumptions).*
