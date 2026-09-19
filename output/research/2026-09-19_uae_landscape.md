@@ -1,0 +1,17 @@
+# UAE fact sheet (agent, 2026-09-19) — key items
+- Fed: 50% of federal gov services on agentic AI within 2 yrs (2026-05-12); 4 federal AI agents live (2026-05-20); Federal Authority for AI & Data (2026-06-14, Al Olama).
+- Abu Dhabi Digital Strategy 2025-27: AED 13B, AI-native gov by 2027, 100% sovereign cloud, 200+ AI solutions; 100+ use cases across 40+ entities (2025-09-30).
+- DGE sovereign cloud: 11M+ daily digital interactions (Microsoft/Core42); OCI dedicated region 25 entities, 15k daily users.
+- TAMM H1 2026: 55.5M transactions, 98% digital, AI assistant 115 services, 180k AI transactions, 97% no human transfer, AED 722.8M savings (Gulf News 2026-08-15).
+- Dubai: private-sector agentic AI 2-yr plan (2026-05-04), 295k companies, 100 AI assistants.
+- Data: PDPL full compliance 2027-01-01; health + CBUAE financial data must stay in UAE; ADGM DPR 2021.
+- Compute: Stargate UAE 200MW phase due Q3-end 2026 (not confirmed live); BIS moved UAE to A:5 2026-07-10 (license-free NVIDIA/AMD sales, no caps); Commerce 35k GB300 to G42 (Nov 2025); Microsoft $15.2B / 60k GB300; Khazna 850MW by 2029; regional operational ~500MW; power/transformers are the constraint, not chips. No public reporting of idle GPUs in Gulf.
+- e& + Core42 Sovereign AI Compute (2026-07-20); EHC (IHC) + Supermicro sovereign modular DCs (2026-02-26); Moro Hub sovereign GPU PaaS.
+- Models: Falcon-H1 Arabic (TII 2026-01), K2 Think V2 70B (MBZUAI), K2 Horizon 0.9B-375B (2026-09-04), Jais 2 70B (Dec 2025, Inception/Cerebras/MBZUAI), Med42 (M42, Cerebras/Core42).
+- IHC: $125B portfolio, 1,400+ subs, "$2B/month deployment", CEO: "no AI, no investment". Sirius: Coredge (sovereign cloud sw, via Sirius Digitech/Adani), Esyasoft, Finstreet (ADGM MTF/custody). No Sirius-owned DC/GPU assets found.
+- ADI Chain: Ethereum L2 on ZKsync ZK Stack (EVM), on-prem sequencer option, L3s, ~1s finality, <$0.01 tx; mainnet + ADI token 2025-12-09; ADI ~$6.96 (2026-07-13); $50M strategic investment 2026-07-13; Chainlink CCIP 2026-03-03; BNY custody 2026-05-07; DCM tokenized deposits 2026-09-08; Predictstreet FIFA 2026.
+- DDSC: CBUAE approval Feb 2026; IHC AED 110M tx; >AED 150M transacted; VARA exchange distribution nod 2026-07-03.
+- Reg: CBUAE PTSR — utility tokens prohibited as payment on mainland; foreign payment tokens only for buying VAs → DDSC is the compliant rail. ADGM AVA = notification + self-assessment (since 2025-06); criteria: liquidity on regulated venues, transparency, governance, custody, mcap/float/volatility. CMA replaced SCA 2026-01-01. Mining legal; MARA-Zero Two 250MW ADGM JV; Phoenix Group 550MW pivoting to AI/HPC.
+- Gonka: WGNK ERC-20 bridge 0x972a7a92d92796a98801a8818bcf91f1648f2f68 (v0.2.5, Nov 2025), IBC; GNK $0.15, mcap $15.9M, circ 105.92M, ATH $2.61 (2026-01-16), ATL $0.109 (2026-07-22) (CMC 2026-09-19); DeepSeek V4 Flash added 2026-08-16; Devshard v5.0.0 2026-09-13. No Gonka-UAE announcement found.
+- Precedents: MGX $2B Binance in USD1; Aethir $100M fund w/ Blockchain Center Abu Dhabi; io.net $8M enterprise deal, 4B daily tokens; Aethir $147M ARR; no sovereign running DePIN nodes found. Kearney: $500B GCC assets on-chain by 2030. UAE $1B AI infra Africa; Ghana $1B AI hub; Condor Galaxy India 64 CS-3.
+- Hub71+ AI incentives; ADGM tech licence $4k.
