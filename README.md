@@ -1,6 +1,6 @@
 # Gonka Tokenomics
 
-*Last updated: 2026-07-18*
+*Last updated: 2026-09-19*
 
 Economic modeling and go-to-market research suite for the Gonka Network -- a decentralized AI infrastructure platform with ~98% productive compute and Sprint Consensus (2.3B-parameter Transformer-based PoW).
 
@@ -296,7 +296,52 @@ Milestones v1.2-v1.4 added go-to-market research on top of the economic models:
 
 ---
 
+## ADI / UAE Partnership Research (v1.5, 2026-09-19)
+
+Deliverables for the Abu Dhabi (ADI Foundation / Sirius International Holding / IHC) partnership discussion, built on a chain snapshot at epoch 397 (Sept 18, 2026: 494 GPUs, 21 hosts, GNK ~$0.15) and September 2026 market rates.
+
+| File | What it is |
+|------|------------|
+| `output/gonka_adi_partnership_onepager.md` | One-page pitch: GNK on ADI Chain, an Abu Dhabi inference cluster, "AI on ADI" for developers, verifiable-AI records, 90-day pilot |
+| `output/gonka_uae_fleet_blurbs.md` | Two blurbs (v1): what 20,000 H200 + 10,000 MI300X + 1,000 Cerebras CS-3 earn on Gonka, per GPU and per fleet, with price-impact analysis and demand-filled revenue scenarios |
+| `output/gonka_uae_fleet_blurbs_v2.md` | Same, recalibrated to Gonka founder feedback (MI300X-led, contract-rate baseline, $2 / $3 / $4.50 / $14 price path) |
+| `output/gonka_uae_gov_business_report.md` | Full report: fleet economics, why Gonka fits UAE government programs, business opportunities, deal structure, risks, 12-month plan |
+| `output/uae_fleet_model.py`, `output/uae_fleet_model_v2.py` | Reproducible estimate models (v1 chain-derived; v2 founder-calibrated). Run with `python3` from `output/` |
+| `output/datacenter_offer.py` | Datacenter offer harness (below) |
+| `output/research/` | Fact sheets behind the documents: Gonka network state, accelerator economics, UAE landscape, founder calibration |
+
+PDF renders of all of the above are in `output/pdf/`.
+
+### Datacenter offer harness
+
+`output/datacenter_offer.py` simulates what a datacenter's GPU capacity earns if it joins Gonka, so offers can be drafted from a capacity figure. Datacenters join the live network cumulatively in the order given; each offer sheet shows GNK and USD per GPU per day at several GNK prices, network share, collateral needed to unlock full weight, the GNK price at which mining matches on-demand rental, and the long-term-contract comparison. GPU weights use live medians (H100, H200, B200, A100), founder-implied values (B300, MI300X) and a forward estimate for Cerebras CS-3.
+
+```bash
+cd output && python3 datacenter_offer.py --dc "Khazna:H200=2000,B300=64" --dc "EHC:MI300X=1000"
+```
+
+```bash
+cd output && python3 datacenter_offer.py --dc "Site:MW=5,type=B300" --gnk 0.15 --gnk 2.0
+```
+
+`--selftest` checks that one H200 on today's network reproduces the founders' 1.3x-on-demand yield.
+
+### PDF pipeline
+
+`pdfgen/build_pdfs.py` renders every root and `output/` markdown file to a styled PDF through pandoc and Typst (title block, running header, page numbers, zebra tables, code and quote styling). Requires `pandoc` >= 3.1 and `typst`.
+
+```bash
+python3 pdfgen/build_pdfs.py
+```
+
+---
+
 ## Version History
+
+### v1.5 -- ADI / UAE Partnership Research (2026-09-19)
+
+- ADI one-pager, UAE fleet blurbs (v1 and founder-calibrated v2), government and business report, reproducible fleet models, datacenter offer harness, research fact sheets
+- Typst-based PDF pipeline; all 20 markdown documents re-rendered
 
 ### v1.4 -- GTM Engineering Execution (started 2026-04-02, in progress)
 
